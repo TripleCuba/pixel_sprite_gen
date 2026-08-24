@@ -53,7 +53,7 @@ Generated PNG files are stored in a private Supabase Storage bucket and their me
 
 1. Create a [Supabase project](https://supabase.com/dashboard/projects).
 2. Open its **SQL Editor** and run [the storage migration](./supabase/migrations/20260824000000_add_sprite_storage.sql). It creates the private `generated-sprites` bucket, tables, quota functions, and server-only permissions.
-   Then run [the quota-function patch](./supabase/migrations/20260824000001_fix_sprite_storage_quota_function.sql), followed by [the generation-credit migration](./supabase/migrations/20260824000002_add_generation_credits.sql).
+   Then run [the quota-function patch](./supabase/migrations/20260824000001_fix_sprite_storage_quota_function.sql), [the generation-credit migration](./supabase/migrations/20260824000002_add_generation_credits.sql), [the account generation-rate-limit migration](./supabase/migrations/20260824000003_add_generation_rate_limit.sql), [the IP generation-rate-limit migration](./supabase/migrations/20260824000004_add_ip_generation_rate_limit.sql), and [the Stripe billing migration](./supabase/migrations/20260824000005_add_stripe_billing.sql).
 3. Add these server-only values to `.env.local` and Vercel:
 
    ```bash
@@ -65,9 +65,23 @@ Find both under **Supabase → Project Settings → API**. Use the `service_role
 
 ## Generation credits
 
-Every user starts with 20 credits. Low, Medium, and High quality generation cost 1, 10, and 40 credits respectively. Credits are reserved before OpenAI receives a request and refunded automatically if image generation or storage fails. The balance is enforced on the server; the browser only displays it.
+Every user starts with 20 credits. Low, Medium, and High quality generation cost 1, 4, and 16 credits respectively. Credits are reserved before OpenAI receives a request and refunded automatically if image generation or storage fails. The balance is enforced on the server; the browser only displays it. Each account can run one generation at a time and up to 30 per rolling hour; networks are limited to 100 generation requests per rolling hour. Prompts and reference images are validated by the server and moderated before a generation request reaches the image model.
 
-Subscription billing and recurring credit top-ups can be added later without changing the generation endpoint.
+Stripe Checkout and signed webhooks can grant credit packs and recurring subscription credits without changing the generation endpoint.
+
+## Stripe billing
+
+Stripe Checkout is enabled only when all required server-side environment variables are configured. Create six Stripe prices matching the plans in the billing page, then add their `price_...` IDs to the corresponding `STRIPE_PRICE_*` variables in `.env.local` and Vercel. Add `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` as server-only secrets.
+
+Register `https://your-domain.com/api/stripe/webhook` as a Stripe webhook endpoint. Select these events:
+
+- `checkout.session.completed`
+- `invoice.paid`
+- `customer.subscription.created`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+
+The signed webhook, rather than the browser redirect, is the authority that grants paid credits and changes a subscription plan.
 
 ## Deployment
 

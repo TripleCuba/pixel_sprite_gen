@@ -97,7 +97,7 @@ const GenerationQuality = ({
                 <strong>{details.label}</strong>
                 <small>{details.description}</small>
               </span>
-              <b>{details.creditCost} cr</b>
+              <b>{details.creditCost} credits</b>
             </label>
           );
         })}

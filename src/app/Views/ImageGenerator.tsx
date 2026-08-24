@@ -6,7 +6,12 @@ import buildingIcon from "@/assets/icons/sprite-types/building.svg";
 import itemIcon from "@/assets/icons/sprite-types/item.svg";
 import otherIcon from "@/assets/icons/sprite-types/other.svg";
 import terrainIcon from "@/assets/icons/sprite-types/terrain.svg";
-import { SpriteType, SpriteTypePlaceholders } from "../constants";
+import {
+  SpriteType,
+  SpriteTypeDefaultView,
+  SpriteTypePlaceholders,
+  SpriteView,
+} from "../constants";
 import { Dropdown } from "../Components/dropdown";
 import { FileUploadArea, SelectedFiles } from "../Components/file-upload";
 import { GenerateButton } from "../Components/generate-button";
@@ -14,6 +19,8 @@ import { GenerationQuality } from "../Components/generation-quality";
 import { GeneratedSpritePreview } from "../Components/generated-sprite";
 import { LoadingIndicator } from "../Components/loading-indicator";
 import { SpriteHistorySidebar } from "../Components/sprite-history";
+import { SpriteViewSelector } from "../Components/sprite-view";
+import { CREDIT_CHANGE_EVENT } from "../Components/credit-balance/CreditBalance";
 import type { StoredSprite } from "@/lib/sprite-storage";
 import {
   SpriteGenerationQuality,
@@ -41,6 +48,9 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
   const [spriteType, setSpriteType] = useState<SpriteType>(
     SpriteType.character,
   );
+  const [spriteView, setSpriteView] = useState<SpriteView>(
+    SpriteTypeDefaultView[SpriteType.character],
+  );
   const [quality, setQuality] = useState<SpriteGenerationQualityValue>(
     SpriteGenerationQuality.low,
   );
@@ -65,6 +75,11 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
     [generatedSpriteUrl],
   );
 
+  const handleSpriteTypeChange = (nextSpriteType: SpriteType) => {
+    setSpriteType(nextSpriteType);
+    setSpriteView(SpriteTypeDefaultView[nextSpriteType]);
+  };
+
   const removeReferenceFile = (fileToRemove: File) => {
     setReferenceFiles((files) => files.filter((file) => file !== fileToRemove));
   };
@@ -79,6 +94,7 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
 
     const formData = new FormData();
     formData.set("spriteType", spriteType);
+    formData.set("view", spriteView);
     formData.set("quality", quality);
     formData.set("prompt", prompt);
     referenceFiles.forEach((file) => formData.append("references", file));
@@ -109,6 +125,7 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
       );
     } finally {
       setIsGenerating(false);
+      window.dispatchEvent(new Event(CREDIT_CHANGE_EVENT));
     }
   };
 
@@ -136,13 +153,14 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
           <div className={styles.header}>
             <h2>Image Generator</h2>
           </div>
-          <Dropdown
-            label="Sprite Type"
-            value={spriteType}
-            onChange={setSpriteType}
+        <Dropdown
+          label="Sprite Type"
+          value={spriteType}
+          onChange={handleSpriteTypeChange}
           options={Object.values(SpriteType)}
           icons={spriteTypeIcons}
         />
+        <SpriteViewSelector value={spriteView} onChange={setSpriteView} />
         <GenerationQuality
           disabled={isGenerating}
           refreshKey={historyVersion}

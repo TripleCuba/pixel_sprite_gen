@@ -23,12 +23,12 @@ export const SPRITE_QUALITY_DETAILS: Record<
     label: "Low",
   },
   [SpriteGenerationQuality.medium]: {
-    creditCost: 10,
+    creditCost: 4,
     description: "More detail for polished sprites.",
     label: "Medium",
   },
   [SpriteGenerationQuality.high]: {
-    creditCost: 40,
+    creditCost: 16,
     description: "Best detail for final assets.",
     label: "High",
   },
