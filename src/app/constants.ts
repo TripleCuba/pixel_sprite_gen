@@ -6,6 +6,30 @@ export enum SpriteType {
   other = "Other",
 }
 
+export enum SpriteView {
+  threeQuarter = "Three-quarter",
+  side = "Side",
+  front = "Front",
+  topDown = "Top-down",
+  isometric = "Isometric",
+}
+
+export const SpriteTypeDefaultView: Record<SpriteType, SpriteView> = {
+  [SpriteType.character]: SpriteView.threeQuarter,
+  [SpriteType.building]: SpriteView.isometric,
+  [SpriteType.item]: SpriteView.threeQuarter,
+  [SpriteType.terrain]: SpriteView.topDown,
+  [SpriteType.other]: SpriteView.threeQuarter,
+};
+
+export const SpriteViewDescriptions: Record<SpriteView, string> = {
+  [SpriteView.threeQuarter]: "Depth with a readable gameplay silhouette.",
+  [SpriteView.side]: "Profile view for side-scrolling action.",
+  [SpriteView.front]: "Straight-on, balanced presentation.",
+  [SpriteView.topDown]: "Overhead view for maps and tactics.",
+  [SpriteView.isometric]: "Angled overhead view for buildings and props.",
+};
+
 export const SpriteTypePlaceholders: Record<SpriteType, string> = {
   [SpriteType.character]: "Armored ranger with an emerald cloak and steel bow",
   [SpriteType.building]: "Ancient stone watchtower with blue crystal windows",

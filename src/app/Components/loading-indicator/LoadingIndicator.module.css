@@ -1,0 +1,82 @@
+.indicator,
+.compact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--foreground);
+}
+
+.indicator {
+  min-width: min(100%, 280px);
+  padding: 20px;
+  border: 1px solid var(--primary);
+  border-radius: 7px;
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 35%);
+}
+
+.compact {
+  gap: 8px;
+}
+
+.pixels {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 20px;
+}
+
+.pixels i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  background: var(--primary-light);
+  box-shadow: 0 0 0 1px var(--primary);
+  animation: pulse 900ms steps(2, end) infinite;
+}
+
+.pixels i:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.pixels i:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+.copy {
+  display: grid;
+  gap: 5px;
+}
+
+.copy strong,
+.copy small {
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.copy strong {
+  color: var(--foreground);
+}
+
+.copy small {
+  color: var(--primary-light);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    height: 5px;
+    opacity: 0.45;
+  }
+
+  50% {
+    height: 18px;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixels i {
+    animation: none;
+  }
+}

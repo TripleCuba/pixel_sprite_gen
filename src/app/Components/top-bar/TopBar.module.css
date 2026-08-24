@@ -1,4 +1,7 @@
 .bar {
+  position: sticky;
+  z-index: 15;
+  top: 0;
   width: 100%;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
@@ -10,7 +13,7 @@
   justify-content: space-between;
   gap: 16px;
   width: min(100% - 48px, 1280px);
-  min-height: 64px;
+  min-height: 56px;
   margin: 0 auto;
 }
 
@@ -47,7 +50,8 @@
 }
 
 .signInButton,
-.secondaryButton {
+.secondaryButton,
+.plansLink {
   min-height: 36px;
   padding: 7px 11px;
   border-radius: 5px;
@@ -55,6 +59,14 @@
   font: inherit;
   font-size: 0.68rem;
   white-space: nowrap;
+}
+
+.plansLink {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid transparent;
+  color: var(--primary-light);
+  text-decoration: none;
 }
 
 .signInButton {
@@ -79,8 +91,14 @@
   color: var(--primary-light);
 }
 
+.plansLink:hover {
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
 .signInButton:focus-visible,
 .secondaryButton:focus-visible,
+.plansLink:focus-visible,
 .brand:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;

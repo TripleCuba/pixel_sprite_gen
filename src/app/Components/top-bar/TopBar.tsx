@@ -1,5 +1,6 @@
 import { signInWithGoogle, signOutUser } from "@/app/actions/auth";
 import Link from "next/link";
+import { CreditBalance } from "../credit-balance";
 import styles from "./TopBar.module.css";
 
 type TopBarProps = {
@@ -23,6 +24,10 @@ const TopBar = ({ isAuthConfigured, user }: TopBarProps) => (
             <span className={styles.userName}>
               {user.name ?? user.email ?? "Google user"}
             </span>
+            <CreditBalance />
+            <Link className={styles.plansLink} href="/billing">
+              Plans
+            </Link>
             <form action={signOutUser}>
               <button className={styles.secondaryButton} type="submit">
                 Sign out
