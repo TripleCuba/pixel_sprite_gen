@@ -22,7 +22,14 @@ const spriteTypeIcons: Record<SpriteType, StaticImageData> = {
   [SpriteType.other]: otherIcon,
 };
 
-const ImageGenerator = () => {
+type ImageGeneratorProps = {
+  user: {
+    email?: string | null;
+    name?: string | null;
+  } | null;
+};
+
+const ImageGenerator = ({ user }: ImageGeneratorProps) => {
   const [spriteType, setSpriteType] = useState<SpriteType>(
     SpriteType.character,
   );
@@ -46,7 +53,7 @@ const ImageGenerator = () => {
   };
 
   const handleGenerate = async () => {
-    if (!prompt.trim() || isGenerating) {
+    if (!user || !prompt.trim() || isGenerating) {
       return;
     }
 
@@ -85,7 +92,18 @@ const ImageGenerator = () => {
   return (
     <div className={styles.generator}>
       <section className={styles.controls}>
-        <h2>Image Generator</h2>
+        <div className={styles.header}>
+          <h2>Image Generator</h2>
+        </div>
+        {user ? (
+          <p className={styles.signedInAs}>
+            Signed in as {user.name ?? user.email ?? "Google user"}
+          </p>
+        ) : (
+          <p className={styles.authHint}>
+            Sign in with Google from the top bar to enable generation.
+          </p>
+        )}
         <Dropdown
           label="Sprite Type"
           value={spriteType}
@@ -108,7 +126,7 @@ const ImageGenerator = () => {
         />
         <SelectedFiles files={referenceFiles} onRemove={removeReferenceFile} />
         <GenerateButton
-          disabled={prompt.trim().length === 0 || isGenerating}
+          disabled={!user || prompt.trim().length === 0 || isGenerating}
           onClick={handleGenerate}
         >
           {isGenerating ? "Generating..." : "Generate Sprite"}

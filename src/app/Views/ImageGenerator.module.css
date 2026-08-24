@@ -25,6 +25,30 @@
   min-width: 0;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.authHint,
+.signedInAs {
+  margin: 0 0 16px;
+  color: var(--primary-light);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.signedInAs {
+  color: var(--foreground);
+}
+
 .previewColumn {
   display: flex;
   align-items: stretch;
@@ -74,5 +98,9 @@
 
   .previewColumn > * {
     height: auto;
+  }
+
+  .header {
+    align-items: flex-start;
   }
 }

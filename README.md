@@ -26,6 +26,24 @@ OPENAI_API_KEY=your_key_here
 
 The key is read only in the server-side sprite route and is never sent to the browser. The generator requests a 1024×1024 image on a flat chroma-green background, removes the connected green background, quantizes the result to a 32-colour palette, and exports a transparent 256×256 PNG on a 64×64 logical pixel grid.
 
+## Google sign-in setup
+
+Sprite generation is available only to signed-in users. Create a Google OAuth web client in the [Google Cloud Console](https://console.cloud.google.com/apis/credentials), then add these values to `.env.local`:
+
+```bash
+AUTH_SECRET=replace_with_a_random_secret
+AUTH_GOOGLE_ID=your_google_client_id
+AUTH_GOOGLE_SECRET=your_google_client_secret
+```
+
+Create the secret with `npx auth secret` (or use another cryptographically secure random value). In your Google OAuth client's **Authorized redirect URIs**, add:
+
+```text
+http://localhost:8080/api/auth/callback/google
+```
+
+For production, add the matching `https://your-domain.com/api/auth/callback/google` URI too. Restart the development server after changing `.env.local`.
+
 ## Third-party software
 
 Third-party attribution and license notices are collected in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md). Keep the relevant notice with every distribution that bundles the corresponding source code, WebAssembly, or executable.

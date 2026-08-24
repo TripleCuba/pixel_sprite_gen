@@ -1,5 +1,7 @@
 import { SpriteType } from "@/app/constants";
+import { auth } from "@/auth";
 import { processSpriteImage } from "@/lib/sprite-processing";
+import { isAuthConfigured } from "@/lib/auth-config";
 import { buildSpritePrompt, SPRITE_CANVAS_SIZE } from "@/lib/sprite-rules";
 
 export const runtime = "nodejs";
@@ -22,6 +24,19 @@ const isSpriteType = (value: string): value is SpriteType =>
   Object.values(SpriteType).includes(value as SpriteType);
 
 export async function POST(request: Request) {
+  if (!isAuthConfigured()) {
+    return errorResponse(
+      "Authentication is not configured. Add the Google OAuth values to .env.local.",
+      503,
+    );
+  }
+
+  const session = await auth();
+
+  if (!session?.user) {
+    return errorResponse("Sign in with Google before generating a sprite.", 401);
+  }
+
   if (!process.env.OPENAI_API_KEY) {
     return errorResponse(
       "Image generation is not configured. Add OPENAI_API_KEY to .env.local.",
