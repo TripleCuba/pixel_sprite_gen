@@ -16,6 +16,7 @@ const FileUploadArea = ({
   onFilesChange,
   accept = "image/*",
   multiple = true,
+  maxFiles,
 }: FileUploadAreaProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const inputId = useId();
@@ -27,7 +28,8 @@ const FileUploadArea = ({
     }
 
     const nextFiles = Array.from(fileList);
-    onFilesChange(multiple ? nextFiles : nextFiles.slice(0, 1));
+    const limit = multiple ? maxFiles : 1;
+    onFilesChange(limit ? nextFiles.slice(0, limit) : nextFiles);
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {

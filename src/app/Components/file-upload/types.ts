@@ -3,6 +3,7 @@ export type FileUploadAreaProps = {
   onFilesChange: (files: File[]) => void;
   accept?: string;
   multiple?: boolean;
+  maxFiles?: number;
 };
 
 export type SelectedFilesProps = {

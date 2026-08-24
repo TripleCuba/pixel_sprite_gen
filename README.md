@@ -14,7 +14,21 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:8080](http://localhost:8080) with your browser to see the result.
+
+## Image generation setup
+
+Copy `.env.example` to `.env.local` and add an OpenAI API key:
+
+```bash
+OPENAI_API_KEY=your_key_here
+```
+
+The key is read only in the server-side sprite route and is never sent to the browser. The generator requests a 1024×1024 image on a flat chroma-green background, removes the connected green background, quantizes the result to a 32-colour palette, and exports a transparent 256×256 PNG on a 64×64 logical pixel grid.
+
+## Third-party software
+
+Third-party attribution and license notices are collected in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md). Keep the relevant notice with every distribution that bundles the corresponding source code, WebAssembly, or executable.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
