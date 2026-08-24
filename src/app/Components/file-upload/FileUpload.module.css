@@ -1,0 +1,192 @@
+.area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.label {
+  margin: 0;
+  color: var(--foreground);
+}
+
+.dropzone {
+  border: 2px dashed var(--primary-muted);
+  border-radius: 6px;
+  background: var(--input);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.dropzoneDragging {
+  border-color: var(--primary-light);
+  background: var(--primary-muted);
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.uploadButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 96px;
+  padding: 16px;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.browse,
+.uploadIcon {
+  color: var(--primary-light);
+}
+
+.uploadIcon {
+  display: inline-flex;
+}
+
+.uploadIcon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.uploadButton:focus-visible {
+  outline: 2px solid var(--primary-light);
+  outline-offset: -4px;
+}
+
+.selectedFiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selectedFileCard {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 240px);
+  min-height: 68px;
+  padding: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel);
+}
+
+.selectedFilePreview {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--input);
+  color: var(--primary-light);
+  cursor: pointer;
+}
+
+.selectedFilePreview:disabled {
+  cursor: default;
+}
+
+.selectedFilePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.selectedFileDetails {
+  min-width: 0;
+}
+
+.selectedFileDetails p,
+.selectedFileDetails span {
+  display: block;
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selectedFileDetails p {
+  overflow: hidden;
+}
+
+.selectedFileDetails span {
+  margin-top: 4px;
+  color: var(--primary-light);
+  font-size: 0.8em;
+}
+
+.selectedFileRemove,
+.previewClose {
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.selectedFileRemove:hover,
+.previewClose:hover {
+  background: var(--primary-muted);
+}
+
+.previewDialog {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.previewBackdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgb(0 0 0 / 70%);
+}
+
+.previewContent {
+  position: relative;
+  z-index: 1;
+  max-width: min(90vw, 900px);
+  max-height: 85vh;
+  padding: 12px;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.previewContent img {
+  display: block;
+  max-width: min(86vw, 860px);
+  max-height: calc(85vh - 24px);
+  object-fit: contain;
+}
+
+.previewClose {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--input);
+}

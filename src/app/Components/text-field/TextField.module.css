@@ -1,0 +1,31 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.label {
+  color: var(--foreground);
+}
+
+.input {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  resize: vertical;
+  background: var(--input);
+  color: var(--foreground);
+}
+
+.input::placeholder {
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.input:focus-visible {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent);
+}

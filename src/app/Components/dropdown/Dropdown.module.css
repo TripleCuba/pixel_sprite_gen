@@ -1,0 +1,81 @@
+.dropdown {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.label {
+  margin: 0;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  background: var(--input);
+  color: var(--foreground);
+  cursor: pointer;
+  text-align: left;
+}
+
+.value,
+.optionContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  image-rendering: pixelated;
+}
+
+.chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 160ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(225deg) translate(-2px, -2px);
+}
+
+.menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% - 1px);
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  border: 1px solid var(--primary);
+  border-radius: 0 0 6px 6px;
+  background: var(--input);
+  box-shadow: 0 8px 18px rgb(0 0 0 / 25%);
+}
+
+.option {
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  text-align: left;
+}
+
+.option:hover,
+.optionActive {
+  background: var(--primary-muted);
+}
