@@ -1,0 +1,105 @@
+.quality {
+  min-width: 0;
+  margin: 16px 0 12px;
+  padding: 0;
+  border: 0;
+}
+
+.quality legend {
+  padding: 0;
+}
+
+.balance {
+  min-height: 22px;
+  margin: 7px 0 9px;
+  color: var(--primary-light);
+  font-size: 0.64rem;
+}
+
+.balance strong {
+  color: var(--accent);
+  font-weight: inherit;
+}
+
+.balance span {
+  color: #ff9cad;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  min-height: 86px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--input);
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.option:hover:not(.optionUnavailable) {
+  border-color: var(--primary-light);
+}
+
+.optionSelected {
+  border-color: var(--primary);
+  background: var(--primary-muted);
+}
+
+.option input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+}
+
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.optionCopy {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+
+.optionCopy strong,
+.optionCopy small,
+.option b {
+  font-size: 0.62rem;
+  line-height: 1.35;
+}
+
+.optionCopy small {
+  color: var(--primary-light);
+}
+
+.option b {
+  align-self: start;
+  color: var(--accent);
+  font-weight: inherit;
+  white-space: nowrap;
+}
+
+.optionUnavailable {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 520px) {
+  .options {
+    grid-template-columns: 1fr;
+  }
+
+  .option {
+    min-height: 0;
+  }
+}
