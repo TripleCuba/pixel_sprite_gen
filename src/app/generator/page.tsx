@@ -2,6 +2,7 @@ import { TopBar } from "../Components/top-bar";
 import ImageGenerator from "../Views/ImageGenerator";
 import styles from "../page.module.css";
 import { auth } from "@/auth";
+import { isEmailAllowed } from "@/lib/allowed-emails";
 import { isAuthConfigured } from "@/lib/auth-config";
 import { redirect } from "next/navigation";
 
@@ -14,7 +15,7 @@ export default async function GeneratorPage() {
 
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session?.user || !isEmailAllowed(session.user.email)) {
     redirect("/");
   }
 

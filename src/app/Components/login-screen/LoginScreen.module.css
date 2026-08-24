@@ -98,6 +98,18 @@
   line-height: 1.5;
 }
 
-.setupNotice code {
+.setupNotice code,
+.accessDenied code {
   color: var(--foreground);
+}
+
+.accessDenied {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid #a73b4a;
+  border-radius: 5px;
+  background: rgb(167 59 74 / 12%);
+  color: #ff9cad;
+  font-size: 0.7rem;
+  line-height: 1.5;
 }

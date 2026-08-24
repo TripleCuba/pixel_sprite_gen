@@ -34,6 +34,7 @@ Sprite generation is available only to signed-in users. Create a Google OAuth we
 AUTH_SECRET=replace_with_a_random_secret
 AUTH_GOOGLE_ID=your_google_client_id
 AUTH_GOOGLE_SECRET=your_google_client_secret
+ALLOWED_EMAILS=your-google-email@example.com
 ```
 
 Create the secret with `npx auth secret` (or use another cryptographically secure random value). In your Google OAuth client's **Authorized redirect URIs**, add:
@@ -43,6 +44,8 @@ http://localhost:8080/api/auth/callback/google
 ```
 
 For production, add the matching `https://your-domain.com/api/auth/callback/google` URI too. Restart the development server after changing `.env.local`.
+
+`ALLOWED_EMAILS` is a comma-separated server-side allowlist. An email must be listed to sign in, view `/generator`, or call the generation API. This is intended for private testing only; add per-user usage limits and billing before allowing the public to generate sprites.
 
 ## Deployment
 
@@ -59,6 +62,7 @@ This is a server-rendered Next.js app: deploy it to a Node.js-compatible platfor
    AUTH_SECRET
    AUTH_GOOGLE_ID
    AUTH_GOOGLE_SECRET
+   ALLOWED_EMAILS
    ```
 
 4. Deploy the project and copy its production URL.
