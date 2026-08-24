@@ -1,18 +1,26 @@
-import { Colors } from "./constants";
-import ImageGenerator from "./Views/ImageGenerator";
+import { LoginScreen } from "./Components/login-screen";
+import { TopBar } from "./Components/top-bar";
+import styles from "./page.module.css";
+import { auth } from "@/auth";
+import { isAuthConfigured } from "@/lib/auth-config";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const authConfigured = isAuthConfigured();
+  const session = authConfigured ? await auth() : null;
+
+  if (session?.user) {
+    redirect("/generator");
+  }
+
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        backgroundColor: Colors.canvas,
-      }}
-    >
-      <ImageGenerator />
+    <div className={styles.page}>
+      <TopBar isAuthConfigured={authConfigured} user={null} />
+      <main className={styles.loginMain}>
+        <LoginScreen isAuthConfigured={authConfigured} />
+      </main>
     </div>
   );
 }

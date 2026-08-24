@@ -26,6 +26,51 @@ OPENAI_API_KEY=your_key_here
 
 The key is read only in the server-side sprite route and is never sent to the browser. The generator requests a 1024×1024 image on a flat chroma-green background, removes the connected green background, quantizes the result to a 32-colour palette, and exports a transparent 256×256 PNG on a 64×64 logical pixel grid.
 
+## Google sign-in setup
+
+Sprite generation is available only to signed-in users. Create a Google OAuth web client in the [Google Cloud Console](https://console.cloud.google.com/apis/credentials), then add these values to `.env.local`:
+
+```bash
+AUTH_SECRET=replace_with_a_random_secret
+AUTH_GOOGLE_ID=your_google_client_id
+AUTH_GOOGLE_SECRET=your_google_client_secret
+```
+
+Create the secret with `npx auth secret` (or use another cryptographically secure random value). In your Google OAuth client's **Authorized redirect URIs**, add:
+
+```text
+http://localhost:8080/api/auth/callback/google
+```
+
+For production, add the matching `https://your-domain.com/api/auth/callback/google` URI too. Restart the development server after changing `.env.local`.
+
+## Deployment
+
+This is a server-rendered Next.js app: deploy it to a Node.js-compatible platform rather than GitHub Pages. The repository includes a GitHub Actions workflow that runs lint and a production build for every push and pull request.
+
+### Vercel
+
+1. Import the `TripleCuba/pixel_sprite_gen` repository at [Vercel](https://vercel.com/new).
+2. Keep the detected build command: `npm run build`.
+3. In **Project Settings → Environment Variables**, add these values for Production (and Preview if you need sign-in there):
+
+   ```text
+   OPENAI_API_KEY
+   AUTH_SECRET
+   AUTH_GOOGLE_ID
+   AUTH_GOOGLE_SECRET
+   ```
+
+4. Deploy the project and copy its production URL.
+5. In Google Cloud Console, update the OAuth client with the deployed origin and callback URL:
+
+   ```text
+   https://your-domain.com
+   https://your-domain.com/api/auth/callback/google
+   ```
+
+Never place these values in GitHub Actions variables, repository files, or client-side `NEXT_PUBLIC_*` variables. They are server-only secrets.
+
 ## Third-party software
 
 Third-party attribution and license notices are collected in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md). Keep the relevant notice with every distribution that bundles the corresponding source code, WebAssembly, or executable.
