@@ -44,6 +44,33 @@ http://localhost:8080/api/auth/callback/google
 
 For production, add the matching `https://your-domain.com/api/auth/callback/google` URI too. Restart the development server after changing `.env.local`.
 
+## Deployment
+
+This is a server-rendered Next.js app: deploy it to a Node.js-compatible platform rather than GitHub Pages. The repository includes a GitHub Actions workflow that runs lint and a production build for every push and pull request.
+
+### Vercel
+
+1. Import the `TripleCuba/pixel_sprite_gen` repository at [Vercel](https://vercel.com/new).
+2. Keep the detected build command: `npm run build`.
+3. In **Project Settings → Environment Variables**, add these values for Production (and Preview if you need sign-in there):
+
+   ```text
+   OPENAI_API_KEY
+   AUTH_SECRET
+   AUTH_GOOGLE_ID
+   AUTH_GOOGLE_SECRET
+   ```
+
+4. Deploy the project and copy its production URL.
+5. In Google Cloud Console, update the OAuth client with the deployed origin and callback URL:
+
+   ```text
+   https://your-domain.com
+   https://your-domain.com/api/auth/callback/google
+   ```
+
+Never place these values in GitHub Actions variables, repository files, or client-side `NEXT_PUBLIC_*` variables. They are server-only secrets.
+
 ## Third-party software
 
 Third-party attribution and license notices are collected in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md). Keep the relevant notice with every distribution that bundles the corresponding source code, WebAssembly, or executable.
