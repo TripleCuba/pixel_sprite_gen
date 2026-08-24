@@ -8,11 +8,13 @@ import styles from "./GeneratedSpritePreview.module.css";
 import SpritePreviewDialog from "./SpritePreviewDialog";
 
 type GeneratedSpritePreviewProps = {
+  downloadUrl?: string;
   imageUrl: string;
   onClear: () => void;
 };
 
 const GeneratedSpritePreview = ({
+  downloadUrl,
   imageUrl,
   onClear,
 }: GeneratedSpritePreviewProps) => {
@@ -34,7 +36,7 @@ const GeneratedSpritePreview = ({
         />
       </button>
       <div className={styles.actions}>
-        <a className={styles.action} href={imageUrl} download="sprite.png">
+        <a className={styles.action} href={downloadUrl ?? imageUrl} download="sprite.png">
           <Download aria-hidden="true" size={16} />
           Download
         </a>

@@ -47,6 +47,28 @@ For production, add the matching `https://your-domain.com/api/auth/callback/goog
 
 `ALLOWED_EMAILS` is a comma-separated server-side allowlist. An email must be listed to sign in, view `/generator`, or call the generation API. This is intended for private testing only; add per-user usage limits and billing before allowing the public to generate sprites.
 
+## Generated image storage
+
+Generated PNG files are stored in a private Supabase Storage bucket and their metadata is stored in Supabase Postgres. New users start on the `free` plan with a 100 MiB storage limit. The generated-image route fails closed until storage is configured, preventing any OpenAI request from being made without a place to save its result.
+
+1. Create a [Supabase project](https://supabase.com/dashboard/projects).
+2. Open its **SQL Editor** and run [the storage migration](./supabase/migrations/20260824000000_add_sprite_storage.sql). It creates the private `generated-sprites` bucket, tables, quota functions, and server-only permissions.
+   Then run [the quota-function patch](./supabase/migrations/20260824000001_fix_sprite_storage_quota_function.sql), followed by [the generation-credit migration](./supabase/migrations/20260824000002_add_generation_credits.sql).
+3. Add these server-only values to `.env.local` and Vercel:
+
+   ```bash
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=your_server_only_secret_key
+   ```
+
+Find both under **Supabase → Project Settings → API**. Use the `service_role` or secret server key only on the server; never expose it in `NEXT_PUBLIC_*` variables or browser code.
+
+## Generation credits
+
+Every user starts with 20 credits. Low, Medium, and High quality generation cost 1, 10, and 40 credits respectively. Credits are reserved before OpenAI receives a request and refunded automatically if image generation or storage fails. The balance is enforced on the server; the browser only displays it.
+
+Subscription billing and recurring credit top-ups can be added later without changing the generation endpoint.
+
 ## Deployment
 
 This is a server-rendered Next.js app: deploy it to a Node.js-compatible platform rather than GitHub Pages. The repository includes a GitHub Actions workflow that runs lint and a production build for every push and pull request.
@@ -63,6 +85,8 @@ This is a server-rendered Next.js app: deploy it to a Node.js-compatible platfor
    AUTH_GOOGLE_ID
    AUTH_GOOGLE_SECRET
    ALLOWED_EMAILS
+   SUPABASE_URL
+   SUPABASE_SERVICE_ROLE_KEY
    ```
 
 4. Deploy the project and copy its production URL.

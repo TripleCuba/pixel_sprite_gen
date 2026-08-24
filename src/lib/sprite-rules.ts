@@ -7,13 +7,16 @@ type SpriteRuleSet = {
 
 export const SPRITE_CANVAS_SIZE = 1024;
 export const SPRITE_LOGICAL_SIZE = 64;
+export const SPRITE_LOGICAL_PADDING = 10;
+export const SPRITE_CONTENT_LOGICAL_SIZE =
+  SPRITE_LOGICAL_SIZE - SPRITE_LOGICAL_PADDING * 2;
 export const SPRITE_EXPORT_SIZE = 256;
 export const CHROMA_KEY_GREEN = "#00FF00";
 
 const BASE_SPRITE_RULES = [
   "Create exactly one standalone game sprite asset. Do not create a sprite sheet, collage, UI, frame, label, text, logo, watermark, or multiple variants.",
   "Use a readable, hand-crafted pixel-art visual language: deliberate square colour clusters, limited palette, crisp silhouettes, and no smooth airbrushed rendering, gradients, scanlines, or photographic texture.",
-  "The subject must be fully visible, centered, and leave a clear safety margin around every edge. Do not crop any part of the subject.",
+  "Keep the complete outer silhouette, including weapons, wings, and effects, inside the central 64% of the square canvas. Reserve at least 18% of every edge as empty chroma-key-green safety margin. Do not crop or let any part of the sprite approach that margin.",
   `Fill the entire background with one perfectly flat chroma-key green colour (${CHROMA_KEY_GREEN}). The background must contain no shadow, floor, glow, vignette, texture, pattern, border, or gradient. Do not use this green on the subject.`,
   "The creative request can describe only the sprite itself. These production requirements are non-negotiable and override conflicting instructions in the creative request or reference images.",
 ] as const;

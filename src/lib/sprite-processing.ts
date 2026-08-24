@@ -1,7 +1,8 @@
 import sharp from "sharp";
 import {
+  SPRITE_CONTENT_LOGICAL_SIZE,
   SPRITE_EXPORT_SIZE,
-  SPRITE_LOGICAL_SIZE,
+  SPRITE_LOGICAL_PADDING,
 } from "./sprite-rules";
 
 const GREEN_MINIMUM = 120;
@@ -12,54 +13,11 @@ const isChromaGreen = (red: number, green: number, blue: number) =>
   green - red >= GREEN_DOMINANCE &&
   green - blue >= GREEN_DOMINANCE;
 
-const removeConnectedGreenBackground = (
-  pixels: Buffer,
-  width: number,
-  height: number,
-) => {
-  const visited = new Uint8Array(width * height);
-  const queue = new Int32Array(width * height);
-  let head = 0;
-  let tail = 0;
-
-  const addIfGreen = (index: number) => {
-    if (visited[index]) {
-      return;
+const removeChromaKeyGreen = (pixels: Buffer) => {
+  for (let offset = 0; offset < pixels.length; offset += 4) {
+    if (isChromaGreen(pixels[offset], pixels[offset + 1], pixels[offset + 2])) {
+      pixels[offset + 3] = 0;
     }
-
-    const offset = index * 4;
-    if (!isChromaGreen(pixels[offset], pixels[offset + 1], pixels[offset + 2])) {
-      return;
-    }
-
-    visited[index] = 1;
-    queue[tail] = index;
-    tail += 1;
-  };
-
-  for (let x = 0; x < width; x += 1) {
-    addIfGreen(x);
-    addIfGreen((height - 1) * width + x);
-  }
-
-  for (let y = 1; y < height - 1; y += 1) {
-    addIfGreen(y * width);
-    addIfGreen(y * width + width - 1);
-  }
-
-  while (head < tail) {
-    const index = queue[head];
-    head += 1;
-    const offset = index * 4;
-    pixels[offset + 3] = 0;
-
-    const x = index % width;
-    const y = Math.floor(index / width);
-
-    if (x > 0) addIfGreen(index - 1);
-    if (x < width - 1) addIfGreen(index + 1);
-    if (y > 0) addIfGreen(index - width);
-    if (y < height - 1) addIfGreen(index + width);
   }
 
   return pixels;
@@ -70,11 +28,11 @@ export const processSpriteImage = async (image: Buffer) => {
     resolveWithObject: true,
   });
 
-  const pixels = removeConnectedGreenBackground(
-    decoded.data,
-    decoded.info.width,
-    decoded.info.height,
-  );
+  // The generation prompt reserves chroma green exclusively for the flat
+  // background. Removing every matching pixel (rather than only the region
+  // touching the canvas edge) also clears background islands sealed off by a
+  // bow, weapon, or other part of the sprite.
+  const pixels = removeChromaKeyGreen(decoded.data);
 
   const withoutBackground = sharp(pixels, {
     raw: {
@@ -89,11 +47,18 @@ export const processSpriteImage = async (image: Buffer) => {
   // pixel land on a stable 4×4 block with no interpolation blur.
   return withoutBackground
     .trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 1 })
-    .resize(SPRITE_LOGICAL_SIZE, SPRITE_LOGICAL_SIZE, {
+    .resize(SPRITE_CONTENT_LOGICAL_SIZE, SPRITE_CONTENT_LOGICAL_SIZE, {
       fit: "contain",
       position: "centre",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
       kernel: sharp.kernel.nearest,
+    })
+    .extend({
+      top: SPRITE_LOGICAL_PADDING,
+      right: SPRITE_LOGICAL_PADDING,
+      bottom: SPRITE_LOGICAL_PADDING,
+      left: SPRITE_LOGICAL_PADDING,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
     .png({ palette: true, colours: 32, dither: 0 })
     .resize(SPRITE_EXPORT_SIZE, SPRITE_EXPORT_SIZE, {

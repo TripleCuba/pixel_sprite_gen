@@ -1,17 +1,30 @@
+.workspace {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 16px;
+  width: min(100% - 80px, 1280px);
+  margin: 40px auto;
+}
+
 .generator {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 56px;
-  width: min(100% - 80px, 980px);
-  margin: 40px auto;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  width: 100%;
+  margin: 0;
   padding: 24px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface);
 }
 
-.generator::after {
+.generatorWithPreview {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 56px;
+}
+
+.generatorWithPreview::after {
   position: absolute;
   top: 32px;
   bottom: 32px;
@@ -60,18 +73,15 @@
   margin-top: 0;
 }
 
-.previewEmpty {
+.generatingOverlay {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
   display: grid;
   place-items: center;
-  aspect-ratio: 1;
-  width: 100%;
-  min-height: 0;
-  margin: 0;
-  border: 1px dashed var(--border);
-  border-radius: 6px;
-  color: var(--primary-light);
-  font-size: 0.8rem;
-  text-align: center;
+  padding: 24px;
+  border-radius: 8px;
+  background: rgb(8 14 22 / 78%);
 }
 
 .error {
@@ -80,11 +90,17 @@
 }
 
 @media (max-width: 760px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    width: min(100% - 32px, 560px);
+    margin: 16px auto;
+  }
+
   .generator {
     grid-template-columns: 1fr;
     gap: 24px;
-    width: min(100% - 32px, 560px);
-    margin: 16px auto;
+    width: 100%;
+    margin: 0;
   }
 
   .previewColumn {
@@ -92,7 +108,7 @@
     border-top: 1px solid var(--border);
   }
 
-  .generator::after {
+  .generatorWithPreview::after {
     display: none;
   }
 
