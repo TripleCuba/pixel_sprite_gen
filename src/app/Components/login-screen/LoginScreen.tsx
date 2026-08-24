@@ -2,10 +2,11 @@ import { signInWithGoogle } from "@/app/actions/auth";
 import styles from "./LoginScreen.module.css";
 
 type LoginScreenProps = {
+  isAccessDenied: boolean;
   isAuthConfigured: boolean;
 };
 
-const LoginScreen = ({ isAuthConfigured }: LoginScreenProps) => (
+const LoginScreen = ({ isAccessDenied, isAuthConfigured }: LoginScreenProps) => (
   <section className={styles.card} aria-labelledby="login-title">
     <span className={styles.kicker}>Pixel Sprite Generator</span>
     <h1 id="login-title">Create consistent game sprites.</h1>
@@ -17,7 +18,12 @@ const LoginScreen = ({ isAuthConfigured }: LoginScreenProps) => (
       <li>Reference images for a consistent style</li>
       <li>Your generation access stays protected</li>
     </ul>
-    {isAuthConfigured ? (
+    {isAccessDenied ? (
+      <p className={styles.accessDenied} role="alert">
+        This Google account is not approved. Sign out above, then use an
+        allowlisted account.
+      </p>
+    ) : isAuthConfigured ? (
       <form action={signInWithGoogle}>
         <button className={styles.googleButton} type="submit">
           <span aria-hidden="true" className={styles.googleMark}>G</span>
@@ -26,8 +32,8 @@ const LoginScreen = ({ isAuthConfigured }: LoginScreenProps) => (
       </form>
     ) : (
       <p className={styles.setupNotice} role="status">
-        Google sign-in needs the OAuth values in <code>.env.local</code> before
-        it can be enabled.
+        Google sign-in needs the OAuth and <code>ALLOWED_EMAILS</code> values in
+        <code>.env.local</code> before it can be enabled.
       </p>
     )}
   </section>

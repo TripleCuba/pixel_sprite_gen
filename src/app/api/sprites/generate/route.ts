@@ -1,5 +1,6 @@
 import { SpriteType } from "@/app/constants";
 import { auth } from "@/auth";
+import { isEmailAllowed } from "@/lib/allowed-emails";
 import { processSpriteImage } from "@/lib/sprite-processing";
 import { isAuthConfigured } from "@/lib/auth-config";
 import { buildSpritePrompt, SPRITE_CANVAS_SIZE } from "@/lib/sprite-rules";
@@ -35,6 +36,10 @@ export async function POST(request: Request) {
 
   if (!session?.user) {
     return errorResponse("Sign in with Google before generating a sprite.", 401);
+  }
+
+  if (!isEmailAllowed(session.user.email)) {
+    return errorResponse("This account is not approved to generate sprites.", 403);
   }
 
   if (!process.env.OPENAI_API_KEY) {
