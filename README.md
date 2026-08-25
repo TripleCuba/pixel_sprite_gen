@@ -81,6 +81,21 @@ Register `https://your-domain.com/api/stripe/webhook` as a Stripe webhook endpoi
 - `customer.subscription.updated`
 - `customer.subscription.deleted`
 
+## GitHub deployment pipeline
+
+GitHub Actions runs linting and a production build for every push and pull
+request. A successful push to `main` is then deployed to Vercel.
+
+Add these GitHub repository secrets before merging to `main`:
+
+- `VERCEL_TOKEN` — create it in [Vercel account tokens](https://vercel.com/account/tokens).
+- `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` — run `vercel link` locally, then copy
+  the values from `.vercel/project.json`.
+
+The Vercel project must already contain the app's runtime environment
+variables, such as `AUTH_SECRET`, Supabase credentials, OpenAI credentials, and
+Stripe credentials. GitHub only needs the three deployment secrets above.
+
 The signed webhook, rather than the browser redirect, is the authority that grants paid credits and changes a subscription plan.
 
 ## Deployment
