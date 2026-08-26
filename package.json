@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "next dev -p 8080",
     "eval:sprites": "tsx evals/sprite-quality/run.ts",
+    "generate:view-previews": "tsx scripts/generate-view-previews.ts",
     "build": "next build",
     "start": "next start -p 8080",
     "lint": "eslint"

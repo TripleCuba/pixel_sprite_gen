@@ -4,47 +4,81 @@
   top: 0;
   width: 100%;
   border-bottom: 1px solid var(--border);
-  background: var(--surface);
+  background: rgb(17 25 39 / 92%);
+  backdrop-filter: blur(14px);
 }
 
 .content {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
   width: min(100% - 48px, 1280px);
-  min-height: 56px;
+  min-height: 78px;
   margin: 0 auto;
+  padding: 8px 0;
 }
 
 .brand {
   display: inline-flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-end;
+  gap: 11px;
   color: var(--foreground);
-  font-size: 0.84rem;
+  font-weight: 700;
   text-decoration: none;
 }
 
+.brandMarkFrame {
+  display: block;
+  flex: 0 0 50px;
+  width: 50px;
+  height: 56px;
+}
+
 .brandMark {
-  width: 18px;
-  height: 18px;
-  border: 3px solid var(--primary-light);
-  box-shadow: inset 0 0 0 3px var(--primary-muted);
+  display: block;
+  width: auto;
+  height: 56px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.brandText {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-pixel-display), monospace;
+  font-size: 1.25rem;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.spriteText {
+  color: var(--accent);
+  text-shadow: 2px 2px 0 rgb(56 217 245 / 18%);
+}
+
+.forgeText {
+  color: #e64ada;
+  text-shadow: 2px 2px 0 rgb(230 74 218 / 18%);
 }
 
 .account {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 12px;
 }
 
 .userName,
 .setupState {
+  display: inline-flex;
+  align-items: flex-end;
+  min-height: 36px;
+  padding-bottom: 8px;
   max-width: 220px;
   overflow: hidden;
   color: var(--primary-light);
-  font-size: 0.66rem;
+  font-size: 0.68rem;
+  line-height: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -63,10 +97,19 @@
 
 .plansLink {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end;
   border: 1px solid transparent;
   color: var(--primary-light);
+  line-height: 1;
   text-decoration: none;
+}
+
+.signInButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  line-height: 1;
 }
 
 .signInButton {
@@ -110,7 +153,22 @@
   }
 
   .brand {
-    font-size: 0.68rem;
+    gap: 8px;
+  }
+
+  .brandMarkFrame {
+    flex-basis: 37px;
+    width: 37px;
+    height: 42px;
+  }
+
+  .brandMark {
+    width: auto;
+    height: 42px;
+  }
+
+  .brandText {
+    font-size: 0.9rem;
   }
 
   .userName {

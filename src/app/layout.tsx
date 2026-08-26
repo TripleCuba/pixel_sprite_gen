@@ -14,8 +14,8 @@ const pressStart2P = Press_Start_2P({
 });
 
 export const metadata: Metadata = {
-  title: "Pixel Sprite Generator",
-  description: "Generate, pixel-snap, and review game-ready sprite candidates.",
+  title: "SpriteForge — Pixel Sprite Generator",
+  description: "Forge pixel-perfect, game-ready sprite assets from your ideas.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

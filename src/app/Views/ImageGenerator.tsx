@@ -164,6 +164,7 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
         <SpriteViewSelector
           availableViews={SpriteTypeViews[spriteType]}
           value={spriteView}
+          spriteType={spriteType}
           onChange={setSpriteView}
         />
         <GenerationQuality

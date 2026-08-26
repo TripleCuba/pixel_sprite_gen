@@ -1,40 +1,62 @@
-.card {
-  width: min(100%, 500px);
-  padding: clamp(24px, 6vw, 48px);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
-  box-shadow: 0 18px 50px rgb(0 0 0 / 24%);
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+  align-items: center;
+  width: min(100%, 1080px);
+  overflow: hidden;
+  border: 1px solid rgb(104 120 150 / 45%);
+  border-radius: 14px;
+  background: linear-gradient(120deg, rgb(20 31 49 / 98%), rgb(13 20 33 / 98%));
+  box-shadow: 0 24px 80px rgb(0 0 0 / 34%);
+}
+
+.copy {
+  padding: clamp(38px, 6vw, 76px);
 }
 
 .kicker {
-  color: var(--primary-light);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
   font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.card h1 {
-  margin: 16px 0;
-  font-size: clamp(1.2rem, 3vw, 1.8rem);
+.kickerSpark {
+  font-size: 1rem;
+}
+
+.copy h1 {
+  max-width: 560px;
+  margin: 22px 0 20px;
+  font-size: clamp(1.55rem, 3.25vw, 2.35rem);
+  letter-spacing: -0.02em;
   line-height: 1.45;
 }
 
+.copy h1 span {
+  color: #e64ada;
+  text-shadow: 2px 2px 0 rgb(56 217 245 / 32%);
+}
+
 .description {
+  max-width: 490px;
   margin: 0;
   color: var(--primary-light);
   font-size: 0.82rem;
-  line-height: 1.55;
+  line-height: 1.65;
 }
 
 .features {
   display: grid;
-  gap: 9px;
-  margin: 24px 0;
+  gap: 16px;
+  margin: 28px 0;
   padding: 0;
   list-style: none;
   color: var(--foreground);
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   line-height: 1.4;
 }
 
@@ -44,9 +66,19 @@
   gap: 9px;
 }
 
-.features li::before {
-  color: var(--accent);
-  content: "✦";
+.featureIcon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: -2px;
+  image-rendering: pixelated;
+  filter: drop-shadow(2px 2px 0 #2d1d5b);
+}
+
+.actionArea {
+  display: grid;
+  gap: 11px;
+  max-width: 340px;
 }
 
 .googleButton {
@@ -55,23 +87,24 @@
   justify-content: center;
   gap: 10px;
   width: 100%;
-  min-height: 48px;
+  min-height: 52px;
   padding: 10px 16px;
-  border: 1px solid #d2d8e2;
+  border: 1px solid var(--accent);
   border-radius: 5px;
-  background: #f8faff;
-  color: #182130;
+  background: var(--accent);
+  color: #071016;
   cursor: pointer;
   font: inherit;
   font-size: 0.76rem;
+  font-weight: 700;
 }
 
 .googleButton:hover {
-  background: #ffffff;
+  background: #78e9fb;
 }
 
 .googleButton:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid #fff;
   outline-offset: 3px;
 }
 
@@ -88,14 +121,24 @@
   font-weight: 700;
 }
 
-.setupNotice {
+.note {
+  color: #91a0b8;
+  font-size: 0.65rem;
+  text-align: center;
+}
+
+.setupNotice,
+.accessDenied {
   margin: 0;
   padding: 12px;
-  border: 1px dashed var(--primary-muted);
   border-radius: 5px;
-  color: var(--primary-light);
   font-size: 0.7rem;
   line-height: 1.5;
+}
+
+.setupNotice {
+  border: 1px dashed var(--primary-muted);
+  color: var(--primary-light);
 }
 
 .setupNotice code,
@@ -104,12 +147,178 @@
 }
 
 .accessDenied {
-  margin: 0;
-  padding: 12px;
   border: 1px solid #a73b4a;
-  border-radius: 5px;
   background: rgb(167 59 74 / 12%);
   color: #ff9cad;
-  font-size: 0.7rem;
+}
+
+.workflowPreview {
+  position: relative;
+  display: grid;
+  align-self: stretch;
+  place-items: center;
+  min-height: 460px;
+  overflow: hidden;
+  border-left: 1px solid rgb(104 120 150 / 35%);
+  background-color: #111827;
+  background-image:
+    linear-gradient(rgb(77 96 126 / 16%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(77 96 126 / 16%) 1px, transparent 1px),
+    radial-gradient(circle at 50% 47%, rgb(124 58 237 / 24%), transparent 47%);
+  background-size: 24px 24px, 24px 24px, auto;
+}
+
+.workflowPanel {
+  width: min(78%, 360px);
+  border: 1px solid rgb(56 217 245 / 42%);
+  background: rgb(12 19 32 / 92%);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 24%);
+}
+
+.previewHeading,
+.previewFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  color: var(--accent);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.previewHeading {
+  border-bottom: 1px solid rgb(104 120 150 / 35%);
+}
+
+.previewHeading span:last-child {
+  color: var(--primary-light);
+}
+
+.workflowSteps {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+}
+
+.workflowSteps li {
+  display: grid;
+  grid-template-columns: 22px 28px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 78px;
+  padding: 12px 8px;
+  border-bottom: 1px solid rgb(104 120 150 / 24%);
+}
+
+.workflowSteps li:last-child {
+  border-bottom: 0;
+}
+
+.stepNumber {
+  align-self: start;
+  color: var(--primary-light);
+  font-size: 0.56rem;
+}
+
+.stepGlyph {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: #1b2940;
+  image-rendering: pixelated;
+}
+
+.promptGlyph::before {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  border: 3px solid var(--accent);
+  content: "";
+}
+
+.promptGlyph::after {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 3px;
+  background: var(--accent);
+  content: "";
+}
+
+.viewGlyph::before {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 6px;
+  height: 6px;
+  background: #e64ada;
+  box-shadow: 8px 0 0 #e64ada, 0 8px 0 #e64ada, 8px 8px 0 var(--accent);
+  content: "";
+}
+
+.exportGlyph::before {
+  position: absolute;
+  top: 4px;
+  left: 9px;
+  width: 6px;
+  height: 11px;
+  background: #ffcb5d;
+  box-shadow: -4px 5px 0 #ffcb5d, 4px 5px 0 #ffcb5d;
+  content: "";
+}
+
+.exportGlyph::after {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  left: 4px;
+  height: 3px;
+  background: #ffcb5d;
+  content: "";
+}
+
+.workflowSteps h2 {
+  margin: 0 0 6px;
+  color: var(--foreground);
+  font-family: var(--font-pixel-ui), monospace;
+  font-size: 0.78rem;
+}
+
+.workflowSteps p {
+  margin: 0;
+  color: #aebbd1;
+  font-size: 0.62rem;
   line-height: 1.5;
+}
+
+.previewFooter {
+  justify-content: flex-start;
+  gap: 8px;
+  border-top: 1px solid rgb(104 120 150 / 35%);
+  color: #b7f6ff;
+  text-transform: none;
+}
+
+@media (max-width: 760px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .workflowPreview {
+    min-height: 250px;
+    border-top: 1px solid rgb(104 120 150 / 35%);
+    border-left: 0;
+  }
+
+  .workflowPanel {
+    width: min(82%, 340px);
+  }
+
 }

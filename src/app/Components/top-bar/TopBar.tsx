@@ -1,4 +1,6 @@
 import { signInWithGoogle, signOutUser } from "@/app/actions/auth";
+import logo from "@/assets/images/spriteforge-logo-topbar.png";
+import Image from "next/image";
 import Link from "next/link";
 import { CreditBalance } from "../credit-balance";
 import styles from "./TopBar.module.css";
@@ -14,9 +16,19 @@ type TopBarProps = {
 const TopBar = ({ isAuthConfigured, user }: TopBarProps) => (
   <header className={styles.bar}>
     <div className={styles.content}>
-      <Link className={styles.brand} href="/" aria-label="Pixel Sprite Generator home">
-        <span aria-hidden="true" className={styles.brandMark} />
-        <span>Pixel Sprite Generator</span>
+      <Link className={styles.brand} href="/" aria-label="SpriteForge home">
+        <span aria-hidden="true" className={styles.brandMarkFrame}>
+          <Image
+            alt=""
+            className={styles.brandMark}
+            priority
+            src={logo}
+          />
+        </span>
+        <span className={styles.brandText}>
+          <span className={styles.spriteText}>Sprite</span>
+          <span className={styles.forgeText}>Forge</span>
+        </span>
       </Link>
       <div className={styles.account}>
         {user ? (

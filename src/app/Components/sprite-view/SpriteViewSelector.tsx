@@ -1,12 +1,8 @@
 "use client";
 
-import Image, { type StaticImageData } from "next/image";
-import threeQuarterImage from "@/assets/images/views/three-quarter.png";
-import sideImage from "@/assets/images/views/side.png";
-import frontImage from "@/assets/images/views/front.png";
-import topDownImage from "@/assets/images/views/top-down.png";
-import isometricImage from "@/assets/images/views/isometric.png";
+import Image from "next/image";
 import {
+  SpriteType,
   SpriteView,
 } from "@/app/constants";
 import styles from "./SpriteViewSelector.module.css";
@@ -14,20 +10,30 @@ import styles from "./SpriteViewSelector.module.css";
 type SpriteViewSelectorProps = {
   availableViews: readonly SpriteView[];
   onChange: (view: SpriteView) => void;
+  spriteType: SpriteType;
   value: SpriteView;
 };
 
-const viewImages: Record<SpriteView, StaticImageData> = {
-  [SpriteView.threeQuarter]: threeQuarterImage,
-  [SpriteView.side]: sideImage,
-  [SpriteView.front]: frontImage,
-  [SpriteView.topDown]: topDownImage,
-  [SpriteView.isometric]: isometricImage,
+const typeSlugs: Record<SpriteType, string> = {
+  [SpriteType.character]: "character",
+  [SpriteType.building]: "building",
+  [SpriteType.item]: "item",
+  [SpriteType.terrain]: "terrain",
+  [SpriteType.other]: "other",
+};
+
+const viewSlugs: Record<SpriteView, string> = {
+  [SpriteView.threeQuarter]: "three-quarter",
+  [SpriteView.side]: "side",
+  [SpriteView.front]: "front",
+  [SpriteView.topDown]: "top-down",
+  [SpriteView.isometric]: "isometric",
 };
 
 const SpriteViewSelector = ({
   availableViews,
   onChange,
+  spriteType,
   value,
 }: SpriteViewSelectorProps) => (
   <fieldset className={styles.selector}>
@@ -45,10 +51,12 @@ const SpriteViewSelector = ({
         >
           <Image
             className={styles.example}
-            src={viewImages[view]}
+            src={`/sprite-previews/${typeSlugs[spriteType]}-${viewSlugs[view]}.png`}
             alt=""
             aria-hidden="true"
             unoptimized
+            width={256}
+            height={256}
           />
           <span>
             <strong>{view}</strong>
