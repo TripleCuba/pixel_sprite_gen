@@ -22,6 +22,32 @@ export const SpriteTypeDefaultView: Record<SpriteType, SpriteView> = {
   [SpriteType.other]: SpriteView.threeQuarter,
 };
 
+export const SpriteTypeViews: Record<SpriteType, readonly SpriteView[]> = {
+  [SpriteType.character]: Object.values(SpriteView),
+  [SpriteType.building]: [
+    SpriteView.front,
+    SpriteView.threeQuarter,
+    SpriteView.topDown,
+    SpriteView.isometric,
+  ],
+  [SpriteType.item]: [
+    SpriteView.front,
+    SpriteView.side,
+    SpriteView.threeQuarter,
+    SpriteView.topDown,
+    SpriteView.isometric,
+  ],
+  [SpriteType.terrain]: [SpriteView.topDown, SpriteView.isometric],
+  // "Other" is intentionally unrestricted: it covers effects, portals, and
+  // custom assets whose useful view depends on the user's prompt.
+  [SpriteType.other]: Object.values(SpriteView),
+};
+
+export const isSpriteViewAvailableForType = (
+  spriteType: SpriteType,
+  spriteView: SpriteView,
+) => SpriteTypeViews[spriteType].includes(spriteView);
+
 export const SpriteViewDescriptions: Record<SpriteView, string> = {
   [SpriteView.threeQuarter]: "Depth with a readable gameplay silhouette.",
   [SpriteView.side]: "Profile view for side-scrolling action.",

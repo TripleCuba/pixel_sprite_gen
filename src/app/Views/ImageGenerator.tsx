@@ -10,6 +10,7 @@ import {
   SpriteType,
   SpriteTypeDefaultView,
   SpriteTypePlaceholders,
+  SpriteTypeViews,
   SpriteView,
 } from "../constants";
 import { Dropdown } from "../Components/dropdown";
@@ -160,7 +161,11 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
           options={Object.values(SpriteType)}
           icons={spriteTypeIcons}
         />
-        <SpriteViewSelector value={spriteView} onChange={setSpriteView} />
+        <SpriteViewSelector
+          availableViews={SpriteTypeViews[spriteType]}
+          value={spriteView}
+          onChange={setSpriteView}
+        />
         <GenerationQuality
           disabled={isGenerating}
           refreshKey={historyVersion}

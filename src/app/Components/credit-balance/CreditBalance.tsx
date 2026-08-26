@@ -12,10 +12,13 @@ const CreditBalance = () => {
     const loadBalance = async () => {
       try {
         const response = await fetch("/api/credits");
-        const payload = (await response.json()) as { balance?: number };
+        const payload = (await response.json()) as {
+          balance?: number;
+          isUnlimited?: boolean;
+        };
 
         if (response.ok && typeof payload.balance === "number") {
-          setBalance(payload.balance);
+          setBalance(payload.isUnlimited ? Number.POSITIVE_INFINITY : payload.balance);
         }
       } catch {
         // The generator endpoint remains the authority for credit enforcement.
@@ -30,7 +33,11 @@ const CreditBalance = () => {
 
   return (
     <span className={styles.balance} aria-live="polite">
-      {balance === null ? "Credits..." : `${balance} credits`}
+      {balance === null
+        ? "Credits..."
+        : balance === Number.POSITIVE_INFINITY
+          ? "Unlimited credits"
+          : `${balance} credits`}
     </span>
   );
 };

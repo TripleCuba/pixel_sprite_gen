@@ -1,0 +1,3 @@
+# Generated eval images and per-run score records are local artifacts.
+*
+!.gitignore

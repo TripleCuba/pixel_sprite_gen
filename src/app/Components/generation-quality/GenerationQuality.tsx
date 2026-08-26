@@ -25,6 +25,7 @@ const GenerationQuality = ({
   value,
 }: GenerationQualityProps) => {
   const [balance, setBalance] = useState<number | null>(null);
+  const [isUnlimited, setIsUnlimited] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const GenerationQuality = ({
         const payload = (await response.json()) as {
           balance?: number;
           error?: string;
+          isUnlimited?: boolean;
         };
 
         if (!response.ok || typeof payload.balance !== "number") {
@@ -45,6 +47,7 @@ const GenerationQuality = ({
         }
 
         setBalance(payload.balance);
+        setIsUnlimited(payload.isUnlimited === true);
       } catch (loadError) {
         if (loadError instanceof DOMException && loadError.name === "AbortError") {
           return;
@@ -70,13 +73,16 @@ const GenerationQuality = ({
         {balance === null && !error ? (
           <LoadingIndicator compact label="Loading credits..." />
         ) : null}
-        {balance !== null ? <strong>{balance} credits available</strong> : null}
+        {balance !== null ? (
+          <strong>{isUnlimited ? "Unlimited credits" : `${balance} credits available`}</strong>
+        ) : null}
         {error ? <span role="alert">{error}</span> : null}
       </div>
       <div className={styles.options}>
         {qualityOptions.map((quality) => {
           const details = SPRITE_QUALITY_DETAILS[quality];
-          const isUnavailable = balance !== null && balance < details.creditCost;
+          const isUnavailable =
+            !isUnlimited && balance !== null && balance < details.creditCost;
 
           return (
             <label

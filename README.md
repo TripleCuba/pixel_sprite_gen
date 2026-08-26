@@ -24,7 +24,9 @@ Copy `.env.example` to `.env.local` and add an OpenAI API key:
 OPENAI_API_KEY=your_key_here
 ```
 
-The key is read only in the server-side sprite route and is never sent to the browser. The generator requests a 1024×1024 image on a flat chroma-green background, removes the connected green background, quantizes the result to a 32-colour palette, and exports a transparent 256×256 PNG on a 64×64 logical pixel grid.
+The key is read only in the server-side sprite route and is never sent to the browser. The generator requests a 1024×1024 image on a flat chroma-green background, removes the connected green background, then exports a transparent 256×256 PNG on a full 256px logical grid. Low, Medium, and High use 48-, 64-, and 96-colour palettes respectively; the image model's own quality setting remains the main quality and cost difference.
+
+Every output passes a quality gate before it is stored. The gate verifies the source canvas, chroma-key background, safety margins, exported transparency, fixed padding, 32-colour palette, and pixel snapping. A low-cost visual QA pass also checks that there is one readable subject in the chosen view and no UI, text, frame, watermark, or scene background. A failed review triggers one corrective regeneration; if it still fails, the sprite is not saved and its credits are restored. Set `OPENAI_SPRITE_REVIEW_MODEL` only if you need to override the default `gpt-5.6-luna` reviewer.
 
 ## Google sign-in setup
 
@@ -46,6 +48,8 @@ http://localhost:8080/api/auth/callback/google
 For production, add the matching `https://your-domain.com/api/auth/callback/google` URI too. Restart the development server after changing `.env.local`.
 
 `ALLOWED_EMAILS` is a comma-separated server-side allowlist. An email must be listed to sign in, view `/generator`, or call the generation API. This is intended for private testing only; add per-user usage limits and billing before allowing the public to generate sprites.
+
+For your own development account, add its email to `UNLIMITED_CREDIT_EMAILS`. This bypasses credit charges and shows **Unlimited credits** in the UI, but deliberately keeps the server's generation and IP abuse limits active.
 
 ## Generated image storage
 

@@ -1,9 +1,10 @@
 import sharp from "sharp";
+import { getSpriteTypeRules, SPRITE_EXPORT_SIZE } from "./sprite-rules";
+import type { SpriteType } from "@/app/constants";
 import {
-  SPRITE_CONTENT_LOGICAL_SIZE,
-  SPRITE_EXPORT_SIZE,
-  SPRITE_LOGICAL_PADDING,
-} from "./sprite-rules";
+  SPRITE_PROCESSING_PROFILES,
+  type SpriteGenerationQuality,
+} from "./sprite-quality";
 
 const GREEN_MINIMUM = 120;
 const GREEN_DOMINANCE = 60;
@@ -23,7 +24,14 @@ const removeChromaKeyGreen = (pixels: Buffer) => {
   return pixels;
 };
 
-export const processSpriteImage = async (image: Buffer) => {
+export const processSpriteImage = async (
+  image: Buffer,
+  quality: SpriteGenerationQuality,
+  spriteType: SpriteType,
+) => {
+  const profile = SPRITE_PROCESSING_PROFILES[quality];
+  const typeRules = getSpriteTypeRules(spriteType);
+  const contentLogicalSize = profile.logicalSize - typeRules.logicalPadding * 2;
   const decoded = await sharp(image).ensureAlpha().raw().toBuffer({
     resolveWithObject: true,
   });
@@ -42,25 +50,33 @@ export const processSpriteImage = async (image: Buffer) => {
     },
   });
 
-  // The model creates deliberately oversized colour clusters on a 1024px canvas.
-  // Reducing to a logical grid, then nearest-neighbour scaling, makes every export
-  // pixel land on a stable 4×4 block with no interpolation blur.
-  return withoutBackground
+  // Sharp optimizes resize and extend operations internally, so these are kept as
+  // separate buffers. This preserves the intended order: fit content into the
+  // quality profile, add its logical padding, then scale to the 256px export.
+  const logicalContent = await withoutBackground
     .trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 1 })
-    .resize(SPRITE_CONTENT_LOGICAL_SIZE, SPRITE_CONTENT_LOGICAL_SIZE, {
+    .resize(contentLogicalSize, contentLogicalSize, {
       fit: "contain",
       position: "centre",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
       kernel: sharp.kernel.nearest,
     })
+    .png()
+    .toBuffer();
+
+  const paddedLogicalSprite = await sharp(logicalContent)
     .extend({
-      top: SPRITE_LOGICAL_PADDING,
-      right: SPRITE_LOGICAL_PADDING,
-      bottom: SPRITE_LOGICAL_PADDING,
-      left: SPRITE_LOGICAL_PADDING,
+      top: typeRules.logicalPadding,
+      right: typeRules.logicalPadding,
+      bottom: typeRules.logicalPadding,
+      left: typeRules.logicalPadding,
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
-    .png({ palette: true, colours: 32, dither: 0 })
+    .png({ palette: true, colours: profile.paletteColours, dither: 0 })
+    .toBuffer();
+
+  // Nearest-neighbour scaling preserves the selected logical pixel grid exactly.
+  return sharp(paddedLogicalSprite)
     .resize(SPRITE_EXPORT_SIZE, SPRITE_EXPORT_SIZE, {
       kernel: sharp.kernel.nearest,
     })

@@ -12,6 +12,7 @@ import {
 import styles from "./SpriteViewSelector.module.css";
 
 type SpriteViewSelectorProps = {
+  availableViews: readonly SpriteView[];
   onChange: (view: SpriteView) => void;
   value: SpriteView;
 };
@@ -24,11 +25,15 @@ const viewImages: Record<SpriteView, StaticImageData> = {
   [SpriteView.isometric]: isometricImage,
 };
 
-const SpriteViewSelector = ({ onChange, value }: SpriteViewSelectorProps) => (
+const SpriteViewSelector = ({
+  availableViews,
+  onChange,
+  value,
+}: SpriteViewSelectorProps) => (
   <fieldset className={styles.selector}>
-    <legend>View</legend>
+    <legend>Camera view</legend>
     <div className={styles.options}>
-      {Object.values(SpriteView).map((view) => (
+      {availableViews.map((view) => (
         <button
           key={view}
           type="button"

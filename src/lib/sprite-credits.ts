@@ -4,6 +4,7 @@ import {
   SPRITE_QUALITY_DETAILS,
   type SpriteGenerationQuality,
 } from "./sprite-quality";
+import { hasUnlimitedCredits } from "./unlimited-credits";
 
 const STARTER_CREDITS = 20;
 
@@ -17,6 +18,7 @@ export class SpriteIpRateLimitError extends SpriteCreditsError {}
 
 export type CreditBalance = {
   balance: number;
+  isUnlimited: boolean;
 };
 
 export type CreditActivity = {
@@ -30,6 +32,10 @@ export type CreditActivity = {
 const normaliseEmail = (email: string) => email.trim().toLowerCase();
 
 export async function getCreditBalance(email: string): Promise<CreditBalance> {
+  if (hasUnlimitedCredits(email)) {
+    return { balance: 0, isUnlimited: true };
+  }
+
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("app_users")
@@ -42,13 +48,17 @@ export async function getCreditBalance(email: string): Promise<CreditBalance> {
     throw new SpriteCreditsError("Could not load your credit balance.");
   }
 
-  return { balance: data?.credit_balance ?? STARTER_CREDITS };
+  return { balance: data?.credit_balance ?? STARTER_CREDITS, isUnlimited: false };
 }
 
 export async function reserveGenerationCredits(
   email: string,
   quality: SpriteGenerationQuality,
 ) {
+  if (hasUnlimitedCredits(email)) {
+    return { reservationId: null };
+  }
+
   const supabase = getSupabaseAdmin();
   const reservationId = randomUUID();
   const creditCost = SPRITE_QUALITY_DETAILS[quality].creditCost;
