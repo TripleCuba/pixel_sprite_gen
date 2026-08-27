@@ -4,6 +4,7 @@ export type TextFieldProps = {
   onChange: (value: string) => void;
   placeholder?: string;
   multiline?: boolean;
+  maxLength?: number;
   rows?: number;
   type?: "email" | "password" | "search" | "text" | "url";
 };

@@ -14,8 +14,9 @@ evals/sprite-quality/
 
 ## First baseline
 
-1. Use every entry in `cases.ts` with **Medium** generation quality and no
-   reference files.
+1. Use every entry in `cases.ts` with **Low** image-model quality and **High**
+   post-processing quality, with no reference files. This isolates the value of
+   the pixel-snap and palette pipeline at the lowest generation cost.
 2. Generate one result for each case, then score it using `rubric.md`.
 3. Save every result under `results/baseline-v1/` using the structure in the
    rubric.
@@ -28,3 +29,11 @@ a lucky single generation.
 
 Do not edit existing cases after their first run. Add a new case if a new
 failure mode appears.
+
+## Current comparison run
+
+`npm run eval:sprites` generates `low-model-high-post-v1/` by default. It uses
+the cheapest `gpt-image-2` setting for the source image, then uses the High
+processing profile for the 256×256 export and technical review. The generated
+`summary.json` records both values so this run can be compared fairly with the
+existing Medium baseline.

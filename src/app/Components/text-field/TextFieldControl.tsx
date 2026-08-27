@@ -13,6 +13,7 @@ const TextFieldControl = ({
   onChange,
   placeholder,
   multiline = false,
+  maxLength,
   rows = 4,
   type = "text",
 }: TextFieldControlProps) => {
@@ -24,6 +25,7 @@ const TextFieldControl = ({
         rows={rows}
         value={value}
         placeholder={placeholder}
+        maxLength={maxLength}
         onChange={onChange}
       />
     );
@@ -36,6 +38,7 @@ const TextFieldControl = ({
       type={type}
       value={value}
       placeholder={placeholder}
+      maxLength={maxLength}
       onChange={onChange}
     />
   );

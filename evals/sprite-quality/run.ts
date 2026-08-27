@@ -13,8 +13,9 @@ import { SPRITE_QUALITY_EVAL_CASES, type SpriteQualityEvalCase } from "./cases";
 
 loadEnvConfig(process.cwd());
 
-const RUN_NAME = process.env.SPRITE_EVAL_RUN_NAME ?? "baseline-v1";
-const QUALITY = SpriteGenerationQuality.medium;
+const RUN_NAME = process.env.SPRITE_EVAL_RUN_NAME ?? "low-model-high-post-v1";
+const MODEL_QUALITY = SpriteGenerationQuality.low;
+const POST_PROCESSING_QUALITY = SpriteGenerationQuality.high;
 const RESULT_DIRECTORY = path.resolve(
   process.cwd(),
   "evals",
@@ -34,7 +35,8 @@ type CaseResult = {
   error?: string;
   issues: string[];
   prompt: string;
-  quality: typeof QUALITY;
+  modelQuality: typeof MODEL_QUALITY;
+  postProcessingQuality: typeof POST_PROCESSING_QUALITY;
   spriteType: SpriteQualityEvalCase["spriteType"];
   status: "error" | "failed" | "passed";
   view: SpriteQualityEvalCase["view"];
@@ -70,7 +72,7 @@ const requestImage = async (prompt: string) => {
       model: "gpt-image-2",
       prompt,
       size: `${SPRITE_CANVAS_SIZE}x${SPRITE_CANVAS_SIZE}`,
-      quality: QUALITY,
+      quality: MODEL_QUALITY,
       output_format: "png",
       background: "opaque",
       n: 1,
@@ -108,13 +110,13 @@ const evaluateCase = async (evalCase: SpriteQualityEvalCase): Promise<CaseResult
       );
       const sprite = await processSpriteImage(
         generatedImage,
-        QUALITY,
+        POST_PROCESSING_QUALITY,
         evalCase.spriteType,
       );
       await writeFile(path.join(caseDirectory, `attempt-${attempt}.png`), sprite);
 
       const review = await reviewGeneratedSprite({
-        quality: QUALITY,
+        quality: POST_PROCESSING_QUALITY,
         source: generatedImage,
         sprite,
         spriteType: evalCase.spriteType,
@@ -128,7 +130,8 @@ const evaluateCase = async (evalCase: SpriteQualityEvalCase): Promise<CaseResult
           caseId: evalCase.id,
           issues: [],
           prompt: evalCase.prompt,
-          quality: QUALITY,
+          modelQuality: MODEL_QUALITY,
+          postProcessingQuality: POST_PROCESSING_QUALITY,
           spriteType: evalCase.spriteType,
           status: "passed",
           view: evalCase.view,
@@ -143,7 +146,8 @@ const evaluateCase = async (evalCase: SpriteQualityEvalCase): Promise<CaseResult
       caseId: evalCase.id,
       issues: retryIssues,
       prompt: evalCase.prompt,
-      quality: QUALITY,
+      modelQuality: MODEL_QUALITY,
+      postProcessingQuality: POST_PROCESSING_QUALITY,
       spriteType: evalCase.spriteType,
       status: "failed",
       view: evalCase.view,
@@ -162,7 +166,8 @@ const evaluateCase = async (evalCase: SpriteQualityEvalCase): Promise<CaseResult
             : "Unknown evaluation error.",
       issues: retryIssues,
       prompt: evalCase.prompt,
-      quality: QUALITY,
+      modelQuality: MODEL_QUALITY,
+      postProcessingQuality: POST_PROCESSING_QUALITY,
       spriteType: evalCase.spriteType,
       status: "error",
       view: evalCase.view,
@@ -179,7 +184,7 @@ const main = async () => {
 
   await ensureNewResultDirectory();
   console.log(
-    `Running ${SPRITE_QUALITY_EVAL_CASES.length} sprite quality cases at ${QUALITY} quality. Results: ${RESULT_DIRECTORY}`,
+    `Running ${SPRITE_QUALITY_EVAL_CASES.length} sprite quality cases with ${MODEL_QUALITY} model quality and ${POST_PROCESSING_QUALITY} post-processing quality. Results: ${RESULT_DIRECTORY}`,
   );
 
   const results: CaseResult[] = [];
@@ -192,7 +197,8 @@ const main = async () => {
     completedAt: new Date().toISOString(),
     failed: results.filter((result) => result.status === "failed").length,
     passed: results.filter((result) => result.status === "passed").length,
-    quality: QUALITY,
+    modelQuality: MODEL_QUALITY,
+    postProcessingQuality: POST_PROCESSING_QUALITY,
     results,
     runName: RUN_NAME,
     total: results.length,

@@ -14,6 +14,7 @@ type StoreGeneratedSpriteInput = {
   image: Buffer;
   prompt: string;
   spriteType: string;
+  title: string | null;
 };
 
 export type StoredSprite = {
@@ -21,6 +22,18 @@ export type StoredSprite = {
   id: string;
   imageUrl: string;
   spriteType: string;
+  title: string | null;
+};
+
+type ListStoredSpritesOptions = {
+  limit?: number;
+  offset?: number;
+};
+
+export type StoredSpritePage = {
+  hasMore: boolean;
+  sprites: StoredSprite[];
+  total: number;
 };
 
 export const getSupabaseAdmin = () => {
@@ -50,6 +63,7 @@ export async function storeGeneratedSprite({
   image,
   prompt,
   spriteType,
+  title,
 }: StoreGeneratedSpriteInput) {
   const supabase = getSupabaseAdmin();
   const spriteId = randomUUID();
@@ -64,6 +78,7 @@ export async function storeGeneratedSprite({
       p_sprite_id: spriteId,
       p_sprite_type: spriteType,
       p_storage_path: storagePath,
+      p_title: title,
     },
   );
 
@@ -103,7 +118,10 @@ export async function storeGeneratedSprite({
   };
 }
 
-export async function listStoredSprites(email: string): Promise<StoredSprite[]> {
+export async function listStoredSprites(
+  email: string,
+  { limit = 50, offset = 0 }: ListStoredSpritesOptions = {},
+): Promise<StoredSpritePage> {
   const supabase = getSupabaseAdmin();
   const normalisedEmail = email.trim().toLowerCase();
   const { data: user, error: userError } = await supabase
@@ -118,23 +136,26 @@ export async function listStoredSprites(email: string): Promise<StoredSprite[]> 
   }
 
   if (!user) {
-    return [];
+    return { hasMore: false, sprites: [], total: 0 };
   }
 
-  const { data: sprites, error: spritesError } = await supabase
+  const pageLimit = Math.max(1, Math.min(limit, 100));
+
+  const { data: sprites, error: spritesError, count } = await supabase
     .from("generated_sprites")
-    .select("id, storage_path, sprite_type, created_at")
+    .select("id, storage_path, sprite_type, title, created_at", { count: "exact" })
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
-    .limit(50);
+    .range(offset, offset + pageLimit);
 
   if (spritesError) {
     console.error("Supabase sprite history lookup failed:", spritesError);
     throw new SpriteStorageError("Could not load saved sprites.");
   }
 
+  const pageSprites = (sprites ?? []).slice(0, pageLimit);
   const signedSprites = await Promise.all(
-    (sprites ?? []).map(async (sprite) => {
+    pageSprites.map(async (sprite) => {
       const { data, error } = await supabase.storage
         .from(BUCKET_NAME)
         .createSignedUrl(sprite.storage_path, 60 * 60);
@@ -149,11 +170,18 @@ export async function listStoredSprites(email: string): Promise<StoredSprite[]> 
         id: sprite.id,
         imageUrl: data.signedUrl,
         spriteType: sprite.sprite_type,
+        title: sprite.title,
       } satisfies StoredSprite;
     }),
   );
 
-  return signedSprites.filter((sprite): sprite is StoredSprite => sprite !== null);
+  return {
+    hasMore: (sprites?.length ?? 0) > pageLimit,
+    sprites: signedSprites.filter(
+      (sprite): sprite is StoredSprite => sprite !== null,
+    ),
+    total: count ?? 0,
+  };
 }
 
 export async function deleteStoredSprite(email: string, spriteId: string) {
@@ -210,6 +238,35 @@ export async function deleteStoredSprite(email: string, spriteId: string) {
   }
 
   return true;
+}
+
+export async function deleteStoredSprites(email: string, spriteIds: string[]) {
+  const results = await Promise.allSettled(
+    spriteIds.map(async (spriteId) => {
+      const wasDeleted = await deleteStoredSprite(email, spriteId);
+
+      if (!wasDeleted) {
+        throw new SpriteStorageError("The saved sprite was not found.");
+      }
+
+      return spriteId;
+    }),
+  );
+
+  const deletedSpriteIds: string[] = [];
+  const failedSpriteIds: string[] = [];
+
+  results.forEach((result, index) => {
+    if (result.status === "fulfilled") {
+      deletedSpriteIds.push(result.value);
+      return;
+    }
+
+    console.error("Bulk sprite deletion failed:", result.reason);
+    failedSpriteIds.push(spriteIds[index]);
+  });
+
+  return { deletedSpriteIds, failedSpriteIds };
 }
 
 export async function downloadStoredSprite(email: string, spriteId: string) {
