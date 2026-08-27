@@ -1,0 +1,383 @@
+.library {
+  width: min(100% - 80px, 1280px);
+  margin: 40px auto;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.eyebrow,
+.description,
+.assetDetails p,
+.empty,
+.error {
+  margin: 0;
+  color: var(--primary-light);
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.eyebrow {
+  margin-bottom: 6px;
+  color: var(--accent);
+}
+
+.header h1,
+.assetDetails h3 {
+  margin: 0;
+}
+
+.header h1 {
+  font-size: 1rem;
+}
+
+.description {
+  margin-top: 9px;
+}
+
+.backLink,
+.loadMore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid var(--primary-light);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.68rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.backLink:hover,
+.loadMore:hover:not(:disabled) {
+  background: var(--primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.groups {
+  display: grid;
+  gap: 28px;
+  margin-top: 20px;
+}
+
+.group {
+  display: grid;
+  gap: 12px;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.groupHeader h2 {
+  margin: 0;
+}
+
+.groupToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.groupToggle:hover {
+  color: var(--accent);
+}
+
+.groupToggle:focus-visible,
+.groupSelectionControl input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.groupControls,
+.groupSelectionControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.groupSelectionControl {
+  color: var(--primary-light);
+  font-size: 0.58rem;
+  cursor: pointer;
+}
+
+.groupSelectionControl input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--primary-light);
+  cursor: pointer;
+}
+
+.groupSelectionControl input:disabled {
+  cursor: wait;
+}
+
+.groupCount {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--primary-muted);
+  color: var(--primary-light);
+  font-size: 0.58rem;
+}
+
+.selectionToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.selectAllControl,
+.bulkActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selectAllControl,
+.bulkActions span {
+  color: var(--primary-light);
+  font-size: 0.62rem;
+}
+
+.selectAllControl input,
+.selectionControl input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--primary-light);
+  cursor: pointer;
+}
+
+.selectAllControl input:disabled,
+.selectionControl input:disabled {
+  cursor: wait;
+}
+
+.bulkDownload,
+.bulkDelete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--primary-light);
+  font: inherit;
+  font-size: 0.6rem;
+  cursor: pointer;
+}
+
+.bulkDownload:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.bulkDelete {
+  border-color: #d65d71;
+  color: #ff9cad;
+}
+
+.bulkDelete:hover:not(:disabled) {
+  border-color: #ff9cad;
+  background: rgb(255 107 125 / 14%);
+}
+
+.bulkDownload:disabled,
+.bulkDelete:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.asset {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.asset:has(.selectionControl input:checked) {
+  border-color: var(--primary-light);
+}
+
+.selectionControl {
+  position: absolute;
+  z-index: 1;
+  top: 9px;
+  left: 9px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: rgb(8 14 22 / 84%);
+}
+
+.asset > img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  image-rendering: pixelated;
+  background: var(--input);
+}
+
+.assetDetails {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.assetDetails h3 {
+  font-family: inherit;
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.assetDetails p {
+  overflow: hidden;
+  margin-top: 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.download {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--primary-light);
+}
+
+.assetDetails .assetType {
+  margin-top: -4px;
+  color: var(--accent);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+}
+
+.assetMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.assetActions {
+  display: flex;
+  gap: 6px;
+}
+
+.rename {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--primary-light);
+  cursor: pointer;
+}
+
+.download:hover,
+.rename:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.rename:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.downloadLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.loadMore {
+  display: flex;
+  margin: 28px auto 0;
+}
+
+.loadMore:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.error {
+  color: #ff9cad;
+}
+
+@media (max-width: 760px) {
+  .library {
+    width: min(100% - 32px, 560px);
+    margin: 16px auto;
+    padding: 18px;
+  }
+
+  .header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .backLink {
+    align-self: flex-start;
+  }
+}

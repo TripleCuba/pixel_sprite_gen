@@ -66,6 +66,7 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
     string | null
   >(null);
   const [historyVersion, setHistoryVersion] = useState(0);
+  const [isHistoryCollapsed, setIsHistoryCollapsed] = useState(false);
 
   useEffect(
     () => () => {
@@ -133,6 +134,8 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
   return (
     <div className={styles.workspace}>
       <SpriteHistorySidebar
+        isCollapsed={isHistoryCollapsed}
+        onCollapsedChange={setIsHistoryCollapsed}
         refreshKey={historyVersion}
         onSelect={(sprite: StoredSprite) => {
           setGeneratedSpriteUrl(sprite.imageUrl);

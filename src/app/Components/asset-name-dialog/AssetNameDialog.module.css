@@ -1,0 +1,140 @@
+.dialog {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgb(0 0 0 / 76%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 420px);
+  padding: 24px;
+  border: 1px solid var(--primary-light);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 18px 52px rgb(0 0 0 / 48%);
+}
+
+.eyebrow,
+.help {
+  margin: 0;
+  color: var(--primary-light);
+  font-size: 0.62rem;
+  line-height: 1.6;
+}
+
+.eyebrow {
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.content h2 {
+  margin: 6px 0 20px;
+  color: var(--foreground);
+  font-family: var(--font-pixel-display), monospace;
+  font-size: 0.9rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--foreground);
+  font-size: 0.66rem;
+}
+
+.input {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  outline: none;
+  background: var(--input);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.7rem;
+}
+
+.input:focus-visible {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.input:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.help {
+  margin-top: 8px;
+}
+
+.helpRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.counter {
+  flex: 0 0 auto;
+  margin: 8px 0 0;
+  color: var(--accent);
+  font-size: 0.58rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.cancel,
+.save {
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--panel);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.66rem;
+  cursor: pointer;
+}
+
+.save {
+  border-color: var(--primary-light);
+  background: var(--primary-muted);
+}
+
+.cancel:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.save:hover:not(:disabled) {
+  background: var(--primary);
+}
+
+.cancel:focus-visible,
+.save:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.cancel:disabled,
+.save:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}

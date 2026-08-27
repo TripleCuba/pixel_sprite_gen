@@ -15,6 +15,17 @@ const isUuid = (value: string) =>
     value,
   );
 
+const getDownloadFilename = (title: string) => {
+  const name = title
+    .normalize("NFKD")
+    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .slice(0, 100);
+
+  return `${name || "sprite"}.png`;
+};
+
 export async function GET(
   _request: Request,
   { params }: RouteContext<"/api/sprites/[spriteId]/download">,
@@ -50,10 +61,13 @@ export async function GET(
       return errorResponse("The saved sprite was not found.", 404);
     }
 
-    return new Response(sprite, {
+    const filename = getDownloadFilename(sprite.title ?? sprite.spriteType);
+    const asciiFilename = filename.replace(/[^\x20-\x7E]/g, "") || "sprite.png";
+
+    return new Response(sprite.image, {
       headers: {
         "Cache-Control": "private, no-store",
-        "Content-Disposition": 'attachment; filename="sprite.png"',
+        "Content-Disposition": `attachment; filename="${asciiFilename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
         "Content-Type": "image/png",
       },
     });

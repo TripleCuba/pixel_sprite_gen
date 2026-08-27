@@ -21,6 +21,7 @@ export type StoredSprite = {
   id: string;
   imageUrl: string;
   spriteType: string;
+  title: string | null;
 };
 
 export const getSupabaseAdmin = () => {
@@ -68,7 +69,10 @@ export async function storeGeneratedSprite({
   );
 
   if (reservationError) {
-    console.error("Supabase sprite-storage reservation failed:", reservationError);
+    console.error(
+      "Supabase sprite-storage reservation failed:",
+      reservationError,
+    );
     throw new SpriteStorageError(
       "Could not reserve space for the generated sprite.",
     );
@@ -103,7 +107,9 @@ export async function storeGeneratedSprite({
   };
 }
 
-export async function listStoredSprites(email: string): Promise<StoredSprite[]> {
+export async function listStoredSprites(
+  email: string,
+): Promise<StoredSprite[]> {
   const supabase = getSupabaseAdmin();
   const normalisedEmail = email.trim().toLowerCase();
   const { data: user, error: userError } = await supabase
@@ -123,7 +129,7 @@ export async function listStoredSprites(email: string): Promise<StoredSprite[]> 
 
   const { data: sprites, error: spritesError } = await supabase
     .from("generated_sprites")
-    .select("id, storage_path, sprite_type, created_at")
+    .select("id, storage_path, sprite_type, created_at, title")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(50);
@@ -149,11 +155,14 @@ export async function listStoredSprites(email: string): Promise<StoredSprite[]> 
         id: sprite.id,
         imageUrl: data.signedUrl,
         spriteType: sprite.sprite_type,
+        title: sprite.title,
       } satisfies StoredSprite;
     }),
   );
 
-  return signedSprites.filter((sprite): sprite is StoredSprite => sprite !== null);
+  return signedSprites.filter(
+    (sprite): sprite is StoredSprite => sprite !== null,
+  );
 }
 
 export async function deleteStoredSprite(email: string, spriteId: string) {
@@ -206,7 +215,9 @@ export async function deleteStoredSprite(email: string, spriteId: string) {
 
   if (releaseError) {
     console.error("Supabase sprite quota release failed:", releaseError);
-    throw new SpriteStorageError("The image was deleted, but its storage could not be released.");
+    throw new SpriteStorageError(
+      "The image was deleted, but its storage could not be released.",
+    );
   }
 
   return true;
@@ -232,7 +243,7 @@ export async function downloadStoredSprite(email: string, spriteId: string) {
 
   const { data: sprite, error: spriteError } = await supabase
     .from("generated_sprites")
-    .select("storage_path")
+    .select("storage_path, sprite_type, title")
     .eq("id", spriteId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -255,5 +266,47 @@ export async function downloadStoredSprite(email: string, spriteId: string) {
     throw new SpriteStorageError("Could not download the saved sprite.");
   }
 
-  return Buffer.from(await data.arrayBuffer());
+  return {
+    image: Buffer.from(await data.arrayBuffer()),
+    spriteType: sprite.sprite_type,
+    title: sprite.title,
+  };
+}
+
+export async function updateStoredSpriteTitle(
+  email: string,
+  spriteId: string,
+  title: string | null,
+) {
+  const supabase = getSupabaseAdmin();
+  const normalisedEmail = email.trim().toLowerCase();
+  const { data: user, error: userError } = await supabase
+    .from("app_users")
+    .select("id")
+    .eq("email", normalisedEmail)
+    .maybeSingle();
+
+  if (userError) {
+    console.error("Supabase user lookup failed:", userError);
+    throw new SpriteStorageError("Could not rename the saved sprite.");
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  const { data: sprite, error: spriteError } = await supabase
+    .from("generated_sprites")
+    .update({ title })
+    .eq("id", spriteId)
+    .eq("user_id", user.id)
+    .select("id, title")
+    .maybeSingle();
+
+  if (spriteError) {
+    console.error("Supabase sprite title update failed:", spriteError);
+    throw new SpriteStorageError("Could not rename the saved sprite.");
+  }
+
+  return sprite;
 }
