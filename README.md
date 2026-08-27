@@ -57,7 +57,7 @@ Generated PNG files are stored in a private Supabase Storage bucket and their me
 
 1. Create a [Supabase project](https://supabase.com/dashboard/projects).
 2. Open its **SQL Editor** and run [the storage migration](./supabase/migrations/20260824000000_add_sprite_storage.sql). It creates the private `generated-sprites` bucket, tables, quota functions, and server-only permissions.
-   Then run [the quota-function patch](./supabase/migrations/20260824000001_fix_sprite_storage_quota_function.sql), [the generation-credit migration](./supabase/migrations/20260824000002_add_generation_credits.sql), [the account generation-rate-limit migration](./supabase/migrations/20260824000003_add_generation_rate_limit.sql), [the IP generation-rate-limit migration](./supabase/migrations/20260824000004_add_ip_generation_rate_limit.sql), and [the Stripe billing migration](./supabase/migrations/20260824000005_add_stripe_billing.sql).
+   Then run [the quota-function patch](./supabase/migrations/20260824000001_fix_sprite_storage_quota_function.sql), [the generation-credit migration](./supabase/migrations/20260824000002_add_generation_credits.sql), [the account generation-rate-limit migration](./supabase/migrations/20260824000003_add_generation_rate_limit.sql), [the IP generation-rate-limit migration](./supabase/migrations/20260824000004_add_ip_generation_rate_limit.sql), [the Stripe billing migration](./supabase/migrations/20260824000005_add_stripe_billing.sql), and [the asset-title migration](./supabase/migrations/20260827000000_add_generated_sprite_title.sql).
 3. Add these server-only values to `.env.local` and Vercel:
 
    ```bash

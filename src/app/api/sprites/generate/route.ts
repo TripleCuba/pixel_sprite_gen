@@ -45,6 +45,7 @@ const MAX_REFERENCES = 4;
 const MAX_REFERENCE_BYTES = 8 * 1024 * 1024;
 const MAX_TOTAL_REFERENCE_BYTES = 12 * 1024 * 1024;
 const MAX_PROMPT_LENGTH = 1_000;
+const MAX_TITLE_LENGTH = 120;
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 type OpenAIImageResponse = {
@@ -121,7 +122,13 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!isEmailAllowed(session.user.email)) {
+  const userEmail = session.user.email;
+
+  if (!userEmail) {
+    return errorResponse("Your account email is unavailable. Please sign in again.", 401);
+  }
+
+  if (!isEmailAllowed(userEmail)) {
     return errorResponse(
       "This account is not approved to generate sprites.",
       403,
@@ -153,6 +160,7 @@ export async function POST(request: Request) {
   const viewValue = formData.get("view");
   const promptValue = formData.get("prompt");
   const qualityValue = formData.get("quality");
+  const titleValue = formData.get("title");
   const references = formData
     .getAll("references")
     .filter((entry): entry is File => entry instanceof File);
@@ -174,6 +182,19 @@ export async function POST(request: Request) {
 
   if (typeof promptValue !== "string" || !promptValue.trim()) {
     return errorResponse("Describe the sprite you want to generate.", 400);
+  }
+
+  if (titleValue !== null && typeof titleValue !== "string") {
+    return errorResponse("Enter the asset title as text.", 400);
+  }
+
+  const title = titleValue?.trim() ?? "";
+
+  if (title.length > MAX_TITLE_LENGTH) {
+    return errorResponse(
+      `Keep the asset title under ${MAX_TITLE_LENGTH} characters.`,
+      400,
+    );
   }
 
   if (
@@ -276,7 +297,7 @@ export async function POST(request: Request) {
   let creditReservation: { reservationId: string | null };
   try {
     creditReservation = await reserveGenerationCredits(
-      session.user.email!,
+      userEmail,
       qualityValue,
     );
   } catch (error) {
@@ -375,95 +396,131 @@ export async function POST(request: Request) {
     return Buffer.from(modelPayload.data[0].b64_json, "base64");
   };
 
-  try {
-    const basePrompt = buildSpritePrompt({
-      spriteType: spriteTypeValue,
-      view: viewValue,
-      userPrompt: promptValue,
-      hasReferenceImages: references.length > 0,
-    });
-    let retryIssues: string[] = [];
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder();
+      const send = (event: object) =>
+        controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+      const updateProgress = (
+        label: string,
+        description: string,
+        progress: number,
+      ) => send({ type: "progress", progress: { label, description, progress } });
 
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      const generatedImage = await generateImage(
-        attempt === 0
-          ? basePrompt
-          : `${basePrompt}${buildSpriteReviewRetryPrompt(retryIssues)}`,
-      );
-      const sprite = await processSpriteImage(
-        generatedImage,
-        qualityValue,
-        spriteTypeValue,
-      );
-      const review = await reviewGeneratedSprite({
-        quality: qualityValue,
-        source: generatedImage,
-        sprite,
-        spriteType: spriteTypeValue,
-        view: viewValue,
-      });
-
-      if (!review.passed) {
-        console.info("Generated sprite did not pass quality review:", {
-          attempt: attempt + 1,
-          issues: review.issues,
+      try {
+        const basePrompt = buildSpritePrompt({
+          spriteType: spriteTypeValue,
+          view: viewValue,
+          userPrompt: promptValue,
+          hasReferenceImages: references.length > 0,
         });
-        retryIssues = review.issues;
-        continue;
+        let retryIssues: string[] = [];
+
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          updateProgress(
+            attempt === 0 ? "Creating your sprite..." : "Refining your sprite...",
+            attempt === 0
+              ? "The image model is creating the initial sprite."
+              : "The first result needed a final quality correction.",
+            attempt === 0 ? 50 : 58,
+          );
+          const generatedImage = await generateImage(
+            attempt === 0
+              ? basePrompt
+              : `${basePrompt}${buildSpriteReviewRetryPrompt(retryIssues)}`,
+          );
+
+          updateProgress(
+            "Pixel-snapping the result...",
+            "Removing the background and preparing the pixel-art export.",
+            attempt === 0 ? 68 : 76,
+          );
+          const sprite = await processSpriteImage(
+            generatedImage,
+            qualityValue,
+            spriteTypeValue,
+          );
+
+          updateProgress(
+            "Reviewing sprite quality...",
+            "Checking composition, readability, and export rules.",
+            attempt === 0 ? 80 : 88,
+          );
+          const review = await reviewGeneratedSprite({
+            quality: qualityValue,
+            source: generatedImage,
+            sprite,
+            spriteType: spriteTypeValue,
+            view: viewValue,
+          });
+
+          if (!review.passed) {
+            console.info("Generated sprite did not pass quality review:", {
+              attempt: attempt + 1,
+              issues: review.issues,
+            });
+            retryIssues = review.issues;
+            continue;
+          }
+
+          updateProgress(
+            "Saving your sprite...",
+            "Storing the finished asset in your library.",
+            94,
+          );
+          const storedSprite = await storeGeneratedSprite({
+            email: userEmail,
+            image: sprite,
+            prompt: promptValue,
+            spriteType: spriteTypeValue,
+            title: title || null,
+          });
+          if (creditReservation.reservationId) {
+            await completeGenerationCredits(creditReservation.reservationId);
+          }
+
+          send({
+            type: "complete",
+            image: sprite.toString("base64"),
+            spriteId: storedSprite.id,
+          });
+          return;
+        }
+
+        await refundCredits();
+        const reviewFeedback = formatReviewFeedback(retryIssues);
+        send({
+          type: "error",
+          message: `The generated image did not meet the sprite quality checks${reviewFeedback ? `: ${reviewFeedback}` : ""}. Your credits were restored; please try again with a more specific prompt.`,
+        });
+      } catch (error) {
+        await refundCredits();
+
+        if (
+          error instanceof ImageGenerationServiceError ||
+          error instanceof SpriteReviewUnavailableError ||
+          error instanceof SpriteStorageQuotaError ||
+          error instanceof SpriteStorageConfigurationError ||
+          error instanceof SpriteStorageError
+        ) {
+          send({ type: "error", message: error.message });
+        } else {
+          send({
+            type: "error",
+            message: "The generated image could not be processed into a sprite.",
+          });
+        }
+      } finally {
+        controller.close();
       }
+    },
+  });
 
-      const storedSprite = await storeGeneratedSprite({
-        email: session.user.email!,
-        image: sprite,
-        prompt: promptValue,
-        spriteType: spriteTypeValue,
-      });
-      if (creditReservation.reservationId) {
-        await completeGenerationCredits(creditReservation.reservationId);
-      }
-
-      return new Response(sprite, {
-        headers: {
-          "Cache-Control": "no-store",
-          "Content-Disposition": 'inline; filename="sprite.png"',
-          "Content-Type": "image/png",
-          "X-Sprite-Id": storedSprite.id,
-        },
-      });
-    }
-
-    await refundCredits();
-    const reviewFeedback = formatReviewFeedback(retryIssues);
-    return errorResponse(
-      `The generated image did not meet the sprite quality checks${reviewFeedback ? `: ${reviewFeedback}` : ""}. Your credits were restored; please try again with a more specific prompt.`,
-      422,
-    );
-  } catch (error) {
-    await refundCredits();
-
-    if (error instanceof ImageGenerationServiceError) {
-      return errorResponse(error.message, error.status);
-    }
-
-    if (error instanceof SpriteReviewUnavailableError) {
-      return errorResponse(error.message, 503);
-    }
-
-    if (error instanceof SpriteStorageQuotaError) {
-      return errorResponse(error.message, 413);
-    }
-
-    if (error instanceof SpriteStorageConfigurationError) {
-      return errorResponse(error.message, 503);
-    }
-
-    if (error instanceof SpriteStorageError) {
-      return errorResponse(error.message, 502);
-    }
-
-    return errorResponse(
-      "The generated image could not be processed into a sprite.",
-      500,
-    );
-  }
+  return new Response(stream, {
+    headers: {
+      "Cache-Control": "no-store",
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "X-Accel-Buffering": "no",
+    },
+  });
 }

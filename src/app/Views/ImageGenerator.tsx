@@ -45,6 +45,23 @@ type ImageGeneratorProps = {
   } | null;
 };
 
+type GenerationProgress = {
+  description: string;
+  label: string;
+  progress: number;
+};
+
+type GenerationEvent =
+  | { type: "progress"; progress: GenerationProgress }
+  | { type: "complete"; image: string; spriteId: string }
+  | { type: "error"; message: string };
+
+const imageFromBase64 = (image: string) => {
+  const binary = atob(image);
+  const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  return new Blob([bytes], { type: "image/png" });
+};
+
 const ImageGenerator = ({ user }: ImageGeneratorProps) => {
   const [spriteType, setSpriteType] = useState<SpriteType>(
     SpriteType.character,
@@ -55,9 +72,13 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
   const [quality, setQuality] = useState<SpriteGenerationQualityValue>(
     SpriteGenerationQuality.low,
   );
+  const [assetTitle, setAssetTitle] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationProgress, setGenerationProgress] =
+    useState<GenerationProgress | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [generatedSpriteUrl, setGeneratedSpriteUrl] = useState<string | null>(
     null,
@@ -66,7 +87,6 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
     string | null
   >(null);
   const [historyVersion, setHistoryVersion] = useState(0);
-  const [isHistoryCollapsed, setIsHistoryCollapsed] = useState(false);
 
   useEffect(
     () => () => {
@@ -93,11 +113,17 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
 
     setIsGenerating(true);
     setGenerationError(null);
+    setGenerationProgress({
+      label: "Preparing your request...",
+      description: "Checking your prompt and generation availability.",
+      progress: 5,
+    });
 
     const formData = new FormData();
     formData.set("spriteType", spriteType);
     formData.set("view", spriteView);
     formData.set("quality", quality);
+    formData.set("title", assetTitle);
     formData.set("prompt", prompt);
     referenceFiles.forEach((file) => formData.append("references", file));
 
@@ -114,11 +140,60 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
         throw new Error(payload?.error ?? "Could not generate a sprite.");
       }
 
-      const sprite = await response.blob();
+      if (!response.body) {
+        throw new Error("The generation service returned an empty response.");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let pending = "";
+      let completedGeneration: Extract<GenerationEvent, { type: "complete" }> | undefined;
+
+      const handleEvent = (line: string) => {
+        if (!line) {
+          return;
+        }
+
+        const event = JSON.parse(line) as GenerationEvent;
+        if (event.type === "progress") {
+          setGenerationProgress(event.progress);
+          return;
+        }
+
+        if (event.type === "error") {
+          throw new Error(event.message);
+        }
+
+        completedGeneration = event;
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        pending += decoder.decode(value ?? new Uint8Array(), { stream: !done });
+
+        const lines = pending.split("\n");
+        pending = lines.pop() ?? "";
+        lines.forEach(handleEvent);
+
+        if (done) {
+          break;
+        }
+      }
+
+      handleEvent(pending);
+
+      if (!completedGeneration) {
+        throw new Error("The generation service finished without an image.");
+      }
+
+      const { image, spriteId } = completedGeneration as Extract<
+        GenerationEvent,
+        { type: "complete" }
+      >;
+      const sprite = imageFromBase64(image);
       setGeneratedSpriteUrl(URL.createObjectURL(sprite));
-      const spriteId = response.headers.get("X-Sprite-Id");
       setGeneratedSpriteDownloadUrl(
-        spriteId ? `/api/sprites/${spriteId}/download` : null,
+        `/api/sprites/${spriteId}/download`,
       );
       setHistoryVersion((version) => version + 1);
     } catch (error) {
@@ -127,16 +202,21 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
       );
     } finally {
       setIsGenerating(false);
+      setGenerationProgress(null);
       window.dispatchEvent(new Event(CREDIT_CHANGE_EVENT));
     }
   };
 
   return (
-    <div className={styles.workspace}>
+    <div
+      className={`${styles.workspace} ${
+        isSidebarCollapsed ? styles.workspaceWithCollapsedSidebar : ""
+      }`}
+    >
       <SpriteHistorySidebar
-        isCollapsed={isHistoryCollapsed}
-        onCollapsedChange={setIsHistoryCollapsed}
+        isCollapsed={isSidebarCollapsed}
         refreshKey={historyVersion}
+        onCollapsedChange={setIsSidebarCollapsed}
         onSelect={(sprite: StoredSprite) => {
           setGeneratedSpriteUrl(sprite.imageUrl);
           setGeneratedSpriteDownloadUrl(`/api/sprites/${sprite.id}/download`);
@@ -175,6 +255,13 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
           refreshKey={historyVersion}
           value={quality}
           onChange={setQuality}
+        />
+        <TextField
+          label="Asset title (optional)"
+          value={assetTitle}
+          onChange={setAssetTitle}
+          placeholder="e.g. Forest ranger"
+          maxLength={120}
         />
         <TextField
             label="Describe your sprite"
@@ -223,8 +310,9 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
             aria-label="Generating sprite"
           >
             <LoadingIndicator
-              label="Forging your sprite..."
-              description="Generating, cleaning the background, and pixel-snapping the result."
+              label={generationProgress?.label ?? "Preparing your request..."}
+              description={generationProgress?.description}
+              progress={generationProgress?.progress}
             />
           </div>
         ) : null}

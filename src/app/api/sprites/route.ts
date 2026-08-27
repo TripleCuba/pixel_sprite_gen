@@ -3,6 +3,7 @@ import { isEmailAllowed } from "@/lib/allowed-emails";
 import { isAuthConfigured } from "@/lib/auth-config";
 import {
   deleteStoredSprite,
+  deleteStoredSprites,
   isSpriteStorageConfigured,
   listStoredSprites,
   SpriteStorageError,
@@ -12,7 +13,18 @@ import {
 const errorResponse = (message: string, status: number) =>
   Response.json({ error: message }, { status });
 
-export async function GET() {
+const getPositiveInteger = (value: string | null, fallback: number) => {
+  if (value === null) {
+    return fallback;
+  }
+
+  const parsedValue = Number(value);
+  return Number.isSafeInteger(parsedValue) && parsedValue >= 0
+    ? parsedValue
+    : null;
+};
+
+export async function GET(request: Request) {
   if (!isAuthConfigured()) {
     return errorResponse("Authentication is not configured.", 503);
   }
@@ -31,11 +43,22 @@ export async function GET() {
     return errorResponse("Generated image storage is not configured.", 503);
   }
 
+  const url = new URL(request.url);
+  const offset = getPositiveInteger(url.searchParams.get("offset"), 0);
+  const requestedLimit = getPositiveInteger(url.searchParams.get("limit"), 50);
+
+  if (offset === null || requestedLimit === null || requestedLimit === 0) {
+    return errorResponse("Pagination values must be positive whole numbers.", 400);
+  }
+
   try {
-    const sprites = await listStoredSprites(session.user.email);
+    const spritePage = await listStoredSprites(session.user.email, {
+      limit: Math.min(requestedLimit, 100),
+      offset,
+    });
 
     return Response.json(
-      { sprites },
+      spritePage,
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
@@ -134,11 +157,40 @@ export async function DELETE(request: Request) {
   }
 
   let spriteId: unknown;
+  let spriteIds: unknown;
 
   try {
-    ({ spriteId } = (await request.json()) as { spriteId?: unknown });
+    ({ spriteId, spriteIds } = (await request.json()) as {
+      spriteId?: unknown;
+      spriteIds?: unknown;
+    });
   } catch {
     return errorResponse("A sprite id is required.", 400);
+  }
+
+  if (Array.isArray(spriteIds)) {
+    if (
+      spriteIds.length === 0 ||
+      spriteIds.length > 50 ||
+      new Set(spriteIds).size !== spriteIds.length ||
+      spriteIds.some((id) => typeof id !== "string" || !isUuid(id))
+    ) {
+      return errorResponse("Provide between 1 and 50 unique valid sprite ids.", 400);
+    }
+
+    try {
+      const result = await deleteStoredSprites(session.user.email, spriteIds);
+
+      return Response.json(result, {
+        headers: { "Cache-Control": "no-store" },
+      });
+    } catch (error) {
+      if (error instanceof SpriteStorageError) {
+        return errorResponse(error.message, 502);
+      }
+
+      return errorResponse("Could not delete saved sprites.", 500);
+    }
   }
 
   if (typeof spriteId !== "string" || !isUuid(spriteId)) {
