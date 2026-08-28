@@ -1,31 +1,77 @@
-type Props = {
-  variants: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
-  children: React.ReactNode;
+import { createElement } from "react";
+import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
+import { typographyColorTokens, typographySizeTokens } from "./tokens";
+import type { TypographyColorToken, TypographySizeToken } from "./tokens";
+
+export type TypographyColor = TypographyColorToken;
+export type TypographySize = TypographySizeToken;
+export type TypographyVariant =
+  | "h1"
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6"
+  | "p"
+  | "span"
+  | "strong"
+  | "b"
+  | "small"
+  | "code"
+  | "label"
+  | "legend";
+
+type TypographyProps = Omit<HTMLAttributes<HTMLElement>, "color"> & {
+  align?: CSSProperties["textAlign"];
+  children?: ReactNode;
+  color?: TypographyColor;
+  display?: CSSProperties["display"];
+  htmlFor?: string;
+  letterSpacing?: CSSProperties["letterSpacing"];
+  lineHeight?: CSSProperties["lineHeight"];
+  margin?: CSSProperties["margin"];
+  padding?: CSSProperties["padding"];
+  size?: TypographySize;
+  transform?: CSSProperties["textTransform"];
+  variant: TypographyVariant;
+  weight?: CSSProperties["fontWeight"];
 };
 
-const Typography = (props: Props) => {
-  const { variants, children } = props;
-
-  switch (variants) {
-    case "h1":
-      return <h1>{children}</h1>;
-    case "h2":
-      return <h2>{children}</h2>;
-    case "h3":
-      return <h3>{children}</h3>;
-    case "h4":
-      return <h4>{children}</h4>;
-    case "h5":
-      return <h5>{children}</h5>;
-    case "h6":
-      return <h6>{children}</h6>;
-    case "p":
-      return <p>{children}</p>;
-    case "span":
-      return <span>{children}</span>;
-    default:
-      return <div>{children}</div>;
-  }
-};
+const Typography = ({
+  children,
+  align,
+  color,
+  display,
+  letterSpacing,
+  lineHeight,
+  margin,
+  padding,
+  size,
+  style,
+  transform,
+  variant,
+  weight,
+  ...props
+}: TypographyProps) =>
+  createElement(
+    variant,
+    {
+      ...props,
+      style: {
+        ...style,
+        ...(align ? { textAlign: align } : {}),
+        ...(color ? { color: typographyColorTokens[color] } : {}),
+        ...(display ? { display } : {}),
+        ...(letterSpacing !== undefined ? { letterSpacing } : {}),
+        ...(lineHeight !== undefined ? { lineHeight } : {}),
+        ...(margin !== undefined ? { margin } : {}),
+        ...(padding !== undefined ? { padding } : {}),
+        ...(size ? { fontSize: typographySizeTokens[size] } : {}),
+        ...(transform ? { textTransform: transform } : {}),
+        ...(weight !== undefined ? { fontWeight: weight } : {}),
+      },
+    },
+    children,
+  );
 
 export default Typography;

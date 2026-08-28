@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 import { useId } from "react";
 import { Modal } from "../modal";
 import styles from "./AlertDialog.module.css";
@@ -35,8 +37,12 @@ const AlertDialog = ({
       onClose={onClose}
       role="alertdialog"
     >
-      <h2 id={titleId}>{title}</h2>
-      <p id={descriptionId}>{description}</p>
+      <Typography variant="h2" id={titleId}>
+        {title}
+      </Typography>
+      <Typography variant="p" id={descriptionId}>
+        {description}
+      </Typography>
       <div className={styles.actions}>
         <button
           type="button"

@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 import {
   useId,
   useRef,
@@ -45,9 +47,14 @@ const FileUploadArea = ({
 
   return (
     <div className={styles.area}>
-      <p id={`${inputId}-label`} className={styles.label}>
+      <Typography
+        variant="p"
+        color="foreground"
+        id={`${inputId}-label`}
+        margin={0}
+      >
         {label}
-      </p>
+      </Typography>
       <div
         className={`${styles.dropzone}${isDragging ? ` ${styles.dropzoneDragging}` : ""}`}
         onDragEnter={(event) => {
@@ -73,10 +80,17 @@ const FileUploadArea = ({
           aria-labelledby={`${inputId}-label`}
           onClick={() => inputRef.current?.click()}
         >
-          <span aria-hidden="true" className={styles.uploadIcon}>
+          <Typography
+            variant="span"
+            aria-hidden="true"
+            className={styles.uploadIcon}
+          >
             <Upload size={24} strokeWidth={2} />
-          </span>
-          Drop files here or <span className={styles.browse}>browse</span>
+          </Typography>
+          Drop files here or{" "}
+          <Typography variant="span" color="primary-light">
+            browse
+          </Typography>
         </button>
       </div>
     </div>

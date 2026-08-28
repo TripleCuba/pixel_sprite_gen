@@ -1,3 +1,4 @@
+import Typography from "../shared/Typography";
 import Image from "next/image";
 import styles from "./Dropdown.module.css";
 import type { DropdownOptionProps } from "./types";
@@ -19,7 +20,7 @@ const DropdownOption = <T extends string>({
       onMouseEnter={onMouseEnter}
       onClick={() => onSelect(option)}
     >
-      <span className={styles.optionContent}>
+      <Typography variant="span" className={styles.optionContent}>
         {icon && (
           <Image
             className={styles.icon}
@@ -29,8 +30,8 @@ const DropdownOption = <T extends string>({
             unoptimized
           />
         )}
-        <span>{option}</span>
-      </span>
+        <Typography variant="span">{option}</Typography>
+      </Typography>
     </button>
   );
 };

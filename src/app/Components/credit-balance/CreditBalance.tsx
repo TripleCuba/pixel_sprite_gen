@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 import { useEffect, useState } from "react";
 import styles from "./CreditBalance.module.css";
 
@@ -18,7 +20,9 @@ const CreditBalance = () => {
         };
 
         if (response.ok && typeof payload.balance === "number") {
-          setBalance(payload.isUnlimited ? Number.POSITIVE_INFINITY : payload.balance);
+          setBalance(
+            payload.isUnlimited ? Number.POSITIVE_INFINITY : payload.balance,
+          );
         }
       } catch {
         // The generator endpoint remains the authority for credit enforcement.
@@ -32,13 +36,13 @@ const CreditBalance = () => {
   }, []);
 
   return (
-    <span className={styles.balance} aria-live="polite">
+    <Typography variant="span" className={styles.balance} aria-live="polite">
       {balance === null
         ? "Credits..."
         : balance === Number.POSITIVE_INFINITY
           ? "Unlimited credits"
           : `${balance} credits`}
-    </span>
+    </Typography>
   );
 };
 

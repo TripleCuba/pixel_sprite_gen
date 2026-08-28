@@ -15,20 +15,11 @@
   margin-bottom: 28px;
 }
 
-.eyebrow,
-.description,
-.assetDetails p,
-.empty,
-.error {
+.assetDetails p {
   margin: 0;
   color: var(--primary-light);
   font-size: 0.68rem;
   line-height: 1.5;
-}
-
-.eyebrow {
-  margin-bottom: 6px;
-  color: var(--accent);
 }
 
 .header h1,
@@ -38,10 +29,6 @@
 
 .header h1 {
   font-size: 1rem;
-}
-
-.description {
-  margin-top: 9px;
 }
 
 .backLink,
@@ -298,13 +285,6 @@
   color: var(--primary-light);
 }
 
-.assetDetails .assetType {
-  margin-top: -4px;
-  color: var(--accent);
-  font-size: 0.58rem;
-  text-transform: uppercase;
-}
-
 .assetMeta {
   display: flex;
   align-items: center;
@@ -359,10 +339,6 @@
 .loadMore:disabled {
   cursor: wait;
   opacity: 0.6;
-}
-
-.error {
-  color: #ff9cad;
 }
 
 @media (max-width: 760px) {

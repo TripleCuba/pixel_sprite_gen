@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 import { useState } from "react";
 import type { ReactNode } from "react";
 import type { BillingProductId } from "@/lib/billing-products";
@@ -33,7 +35,10 @@ const CheckoutButton = ({
         headers: { "Content-Type": "application/json" },
         method: "POST",
       });
-      const payload = (await response.json()) as { error?: string; url?: string };
+      const payload = (await response.json()) as {
+        error?: string;
+        url?: string;
+      };
 
       if (!response.ok || !payload.url) {
         throw new Error(payload.error ?? "Could not start Stripe Checkout.");
@@ -52,10 +57,29 @@ const CheckoutButton = ({
 
   return (
     <div className={styles.root}>
-      <button disabled={!available || isLoading} onClick={startCheckout} type="button">
-        {isLoading ? "Opening Checkout..." : available ? children : "Coming soon"}
+      <button
+        disabled={!available || isLoading}
+        onClick={startCheckout}
+        type="button"
+      >
+        {isLoading
+          ? "Opening Checkout..."
+          : available
+            ? children
+            : "Coming soon"}
       </button>
-      {error ? <p className={styles.error} role="alert">{error}</p> : null}
+      {error ? (
+        <Typography
+          variant="p"
+          color="danger"
+          lineHeight={1.4}
+          margin="8px 0 0"
+          role="alert"
+          size="xs"
+        >
+          {error}
+        </Typography>
+      ) : null}
     </div>
   );
 };

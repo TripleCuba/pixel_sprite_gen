@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 import Image from "next/image";
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import DropdownOption from "./DropdownOption";
@@ -71,9 +73,9 @@ const Dropdown = <T extends string>({
 
   return (
     <div className={styles.dropdown} ref={dropdownRef}>
-      <p id={labelId} className={styles.label}>
+      <Typography variant="p" id={labelId} className={styles.label}>
         {label}
-      </p>
+      </Typography>
       <button
         type="button"
         className={styles.trigger}
@@ -86,7 +88,7 @@ const Dropdown = <T extends string>({
         }}
         onKeyDown={handleTriggerKeyDown}
       >
-        <span className={styles.value}>
+        <Typography variant="span" className={styles.value}>
           {icons?.[value] && (
             <Image
               className={styles.icon}
@@ -96,9 +98,10 @@ const Dropdown = <T extends string>({
               unoptimized
             />
           )}
-          <span>{value}</span>
-        </span>
-        <span
+          <Typography variant="span">{value}</Typography>
+        </Typography>
+        <Typography
+          variant="span"
           className={`${styles.chevron}${isOpen ? ` ${styles.chevronOpen}` : ""}`}
         />
       </button>

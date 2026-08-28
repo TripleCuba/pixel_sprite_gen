@@ -64,15 +64,12 @@
 
 .panel strong,
 .panel span,
-.panel b,
-.empty,
-.error {
+.panel b {
   font-size: 0.64rem;
   line-height: 1.45;
 }
 
-.panel li > div:first-child span,
-.empty {
+.panel li > div:first-child span {
   color: var(--primary-light);
 }
 
@@ -105,16 +102,6 @@
 .reserved {
   background: var(--primary-muted);
   color: var(--primary-light);
-}
-
-.empty,
-.error {
-  margin: 0;
-  padding: 10px 4px;
-}
-
-.error {
-  color: #ff9cad;
 }
 
 @media (max-width: 560px) {

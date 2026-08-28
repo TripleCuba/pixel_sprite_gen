@@ -362,17 +362,11 @@
   white-space: normal;
 }
 
-.spriteMeta small,
-.status,
-.error {
+.spriteMeta small {
   margin: 0;
   color: var(--primary-light);
   font-size: 0.62rem;
   line-height: 1.5;
-}
-
-.error {
-  color: #ff9cad;
 }
 
 .deleteButton {

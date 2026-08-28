@@ -1,4 +1,6 @@
 "use client";
+
+import Typography from "../Components/shared/Typography";
 import { useEffect, useState } from "react";
 import type { StaticImageData } from "next/image";
 import characterIcon from "@/assets/icons/sprite-types/character.svg";
@@ -147,7 +149,9 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let pending = "";
-      let completedGeneration: Extract<GenerationEvent, { type: "complete" }> | undefined;
+      let completedGeneration:
+        | Extract<GenerationEvent, { type: "complete" }>
+        | undefined;
 
       const handleEvent = (line: string) => {
         if (!line) {
@@ -192,9 +196,7 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
       >;
       const sprite = imageFromBase64(image);
       setGeneratedSpriteUrl(URL.createObjectURL(sprite));
-      setGeneratedSpriteDownloadUrl(
-        `/api/sprites/${spriteId}/download`,
-      );
+      setGeneratedSpriteDownloadUrl(`/api/sprites/${spriteId}/download`);
       setHistoryVersion((version) => version + 1);
     } catch (error) {
       setGenerationError(
@@ -235,35 +237,35 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
       >
         <section className={styles.controls}>
           <div className={styles.header}>
-            <h2>Image Generator</h2>
+            <Typography variant="h2">Image Generator</Typography>
           </div>
-        <Dropdown
-          label="Sprite Type"
-          value={spriteType}
-          onChange={handleSpriteTypeChange}
-          options={Object.values(SpriteType)}
-          icons={spriteTypeIcons}
-        />
-        <SpriteViewSelector
-          availableViews={SpriteTypeViews[spriteType]}
-          value={spriteView}
-          spriteType={spriteType}
-          onChange={setSpriteView}
-        />
-        <GenerationQuality
-          disabled={isGenerating}
-          refreshKey={historyVersion}
-          value={quality}
-          onChange={setQuality}
-        />
-        <TextField
-          label="Asset title (optional)"
-          value={assetTitle}
-          onChange={setAssetTitle}
-          placeholder="e.g. Forest ranger"
-          maxLength={120}
-        />
-        <TextField
+          <Dropdown
+            label="Sprite Type"
+            value={spriteType}
+            onChange={handleSpriteTypeChange}
+            options={Object.values(SpriteType)}
+            icons={spriteTypeIcons}
+          />
+          <SpriteViewSelector
+            availableViews={SpriteTypeViews[spriteType]}
+            value={spriteView}
+            spriteType={spriteType}
+            onChange={setSpriteView}
+          />
+          <GenerationQuality
+            disabled={isGenerating}
+            refreshKey={historyVersion}
+            value={quality}
+            onChange={setQuality}
+          />
+          <TextField
+            label="Asset title (optional)"
+            value={assetTitle}
+            onChange={setAssetTitle}
+            placeholder="e.g. Forest ranger"
+            maxLength={120}
+          />
+          <TextField
             label="Describe your sprite"
             value={prompt}
             onChange={setPrompt}
@@ -287,9 +289,14 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
             {isGenerating ? "Generating..." : "Generate Sprite"}
           </GenerateButton>
           {generationError ? (
-            <p role="alert" className={styles.error}>
+            <Typography
+              variant="p"
+              color="danger"
+              margin="12px 0 0"
+              role="alert"
+            >
               {generationError}
-            </p>
+            </Typography>
           ) : null}
         </section>
         {generatedSpriteUrl ? (

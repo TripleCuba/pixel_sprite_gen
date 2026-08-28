@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 import { useId, useState } from "react";
 import { Modal } from "../modal";
 import styles from "./AssetNameDialog.module.css";
@@ -39,11 +41,29 @@ const AssetNameDialog = ({
           onSave(title);
         }}
       >
-        <p className={styles.eyebrow}>Saved asset</p>
-        <h2 id={titleId}>Name this asset</h2>
-        <label className={styles.label} htmlFor={inputId}>
+        <Typography
+          variant="p"
+          color="accent"
+          lineHeight={1.6}
+          margin={0}
+          size="small"
+          transform="uppercase"
+        >
+          Saved asset
+        </Typography>
+        <Typography variant="h2" id={titleId}>
+          Name this asset
+        </Typography>
+        <Typography
+          variant="label"
+          color="foreground"
+          display="block"
+          htmlFor={inputId}
+          margin="0 0 7px"
+          size="small"
+        >
           Asset title
-        </label>
+        </Typography>
         <input
           id={inputId}
           className={styles.input}
@@ -55,12 +75,25 @@ const AssetNameDialog = ({
           onChange={(event) => setTitle(event.target.value)}
         />
         <div className={styles.helpRow}>
-          <p id={helpId} className={styles.help}>
+          <Typography
+            variant="p"
+            color="primary-light"
+            id={helpId}
+            lineHeight={1.6}
+            margin="8px 0 0"
+            size="small"
+          >
             Leave it empty to use “{spriteType}” instead.
-          </p>
-          <p className={styles.counter} aria-live="polite">
+          </Typography>
+          <Typography
+            variant="p"
+            aria-live="polite"
+            color="accent"
+            margin="8px 0 0"
+            size="xs"
+          >
             {title.length}/120
-          </p>
+          </Typography>
         </div>
         <div className={styles.actions}>
           <button

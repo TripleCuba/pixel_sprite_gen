@@ -87,11 +87,6 @@
   background: rgb(8 14 22 / 78%);
 }
 
-.error {
-  margin: 12px 0 0;
-  color: #ff9cad;
-}
-
 @media (max-width: 760px) {
   .workspace {
     display: grid;

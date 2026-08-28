@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 /* eslint-disable @next/next/no-img-element */
 
 import { Download, Trash2 } from "lucide-react";
@@ -22,7 +24,9 @@ const GeneratedSpritePreview = ({
 
   return (
     <section className={styles.preview} aria-label="Generated sprite preview">
-      <h2 className={styles.label}>Generated sprite</h2>
+      <Typography variant="h2" color="foreground" margin={0} size="medium">
+        Generated sprite
+      </Typography>
       <button
         type="button"
         className={styles.canvas}
@@ -36,7 +40,11 @@ const GeneratedSpritePreview = ({
         />
       </button>
       <div className={styles.actions}>
-        <a className={styles.action} href={downloadUrl ?? imageUrl} download="sprite.png">
+        <a
+          className={styles.action}
+          href={downloadUrl ?? imageUrl}
+          download="sprite.png"
+        >
           <Download aria-hidden="true" size={16} />
           Download
         </a>

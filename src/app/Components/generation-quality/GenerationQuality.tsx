@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 import { useEffect, useState } from "react";
 import {
   SPRITE_QUALITY_DETAILS,
@@ -35,7 +37,9 @@ const GenerationQuality = ({
       setError(null);
 
       try {
-        const response = await fetch("/api/credits", { signal: controller.signal });
+        const response = await fetch("/api/credits", {
+          signal: controller.signal,
+        });
         const payload = (await response.json()) as {
           balance?: number;
           error?: string;
@@ -43,13 +47,18 @@ const GenerationQuality = ({
         };
 
         if (!response.ok || typeof payload.balance !== "number") {
-          throw new Error(payload.error ?? "Could not load your credit balance.");
+          throw new Error(
+            payload.error ?? "Could not load your credit balance.",
+          );
         }
 
         setBalance(payload.balance);
         setIsUnlimited(payload.isUnlimited === true);
       } catch (loadError) {
-        if (loadError instanceof DOMException && loadError.name === "AbortError") {
+        if (
+          loadError instanceof DOMException &&
+          loadError.name === "AbortError"
+        ) {
           return;
         }
 
@@ -68,15 +77,21 @@ const GenerationQuality = ({
 
   return (
     <fieldset className={styles.quality} disabled={disabled}>
-      <legend>Generation Quality</legend>
+      <Typography variant="legend">Generation Quality</Typography>
       <div className={styles.balance}>
         {balance === null && !error ? (
           <LoadingIndicator compact label="Loading credits..." />
         ) : null}
         {balance !== null ? (
-          <strong>{isUnlimited ? "Unlimited credits" : `${balance} credits available`}</strong>
+          <Typography variant="strong">
+            {isUnlimited ? "Unlimited credits" : `${balance} credits available`}
+          </Typography>
         ) : null}
-        {error ? <span role="alert">{error}</span> : null}
+        {error ? (
+          <Typography variant="span" role="alert">
+            {error}
+          </Typography>
+        ) : null}
       </div>
       <div className={styles.options}>
         {qualityOptions.map((quality) => {
@@ -85,7 +100,8 @@ const GenerationQuality = ({
             !isUnlimited && balance !== null && balance < details.creditCost;
 
           return (
-            <label
+            <Typography
+              variant="label"
               key={quality}
               className={`${styles.option} ${
                 value === quality ? styles.optionSelected : ""
@@ -99,12 +115,12 @@ const GenerationQuality = ({
                 disabled={isUnavailable}
                 onChange={() => onChange(quality)}
               />
-              <span className={styles.optionCopy}>
-                <strong>{details.label}</strong>
-                <small>{details.description}</small>
-              </span>
-              <b>{details.creditCost} credits</b>
-            </label>
+              <Typography variant="span" className={styles.optionCopy}>
+                <Typography variant="strong">{details.label}</Typography>
+                <Typography variant="small">{details.description}</Typography>
+              </Typography>
+              <Typography variant="b">{details.creditCost} credits</Typography>
+            </Typography>
           );
         })}
       </div>

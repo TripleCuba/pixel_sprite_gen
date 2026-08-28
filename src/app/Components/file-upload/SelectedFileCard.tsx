@@ -1,5 +1,7 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 /* Local file previews are client-side data URLs and are not Next image assets. */
 /* eslint-disable @next/next/no-img-element */
 
@@ -53,8 +55,10 @@ const SelectedFileCard = ({ file, onRemove }: SelectedFileCardProps) => {
           )}
         </button>
         <div className={styles.selectedFileDetails}>
-          <p title={file.name}>{file.name}</p>
-          <span>{formatFileSize(file.size)}</span>
+          <Typography variant="p" title={file.name}>
+            {file.name}
+          </Typography>
+          <Typography variant="span">{formatFileSize(file.size)}</Typography>
         </div>
         {onRemove && (
           <button

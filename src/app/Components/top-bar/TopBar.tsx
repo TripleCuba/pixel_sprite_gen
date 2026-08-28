@@ -1,3 +1,4 @@
+import Typography from "../shared/Typography";
 import { signInWithGoogle, signOutUser } from "@/app/actions/auth";
 import logo from "@/assets/images/spriteforge-logo-topbar.png";
 import Image from "next/image";
@@ -17,25 +18,28 @@ const TopBar = ({ isAuthConfigured, user }: TopBarProps) => (
   <header className={styles.bar}>
     <div className={styles.content}>
       <Link className={styles.brand} href="/" aria-label="SpriteForge home">
-        <span aria-hidden="true" className={styles.brandMarkFrame}>
-          <Image
-            alt=""
-            className={styles.brandMark}
-            priority
-            src={logo}
-          />
-        </span>
-        <span className={styles.brandText}>
-          <span className={styles.spriteText}>Sprite</span>
-          <span className={styles.forgeText}>Forge</span>
-        </span>
+        <Typography
+          variant="span"
+          aria-hidden="true"
+          className={styles.brandMarkFrame}
+        >
+          <Image alt="" className={styles.brandMark} priority src={logo} />
+        </Typography>
+        <Typography variant="span" className={styles.brandText}>
+          <Typography variant="span" className={styles.spriteText}>
+            Sprite
+          </Typography>
+          <Typography variant="span" className={styles.forgeText}>
+            Forge
+          </Typography>
+        </Typography>
       </Link>
       <div className={styles.account}>
         {user ? (
           <>
-            <span className={styles.userName}>
+            <Typography variant="span" className={styles.userName}>
               {user.name ?? user.email ?? "Google user"}
-            </span>
+            </Typography>
             <CreditBalance />
             <Link className={styles.plansLink} href="/billing">
               Plans
@@ -53,7 +57,9 @@ const TopBar = ({ isAuthConfigured, user }: TopBarProps) => (
             </button>
           </form>
         ) : (
-          <span className={styles.setupState}>Sign-in setup required</span>
+          <Typography variant="span" className={styles.setupState}>
+            Sign-in setup required
+          </Typography>
         )}
       </div>
     </div>

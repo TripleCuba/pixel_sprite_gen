@@ -1,10 +1,9 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 import Image from "next/image";
-import {
-  SpriteType,
-  SpriteView,
-} from "@/app/constants";
+import { SpriteType, SpriteView } from "@/app/constants";
 import styles from "./SpriteViewSelector.module.css";
 
 type SpriteViewSelectorProps = {
@@ -37,7 +36,7 @@ const SpriteViewSelector = ({
   value,
 }: SpriteViewSelectorProps) => (
   <fieldset className={styles.selector}>
-    <legend>Camera view</legend>
+    <Typography variant="legend">Camera view</Typography>
     <div className={styles.options}>
       {availableViews.map((view) => (
         <button
@@ -58,9 +57,9 @@ const SpriteViewSelector = ({
             width={256}
             height={256}
           />
-          <span>
-            <strong>{view}</strong>
-          </span>
+          <Typography variant="span">
+            <Typography variant="strong">{view}</Typography>
+          </Typography>
         </button>
       ))}
     </div>

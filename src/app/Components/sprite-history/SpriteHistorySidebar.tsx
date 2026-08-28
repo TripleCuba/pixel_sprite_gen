@@ -1,9 +1,17 @@
 "use client";
 
+import Typography from "../shared/Typography";
+
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Download, Pencil, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import type { StoredSprite } from "@/lib/sprite-storage";
 import { groupStoredSpritesByType } from "@/lib/sprite-groups";
@@ -45,9 +53,16 @@ const SpriteHistorySidebar = ({
   const [selectedSpriteIds, setSelectedSpriteIds] = useState<Set<string>>(
     new Set(),
   );
-  const [spriteToDelete, setSpriteToDelete] = useState<StoredSprite | null>(null);
-  const [spriteToRename, setSpriteToRename] = useState<StoredSprite | null>(null);
-  const spriteGroups = useMemo(() => groupStoredSpritesByType(sprites), [sprites]);
+  const [spriteToDelete, setSpriteToDelete] = useState<StoredSprite | null>(
+    null,
+  );
+  const [spriteToRename, setSpriteToRename] = useState<StoredSprite | null>(
+    null,
+  );
+  const spriteGroups = useMemo(
+    () => groupStoredSpritesByType(sprites),
+    [sprites],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -57,7 +72,9 @@ const SpriteHistorySidebar = ({
       setError(null);
 
       try {
-        const response = await fetch("/api/sprites?limit=10", { signal: controller.signal });
+        const response = await fetch("/api/sprites?limit=10", {
+          signal: controller.signal,
+        });
         const payload = (await response.json()) as {
           error?: string;
           sprites?: StoredSprite[];
@@ -70,15 +87,19 @@ const SpriteHistorySidebar = ({
 
         setSprites(payload.sprites ?? []);
         setTotalSprites(payload.total ?? payload.sprites?.length ?? 0);
-        setSelectedSpriteIds((currentSelection) =>
-          new Set(
-            [...currentSelection].filter((id) =>
-              (payload.sprites ?? []).some((sprite) => sprite.id === id),
+        setSelectedSpriteIds(
+          (currentSelection) =>
+            new Set(
+              [...currentSelection].filter((id) =>
+                (payload.sprites ?? []).some((sprite) => sprite.id === id),
+              ),
             ),
-          ),
         );
       } catch (loadError) {
-        if (loadError instanceof DOMException && loadError.name === "AbortError") {
+        if (
+          loadError instanceof DOMException &&
+          loadError.name === "AbortError"
+        ) {
           return;
         }
 
@@ -167,7 +188,9 @@ const SpriteHistorySidebar = ({
   };
 
   const handleBulkDelete = async () => {
-    const selectedSprites = sprites.filter(({ id }) => selectedSpriteIds.has(id));
+    const selectedSprites = sprites.filter(({ id }) =>
+      selectedSpriteIds.has(id),
+    );
 
     if (selectedSprites.length === 0 || isBulkDeleting) {
       return;
@@ -180,7 +203,9 @@ const SpriteHistorySidebar = ({
       const response = await fetch("/api/sprites", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ spriteIds: selectedSprites.map(({ id }) => id) }),
+        body: JSON.stringify({
+          spriteIds: selectedSprites.map(({ id }) => id),
+        }),
       });
       const payload = (await response.json().catch(() => null)) as {
         deletedSpriteIds?: string[];
@@ -189,20 +214,22 @@ const SpriteHistorySidebar = ({
       } | null;
 
       if (!response.ok || !payload?.deletedSpriteIds) {
-        throw new Error(payload?.error ?? "Could not delete the selected sprites.");
+        throw new Error(
+          payload?.error ?? "Could not delete the selected sprites.",
+        );
       }
 
       const deletedSpriteIds = new Set(payload.deletedSpriteIds);
       setSprites((currentSprites) =>
         currentSprites.filter(({ id }) => !deletedSpriteIds.has(id)),
       );
-      setTotalSprites((currentTotal) => Math.max(currentTotal - deletedSpriteIds.size, 0));
+      setTotalSprites((currentTotal) =>
+        Math.max(currentTotal - deletedSpriteIds.size, 0),
+      );
       selectedSprites
         .filter(({ id }) => deletedSpriteIds.has(id))
         .forEach(onDelete);
-      setSelectedSpriteIds(
-        new Set(payload.failedSpriteIds ?? []),
-      );
+      setSelectedSpriteIds(new Set(payload.failedSpriteIds ?? []));
       setIsBulkDeleteDialogOpen(false);
 
       if (payload.failedSpriteIds?.length) {
@@ -222,7 +249,9 @@ const SpriteHistorySidebar = ({
   };
 
   const handleBulkDownload = async () => {
-    const selectedSprites = sprites.filter(({ id }) => selectedSpriteIds.has(id));
+    const selectedSprites = sprites.filter(({ id }) =>
+      selectedSpriteIds.has(id),
+    );
 
     if (selectedSprites.length === 0 || isBulkDownloading) {
       return;
@@ -235,14 +264,18 @@ const SpriteHistorySidebar = ({
       const response = await fetch("/api/sprites/download", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ spriteIds: selectedSprites.map(({ id }) => id) }),
+        body: JSON.stringify({
+          spriteIds: selectedSprites.map(({ id }) => id),
+        }),
       });
 
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as {
           error?: string;
         } | null;
-        throw new Error(payload?.error ?? "Could not download the selected sprites.");
+        throw new Error(
+          payload?.error ?? "Could not download the selected sprites.",
+        );
       }
 
       const objectUrl = URL.createObjectURL(await response.blob());
@@ -327,7 +360,7 @@ const SpriteHistorySidebar = ({
   return (
     <aside className={styles.sidebar} aria-label="Created sprites">
       <div className={styles.header}>
-        <h2>Created</h2>
+        <Typography variant="h2">Created</Typography>
         <button
           type="button"
           className={styles.collapseButton}
@@ -341,35 +374,49 @@ const SpriteHistorySidebar = ({
       <div className={styles.subheader}>
         <div className={styles.headerActions}>
           {sprites.length ? (
-            <label className={styles.selectAllControl}>
+            <Typography variant="label" className={styles.selectAllControl}>
               <input
                 type="checkbox"
                 aria-label="Select all created sprites"
                 checked={selectedCount === sprites.length}
-                disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading}
+                disabled={
+                  Boolean(deletingId) || isBulkDeleting || isBulkDownloading
+                }
                 onChange={toggleSelectAll}
               />
-            </label>
+            </Typography>
           ) : (
-            <span aria-hidden="true" className={styles.selectAllPlaceholder} />
+            <Typography
+              variant="span"
+              aria-hidden="true"
+              className={styles.selectAllPlaceholder}
+            />
           )}
-          <p className={styles.showing}>Showing {sprites.length} of {totalSprites}</p>
+          <Typography variant="p" className={styles.showing}>
+            Showing {sprites.length} of {totalSprites}
+          </Typography>
         </div>
         {selectedCount ? (
           <div className={styles.bulkActions}>
             <button
               type="button"
               className={styles.bulkDownloadButton}
-              disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading}
+              disabled={
+                Boolean(deletingId) || isBulkDeleting || isBulkDownloading
+              }
               onClick={() => void handleBulkDownload()}
             >
               <Download aria-hidden="true" size={14} />
-              {isBulkDownloading ? "Downloading..." : `Download ${selectedCount}`}
+              {isBulkDownloading
+                ? "Downloading..."
+                : `Download ${selectedCount}`}
             </button>
             <button
               type="button"
               className={styles.bulkDeleteButton}
-              disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading}
+              disabled={
+                Boolean(deletingId) || isBulkDeleting || isBulkDownloading
+              }
               onClick={() => setIsBulkDeleteDialogOpen(true)}
             >
               <Trash2 aria-hidden="true" size={14} />
@@ -379,104 +426,150 @@ const SpriteHistorySidebar = ({
         ) : null}
       </div>
       <div className={styles.body}>
-        {isLoading ? <LoadingIndicator compact label="Loading sprites..." /> : null}
-        {error ? <p className={styles.error}>{error}</p> : null}
+        {isLoading ? (
+          <LoadingIndicator compact label="Loading sprites..." />
+        ) : null}
+        {error ? (
+          <Typography
+            variant="p"
+            color="danger"
+            lineHeight={1.5}
+            margin={0}
+            size="small"
+          >
+            {error}
+          </Typography>
+        ) : null}
         {!isLoading && !error && sprites.length === 0 ? (
-          <p className={styles.status}>Your saved sprites will appear here.</p>
+          <Typography
+            variant="p"
+            color="primary-light"
+            lineHeight={1.5}
+            margin={0}
+            size="small"
+          >
+            Your saved sprites will appear here.
+          </Typography>
         ) : null}
         <div className={styles.groups}>
-          {spriteGroups.map(({ spriteType, sprites: groupedSprites }, groupIndex) => (
-            <section
-              key={spriteType}
-              className={styles.group}
-              aria-labelledby={`sidebar-group-${groupIndex}`}
-            >
-              <div className={styles.groupHeader}>
-                <h3 id={`sidebar-group-${groupIndex}`}>{spriteType}</h3>
-                <span>{groupedSprites.length}</span>
-              </div>
-              <div className={styles.list}>
-                {groupedSprites.map((sprite) => (
-                  <div key={sprite.id} className={styles.sprite}>
-              <button
-                type="button"
-                className={styles.spriteOpen}
-                aria-label={`Open ${sprite.title ?? sprite.spriteType} sprite`}
-                onClick={() => onSelect(sprite)}
-              />
-              <div className={styles.selectionControl}>
-                <input
-                  type="checkbox"
-                  aria-label={`Select ${sprite.spriteType} sprite`}
-                  checked={selectedSpriteIds.has(sprite.id)}
-                  disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading}
-                  onChange={(event) =>
-                    toggleSpriteSelection(sprite.id, event.target.checked)
-                  }
-                />
-              </div>
-              <div className={styles.spriteContent}>
-                <button
-                  type="button"
-                  className={styles.spritePreview}
-                  onClick={() => onSelect(sprite)}
-                >
-                  <img
-                    src={sprite.imageUrl}
-                    alt={`${sprite.title ?? sprite.spriteType} sprite`}
-                  />
-                </button>
-                <div className={styles.spriteDetails}>
-                  <button
-                    type="button"
-                    className={styles.spriteSelect}
-                    onClick={() => onSelect(sprite)}
-                  >
-                    <strong>{sprite.title ?? sprite.spriteType}</strong>
-                  </button>
-                  <p className={styles.spriteType}>Sprite type: {sprite.spriteType}</p>
-                  <div className={styles.spriteMeta}>
-                    <small>
-                      {formatDate(sprite.createdAt)}
-                    </small>
-                    <div className={styles.spriteActions}>
-                      <a
-                        className={styles.downloadButton}
-                        href={`/api/sprites/${sprite.id}/download`}
-                        aria-label={`Download ${sprite.title ?? sprite.spriteType} sprite`}
-                        title={`Download ${sprite.title ?? sprite.spriteType}`}
-                        download={`${sprite.title ?? sprite.spriteType}.png`}
-                      >
-                        <Download aria-hidden="true" size={14} />
-                      </a>
-                      <button
-                        type="button"
-                        className={styles.renameButton}
-                        aria-label={`Rename ${sprite.title ?? sprite.spriteType} sprite`}
-                        title={`Rename ${sprite.title ?? sprite.spriteType}`}
-                        disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading || renamingId === sprite.id}
-                        onClick={() => setSpriteToRename(sprite)}
-                      >
-                        <Pencil aria-hidden="true" size={13} />
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.deleteButton}
-                        aria-label={`Delete ${sprite.spriteType} sprite`}
-                        disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading}
-                        onClick={() => setSpriteToDelete(sprite)}
-                      >
-                        <Trash2 aria-hidden="true" size={14} />
-                      </button>
-                    </div>
-                  </div>
+          {spriteGroups.map(
+            ({ spriteType, sprites: groupedSprites }, groupIndex) => (
+              <section
+                key={spriteType}
+                className={styles.group}
+                aria-labelledby={`sidebar-group-${groupIndex}`}
+              >
+                <div className={styles.groupHeader}>
+                  <Typography variant="h3" id={`sidebar-group-${groupIndex}`}>
+                    {spriteType}
+                  </Typography>
+                  <Typography variant="span">
+                    {groupedSprites.length}
+                  </Typography>
                 </div>
-              </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ))}
+                <div className={styles.list}>
+                  {groupedSprites.map((sprite) => (
+                    <div key={sprite.id} className={styles.sprite}>
+                      <button
+                        type="button"
+                        className={styles.spriteOpen}
+                        aria-label={`Open ${sprite.title ?? sprite.spriteType} sprite`}
+                        onClick={() => onSelect(sprite)}
+                      />
+                      <div className={styles.selectionControl}>
+                        <input
+                          type="checkbox"
+                          aria-label={`Select ${sprite.spriteType} sprite`}
+                          checked={selectedSpriteIds.has(sprite.id)}
+                          disabled={
+                            Boolean(deletingId) ||
+                            isBulkDeleting ||
+                            isBulkDownloading
+                          }
+                          onChange={(event) =>
+                            toggleSpriteSelection(
+                              sprite.id,
+                              event.target.checked,
+                            )
+                          }
+                        />
+                      </div>
+                      <div className={styles.spriteContent}>
+                        <button
+                          type="button"
+                          className={styles.spritePreview}
+                          onClick={() => onSelect(sprite)}
+                        >
+                          <img
+                            src={sprite.imageUrl}
+                            alt={`${sprite.title ?? sprite.spriteType} sprite`}
+                          />
+                        </button>
+                        <div className={styles.spriteDetails}>
+                          <button
+                            type="button"
+                            className={styles.spriteSelect}
+                            onClick={() => onSelect(sprite)}
+                          >
+                            <Typography variant="strong">
+                              {sprite.title ?? sprite.spriteType}
+                            </Typography>
+                          </button>
+                          <Typography variant="p" className={styles.spriteType}>
+                            Sprite type: {sprite.spriteType}
+                          </Typography>
+                          <div className={styles.spriteMeta}>
+                            <Typography variant="small">
+                              {formatDate(sprite.createdAt)}
+                            </Typography>
+                            <div className={styles.spriteActions}>
+                              <a
+                                className={styles.downloadButton}
+                                href={`/api/sprites/${sprite.id}/download`}
+                                aria-label={`Download ${sprite.title ?? sprite.spriteType} sprite`}
+                                title={`Download ${sprite.title ?? sprite.spriteType}`}
+                                download={`${sprite.title ?? sprite.spriteType}.png`}
+                              >
+                                <Download aria-hidden="true" size={14} />
+                              </a>
+                              <button
+                                type="button"
+                                className={styles.renameButton}
+                                aria-label={`Rename ${sprite.title ?? sprite.spriteType} sprite`}
+                                title={`Rename ${sprite.title ?? sprite.spriteType}`}
+                                disabled={
+                                  Boolean(deletingId) ||
+                                  isBulkDeleting ||
+                                  isBulkDownloading ||
+                                  renamingId === sprite.id
+                                }
+                                onClick={() => setSpriteToRename(sprite)}
+                              >
+                                <Pencil aria-hidden="true" size={13} />
+                              </button>
+                              <button
+                                type="button"
+                                className={styles.deleteButton}
+                                aria-label={`Delete ${sprite.spriteType} sprite`}
+                                disabled={
+                                  Boolean(deletingId) ||
+                                  isBulkDeleting ||
+                                  isBulkDownloading
+                                }
+                                onClick={() => setSpriteToDelete(sprite)}
+                              >
+                                <Trash2 aria-hidden="true" size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ),
+          )}
         </div>
       </div>
       <div className={styles.footer}>

@@ -1,3 +1,4 @@
+import Typography from "../shared/Typography";
 import styles from "./LoadingIndicator.module.css";
 
 type LoadingIndicatorProps = {
@@ -18,23 +19,29 @@ const LoadingIndicator = ({
     role="status"
     aria-live="polite"
   >
-    <span className={styles.pixels} aria-hidden="true">
+    <Typography variant="span" className={styles.pixels} aria-hidden="true">
       <i />
       <i />
       <i />
-    </span>
-    <span className={styles.copy}>
-      <strong>{label}</strong>
-      {description ? <small>{description}</small> : null}
+    </Typography>
+    <Typography variant="span" className={styles.copy}>
+      <Typography variant="strong">{label}</Typography>
+      {description ? (
+        <Typography variant="small">{description}</Typography>
+      ) : null}
       {typeof progress === "number" ? (
-        <span
+        <Typography
+          variant="span"
           className={styles.progress}
           aria-label={`${Math.round(progress)}% complete`}
         >
-          <span style={{ width: `${Math.max(0, Math.min(progress, 100))}%` }} />
-        </span>
+          <Typography
+            variant="span"
+            style={{ width: `${Math.max(0, Math.min(progress, 100))}%` }}
+          />
+        </Typography>
       ) : null}
-    </span>
+    </Typography>
   </div>
 );
 
