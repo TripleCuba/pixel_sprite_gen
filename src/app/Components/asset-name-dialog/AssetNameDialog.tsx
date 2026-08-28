@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useId, useState } from "react";
+import { Modal } from "../modal";
 import styles from "./AssetNameDialog.module.css";
 
 type AssetNameDialogProps = {
@@ -20,49 +20,20 @@ const AssetNameDialog = ({
   spriteType,
 }: AssetNameDialogProps) => {
   const [title, setTitle] = useState(initialTitle);
-  const inputRef = useRef<HTMLInputElement>(null);
   const titleId = useId();
   const inputId = useId();
   const helpId = useId();
 
-  useEffect(() => {
-    const previouslyFocused = document.activeElement as HTMLElement | null;
-    inputRef.current?.focus();
-    inputRef.current?.select();
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !isSaving) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      previouslyFocused?.focus();
-    };
-  }, [isSaving, onClose]);
-
-  if (typeof document === "undefined") {
-    return null;
-  }
-
-  return createPortal(
-    <div className={styles.dialog}>
-      <button
-        type="button"
-        className={styles.backdrop}
-        aria-label="Close rename asset dialog"
-        disabled={isSaving}
-        onClick={onClose}
-      />
+  return (
+    <Modal
+      ariaDescribedBy={helpId}
+      ariaLabelledBy={titleId}
+      backdropLabel="Close rename asset dialog"
+      closeDisabled={isSaving}
+      contentClassName={styles.content}
+      onClose={onClose}
+    >
       <form
-        className={styles.content}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        aria-describedby={helpId}
         onSubmit={(event) => {
           event.preventDefault();
           onSave(title);
@@ -74,13 +45,13 @@ const AssetNameDialog = ({
           Asset title
         </label>
         <input
-          ref={inputRef}
           id={inputId}
           className={styles.input}
           value={title}
           maxLength={120}
           placeholder={spriteType}
           disabled={isSaving}
+          onFocus={(event) => event.currentTarget.select()}
           onChange={(event) => setTitle(event.target.value)}
         />
         <div className={styles.helpRow}>
@@ -105,8 +76,7 @@ const AssetNameDialog = ({
           </button>
         </div>
       </form>
-    </div>,
-    document.body,
+    </Modal>
   );
 };
 

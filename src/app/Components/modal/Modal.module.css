@@ -1,0 +1,20 @@
+.modal {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgb(0 0 0 / 76%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
