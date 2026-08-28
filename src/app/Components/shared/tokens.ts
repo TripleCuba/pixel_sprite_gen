@@ -1,3 +1,20 @@
+export const typographyVariantTokens = [
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "p",
+  "span",
+  "strong",
+  "b",
+  "small",
+  "code",
+  "label",
+  "legend",
+] as const;
+
 export const typographyColorTokens = {
   accent: "var(--accent)",
   background: "var(--background)",
@@ -21,3 +38,4 @@ export const typographySizeTokens = {
 
 export type TypographyColorToken = keyof typeof typographyColorTokens;
 export type TypographySizeToken = keyof typeof typographySizeTokens;
+export type TypographyVariantToken = (typeof typographyVariantTokens)[number];

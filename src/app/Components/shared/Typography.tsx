@@ -1,25 +1,15 @@
 import { createElement } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { typographyColorTokens, typographySizeTokens } from "./tokens";
-import type { TypographyColorToken, TypographySizeToken } from "./tokens";
+import type {
+  TypographyColorToken,
+  TypographySizeToken,
+  TypographyVariantToken,
+} from "./tokens";
 
 export type TypographyColor = TypographyColorToken;
 export type TypographySize = TypographySizeToken;
-export type TypographyVariant =
-  | "h1"
-  | "h2"
-  | "h3"
-  | "h4"
-  | "h5"
-  | "h6"
-  | "p"
-  | "span"
-  | "strong"
-  | "b"
-  | "small"
-  | "code"
-  | "label"
-  | "legend";
+export type TypographyVariant = TypographyVariantToken;
 
 type TypographyProps = Omit<HTMLAttributes<HTMLElement>, "color"> & {
   align?: CSSProperties["textAlign"];
