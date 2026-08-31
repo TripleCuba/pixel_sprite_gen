@@ -1,23 +1,16 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
-import { useId, type ChangeEvent } from "react";
-import TextFieldControl from "./TextFieldControl";
-import styles from "./TextField.module.css";
-import type { TextFieldProps } from "./types";
+import { useId, type ChangeEvent } from 'react';
+import TextFieldControl from './TextFieldControl';
+import styles from './TextField.module.css';
+import type { TextFieldProps } from './types';
 
-const TextField = ({
-  label,
-  value,
-  onChange,
-  ...controlProps
-}: TextFieldProps) => {
+const TextField = ({ label, value, onChange, ...controlProps }: TextFieldProps) => {
   const inputId = useId();
 
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChange(event.target.value);
   };
 
@@ -26,12 +19,7 @@ const TextField = ({
       <Typography variant="label" color="foreground" htmlFor={inputId}>
         {label}
       </Typography>
-      <TextFieldControl
-        {...controlProps}
-        inputId={inputId}
-        value={value}
-        onChange={handleChange}
-      />
+      <TextFieldControl {...controlProps} inputId={inputId} value={value} onChange={handleChange} />
     </div>
   );
 };

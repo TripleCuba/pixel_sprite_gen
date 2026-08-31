@@ -1,1 +1,1 @@
-export { default as GeneratedSpritePreview } from "./GeneratedSpritePreview";
+export { default as GeneratedSpritePreview } from './GeneratedSpritePreview';

@@ -1,5 +1,5 @@
-import { SpriteType } from "@/app/constants";
-import type { StoredSprite } from "./sprite-storage";
+import { SpriteType } from '@/app/constants';
+import type { StoredSprite } from './sprite-storage';
 
 export type SpriteGroup = {
   sprites: StoredSprite[];

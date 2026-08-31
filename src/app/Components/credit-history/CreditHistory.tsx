@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
-import { useEffect, useState } from "react";
-import type { CreditActivity } from "@/lib/sprite-credits";
-import { CREDIT_CHANGE_EVENT } from "../credit-balance/CreditBalance";
-import { LoadingIndicator } from "../loading-indicator";
-import styles from "./CreditHistory.module.css";
+import { useEffect, useState } from 'react';
+import type { CreditActivity } from '@/lib/sprite-credits';
+import { CREDIT_CHANGE_EVENT } from '../credit-balance/CreditBalance';
+import { LoadingIndicator } from '../loading-indicator';
+import styles from './CreditHistory.module.css';
 
 const statusCopy = {
-  completed: "Completed",
-  refunded: "Refunded",
-  reserved: "Processing",
+  completed: 'Completed',
+  refunded: 'Refunded',
+  reserved: 'Processing',
 } as const;
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
+    dateStyle: 'medium',
+    timeStyle: 'short',
   }).format(new Date(value));
 
 const CreditHistory = () => {
@@ -30,7 +30,7 @@ const CreditHistory = () => {
     const loadActivity = async () => {
       try {
         setError(null);
-        const response = await fetch("/api/credits/history", {
+        const response = await fetch('/api/credits/history', {
           signal: controller.signal,
         });
         const payload = (await response.json()) as {
@@ -39,25 +39,16 @@ const CreditHistory = () => {
         };
 
         if (!response.ok || !Array.isArray(payload.activity)) {
-          throw new Error(
-            payload.error ?? "Could not load your credit activity.",
-          );
+          throw new Error(payload.error ?? 'Could not load your credit activity.');
         }
 
         setActivity(payload.activity);
       } catch (loadError) {
-        if (
-          loadError instanceof DOMException &&
-          loadError.name === "AbortError"
-        ) {
+        if (loadError instanceof DOMException && loadError.name === 'AbortError') {
           return;
         }
 
-        setError(
-          loadError instanceof Error
-            ? loadError.message
-            : "Could not load your credit activity.",
-        );
+        setError(loadError instanceof Error ? loadError.message : 'Could not load your credit activity.');
       }
     };
 
@@ -83,9 +74,7 @@ const CreditHistory = () => {
       </div>
 
       <div className={styles.panel}>
-        {activity === null && !error ? (
-          <LoadingIndicator compact label="Loading activity..." />
-        ) : null}
+        {activity === null && !error ? <LoadingIndicator compact label="Loading activity..." /> : null}
         {error ? (
           <Typography
             variant="p"
@@ -100,14 +89,7 @@ const CreditHistory = () => {
           </Typography>
         ) : null}
         {activity?.length === 0 ? (
-          <Typography
-            variant="p"
-            color="primary-light"
-            lineHeight={1.45}
-            margin={0}
-            padding="10px 4px"
-            size="small"
-          >
+          <Typography variant="p" color="primary-light" lineHeight={1.45} margin={0} padding="10px 4px" size="small">
             Your completed and refunded generations will appear here.
           </Typography>
         ) : null}
@@ -116,22 +98,15 @@ const CreditHistory = () => {
             {activity.map((entry) => (
               <li key={entry.id}>
                 <div>
-                  <Typography variant="strong">
-                    {entry.quality} quality sprite
-                  </Typography>
-                  <Typography variant="span">
-                    {formatDate(entry.occurredAt)}
-                  </Typography>
+                  <Typography variant="strong">{entry.quality} quality sprite</Typography>
+                  <Typography variant="span">{formatDate(entry.occurredAt)}</Typography>
                 </div>
                 <div className={styles.eventMeta}>
-                  <Typography
-                    variant="span"
-                    className={`${styles.status} ${styles[entry.status]}`}
-                  >
+                  <Typography variant="span" className={`${styles.status} ${styles[entry.status]}`}>
                     {statusCopy[entry.status]}
                   </Typography>
                   <Typography variant="b">
-                    {entry.status === "refunded" ? "+" : "-"}
+                    {entry.status === 'refunded' ? '+' : '-'}
                     {entry.creditCost} credits
                   </Typography>
                 </div>

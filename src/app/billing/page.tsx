@@ -1,75 +1,72 @@
-import Typography from "../Components/shared/Typography";
-import { TopBar } from "../Components/top-bar";
-import { CreditHistory } from "../Components/credit-history";
-import { CheckoutButton } from "../Components/checkout-button";
-import {
-  BillingProductId,
-  isStripeProductConfigured,
-} from "@/lib/billing-products";
-import styles from "./page.module.css";
-import { auth } from "@/auth";
-import { isEmailAllowed } from "@/lib/allowed-emails";
-import { isAuthConfigured } from "@/lib/auth-config";
-import { redirect } from "next/navigation";
+import Typography from '../Components/shared/Typography';
+import { TopBar } from '../Components/top-bar';
+import { CreditHistory } from '../Components/credit-history';
+import { CheckoutButton } from '../Components/checkout-button';
+import { BillingProductId, isStripeProductConfigured } from '@/lib/billing-products';
+import styles from './page.module.css';
+import { auth } from '@/auth';
+import { isEmailAllowed } from '@/lib/allowed-emails';
+import { isAuthConfigured } from '@/lib/auth-config';
+import { redirect } from 'next/navigation';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 const creditPacks = [
   {
     credits: 100,
-    price: "$4.99",
-    note: "For occasional projects",
+    price: '$4.99',
+    note: 'For occasional projects',
     id: BillingProductId.pack100,
   },
   {
     credits: 400,
-    price: "$14.99",
-    note: "Best value for regular creation",
+    price: '$14.99',
+    note: 'Best value for regular creation',
     featured: true,
     id: BillingProductId.pack400,
   },
   {
     credits: 1000,
-    price: "$29.99",
-    note: "For larger asset batches",
+    price: '$29.99',
+    note: 'For larger asset batches',
     id: BillingProductId.pack1000,
   },
 ];
 
 const subscriptions = [
   {
-    name: "Hobby",
-    price: "$9",
+    name: 'Hobby',
+    price: '$9',
     credits: 250,
-    storage: "250 MB storage",
+    storage: '250 MB storage',
     id: BillingProductId.hobby,
   },
   {
-    name: "Creator",
-    price: "$19",
+    name: 'Creator',
+    price: '$19',
     credits: 700,
-    storage: "1 GB storage",
+    storage: '1 GB storage',
     featured: true,
     id: BillingProductId.creator,
   },
   {
-    name: "Studio",
-    price: "$49",
+    name: 'Studio',
+    price: '$49',
     credits: 2000,
-    storage: "5 GB storage",
+    storage: '5 GB storage',
     id: BillingProductId.studio,
   },
 ];
 
 export default async function BillingPage() {
   if (!isAuthConfigured()) {
-    redirect("/");
+    redirect('/');
   }
 
   const session = await auth();
 
   if (!session?.user || !isEmailAllowed(session.user.email)) {
-    redirect("/");
+    redirect('/');
   }
 
   return (
@@ -82,20 +79,15 @@ export default async function BillingPage() {
           </Typography>
           <Typography variant="h1">More sprites, on your terms.</Typography>
           <Typography variant="p">
-            Use credits for every generation. Subscriptions replenish your
-            balance monthly, while credit packs are there whenever a project
-            needs more.
+            Use credits for every generation. Subscriptions replenish your balance monthly, while credit packs are there
+            whenever a project needs more.
           </Typography>
           <div className={styles.notice} role="status">
-            Payments are completed securely in Stripe Checkout. Credits are
-            added after payment is confirmed.
+            Payments are completed securely in Stripe Checkout. Credits are added after payment is confirmed.
           </div>
         </section>
 
-        <section
-          aria-labelledby="quality-heading"
-          className={styles.qualitySection}
-        >
+        <section aria-labelledby="quality-heading" className={styles.qualitySection}>
           <div>
             <Typography variant="p" className={styles.eyebrow}>
               CREDIT COST
@@ -130,16 +122,11 @@ export default async function BillingPage() {
                 Credit packs
               </Typography>
             </div>
-            <Typography variant="p">
-              Purchased credits do not expire.
-            </Typography>
+            <Typography variant="p">Purchased credits do not expire.</Typography>
           </div>
           <div className={styles.grid}>
             {creditPacks.map((pack) => (
-              <article
-                className={`${styles.card} ${pack.featured ? styles.featured : ""}`}
-                key={pack.credits}
-              >
+              <article className={`${styles.card} ${pack.featured ? styles.featured : ''}`} key={pack.credits}>
                 {pack.featured ? (
                   <Typography variant="span" className={styles.badge}>
                     POPULAR
@@ -150,10 +137,7 @@ export default async function BillingPage() {
                   {pack.price}
                 </Typography>
                 <Typography variant="p">{pack.note}</Typography>
-                <CheckoutButton
-                  available={isStripeProductConfigured(pack.id)}
-                  productId={pack.id}
-                >
+                <CheckoutButton available={isStripeProductConfigured(pack.id)} productId={pack.id}>
                   Buy credits
                 </CheckoutButton>
               </article>
@@ -171,16 +155,11 @@ export default async function BillingPage() {
                 Keep your creative flow moving.
               </Typography>
             </div>
-            <Typography variant="p">
-              Unused monthly credits roll over for one month.
-            </Typography>
+            <Typography variant="p">Unused monthly credits roll over for one month.</Typography>
           </div>
           <div className={styles.grid}>
             {subscriptions.map((plan) => (
-              <article
-                className={`${styles.card} ${plan.featured ? styles.featured : ""}`}
-                key={plan.name}
-              >
+              <article className={`${styles.card} ${plan.featured ? styles.featured : ''}`} key={plan.name}>
                 {plan.featured ? (
                   <Typography variant="span" className={styles.badge}>
                     RECOMMENDED
@@ -196,10 +175,7 @@ export default async function BillingPage() {
                   <li>{plan.storage}</li>
                   <li>Credit-pack top-ups available</li>
                 </ul>
-                <CheckoutButton
-                  available={isStripeProductConfigured(plan.id)}
-                  productId={plan.id}
-                >
+                <CheckoutButton available={isStripeProductConfigured(plan.id)} productId={plan.id}>
                   Choose {plan.name}
                 </CheckoutButton>
               </article>

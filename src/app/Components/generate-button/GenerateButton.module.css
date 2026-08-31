@@ -13,7 +13,10 @@
   box-shadow: 0 3px 0 var(--primary-muted);
   color: var(--foreground);
   cursor: pointer;
-  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .button:hover:not(:disabled) {

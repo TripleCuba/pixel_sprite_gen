@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   SPRITE_QUALITY_DETAILS,
   SpriteGenerationQuality,
   type SpriteGenerationQuality as SpriteGenerationQualityValue,
-} from "@/lib/sprite-quality";
-import { LoadingIndicator } from "../loading-indicator";
-import styles from "./GenerationQuality.module.css";
+} from '@/lib/sprite-quality';
+import { LoadingIndicator } from '../loading-indicator';
+import styles from './GenerationQuality.module.css';
 
 type GenerationQualityProps = {
   disabled?: boolean;
@@ -20,12 +20,7 @@ type GenerationQualityProps = {
 
 const qualityOptions = Object.values(SpriteGenerationQuality);
 
-const GenerationQuality = ({
-  disabled = false,
-  onChange,
-  refreshKey,
-  value,
-}: GenerationQualityProps) => {
+const GenerationQuality = ({ disabled = false, onChange, refreshKey, value }: GenerationQualityProps) => {
   const [balance, setBalance] = useState<number | null>(null);
   const [isUnlimited, setIsUnlimited] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +32,7 @@ const GenerationQuality = ({
       setError(null);
 
       try {
-        const response = await fetch("/api/credits", {
+        const response = await fetch('/api/credits', {
           signal: controller.signal,
         });
         const payload = (await response.json()) as {
@@ -46,27 +41,18 @@ const GenerationQuality = ({
           isUnlimited?: boolean;
         };
 
-        if (!response.ok || typeof payload.balance !== "number") {
-          throw new Error(
-            payload.error ?? "Could not load your credit balance.",
-          );
+        if (!response.ok || typeof payload.balance !== 'number') {
+          throw new Error(payload.error ?? 'Could not load your credit balance.');
         }
 
         setBalance(payload.balance);
         setIsUnlimited(payload.isUnlimited === true);
       } catch (loadError) {
-        if (
-          loadError instanceof DOMException &&
-          loadError.name === "AbortError"
-        ) {
+        if (loadError instanceof DOMException && loadError.name === 'AbortError') {
           return;
         }
 
-        setError(
-          loadError instanceof Error
-            ? loadError.message
-            : "Could not load your credit balance.",
-        );
+        setError(loadError instanceof Error ? loadError.message : 'Could not load your credit balance.');
       }
     };
 
@@ -79,13 +65,9 @@ const GenerationQuality = ({
     <fieldset className={styles.quality} disabled={disabled}>
       <Typography variant="legend">Generation Quality</Typography>
       <div className={styles.balance}>
-        {balance === null && !error ? (
-          <LoadingIndicator compact label="Loading credits..." />
-        ) : null}
+        {balance === null && !error ? <LoadingIndicator compact label="Loading credits..." /> : null}
         {balance !== null ? (
-          <Typography variant="strong">
-            {isUnlimited ? "Unlimited credits" : `${balance} credits available`}
-          </Typography>
+          <Typography variant="strong">{isUnlimited ? 'Unlimited credits' : `${balance} credits available`}</Typography>
         ) : null}
         {error ? (
           <Typography variant="span" role="alert">
@@ -96,16 +78,15 @@ const GenerationQuality = ({
       <div className={styles.options}>
         {qualityOptions.map((quality) => {
           const details = SPRITE_QUALITY_DETAILS[quality];
-          const isUnavailable =
-            !isUnlimited && balance !== null && balance < details.creditCost;
+          const isUnavailable = !isUnlimited && balance !== null && balance < details.creditCost;
 
           return (
             <Typography
               variant="label"
               key={quality}
               className={`${styles.option} ${
-                value === quality ? styles.optionSelected : ""
-              } ${isUnavailable ? styles.optionUnavailable : ""}`}
+                value === quality ? styles.optionSelected : ''
+              } ${isUnavailable ? styles.optionUnavailable : ''}`}
             >
               <input
                 type="radio"

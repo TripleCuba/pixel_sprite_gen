@@ -1,6 +1,6 @@
-import Typography from "../shared/Typography";
-import { signInWithGoogle } from "@/app/actions/auth";
-import styles from "./LoginScreen.module.css";
+import Typography from '../shared/Typography';
+import { signInWithGoogle } from '@/app/actions/auth';
+import styles from './LoginScreen.module.css';
 
 type LoginScreenProps = {
   isAccessDenied: boolean;
@@ -16,18 +16,11 @@ const PixelStar = () => (
   </svg>
 );
 
-const LoginScreen = ({
-  isAccessDenied,
-  isAuthConfigured,
-}: LoginScreenProps) => (
+const LoginScreen = ({ isAccessDenied, isAuthConfigured }: LoginScreenProps) => (
   <section className={styles.hero} aria-labelledby="login-title">
     <div className={styles.copy}>
       <Typography variant="span" className={styles.kicker}>
-        <Typography
-          variant="span"
-          aria-hidden="true"
-          className={styles.kickerSpark}
-        >
+        <Typography variant="span" aria-hidden="true" className={styles.kickerSpark}>
           ✦
         </Typography>
         A creative home for pixel artists
@@ -36,8 +29,7 @@ const LoginScreen = ({
         Forge assets with <Typography variant="span">intent.</Typography>
       </Typography>
       <Typography variant="p" className={styles.description}>
-        Shape game-ready pixel art with focused controls, useful references, and
-        clean transparent exports.
+        Shape game-ready pixel art with focused controls, useful references, and clean transparent exports.
       </Typography>
       <ul className={styles.features}>
         <li>
@@ -56,17 +48,12 @@ const LoginScreen = ({
       <div className={styles.actionArea}>
         {isAccessDenied ? (
           <Typography variant="p" className={styles.accessDenied} role="alert">
-            This Google account is not approved. Sign out above, then use an
-            allowlisted account.
+            This Google account is not approved. Sign out above, then use an allowlisted account.
           </Typography>
         ) : isAuthConfigured ? (
           <form action={signInWithGoogle}>
-            <button className={styles.googleButton} type="submit">
-              <Typography
-                variant="span"
-                aria-hidden="true"
-                className={styles.googleMark}
-              >
+            <button type="submit" className={styles.googleButton}>
+              <Typography variant="span" aria-hidden="true" className={styles.googleMark}>
                 G
               </Typography>
               Enter the forge with Google
@@ -74,10 +61,8 @@ const LoginScreen = ({
           </form>
         ) : (
           <Typography variant="p" className={styles.setupNotice} role="status">
-            Google sign-in needs the OAuth and{" "}
-            <Typography variant="code">ALLOWED_EMAILS</Typography> values in
-            <Typography variant="code">.env.local</Typography> before it can be
-            enabled.
+            Google sign-in needs the OAuth and <Typography variant="code">ALLOWED_EMAILS</Typography> values in
+            <Typography variant="code">.env.local</Typography> before it can be enabled.
           </Typography>
         )}
         <Typography variant="span" className={styles.note}>
@@ -98,48 +83,30 @@ const LoginScreen = ({
             <Typography variant="span" className={styles.stepNumber}>
               01
             </Typography>
-            <Typography
-              variant="span"
-              aria-hidden="true"
-              className={`${styles.stepGlyph} ${styles.promptGlyph}`}
-            />
+            <Typography variant="span" aria-hidden="true" className={`${styles.stepGlyph} ${styles.promptGlyph}`} />
             <div>
               <Typography variant="h2">Describe</Typography>
-              <Typography variant="p">
-                Start with a clear creative direction.
-              </Typography>
+              <Typography variant="p">Start with a clear creative direction.</Typography>
             </div>
           </li>
           <li>
             <Typography variant="span" className={styles.stepNumber}>
               02
             </Typography>
-            <Typography
-              variant="span"
-              aria-hidden="true"
-              className={`${styles.stepGlyph} ${styles.viewGlyph}`}
-            />
+            <Typography variant="span" aria-hidden="true" className={`${styles.stepGlyph} ${styles.viewGlyph}`} />
             <div>
               <Typography variant="h2">Direct</Typography>
-              <Typography variant="p">
-                Choose the view and reference style.
-              </Typography>
+              <Typography variant="p">Choose the view and reference style.</Typography>
             </div>
           </li>
           <li>
             <Typography variant="span" className={styles.stepNumber}>
               03
             </Typography>
-            <Typography
-              variant="span"
-              aria-hidden="true"
-              className={`${styles.stepGlyph} ${styles.exportGlyph}`}
-            />
+            <Typography variant="span" aria-hidden="true" className={`${styles.stepGlyph} ${styles.exportGlyph}`} />
             <div>
               <Typography variant="h2">Export</Typography>
-              <Typography variant="p">
-                Get a transparent, game-ready PNG.
-              </Typography>
+              <Typography variant="p">Get a transparent, game-ready PNG.</Typography>
             </div>
           </li>
         </ol>

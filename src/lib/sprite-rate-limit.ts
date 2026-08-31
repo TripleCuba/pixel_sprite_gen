@@ -1,12 +1,12 @@
-import { createHmac } from "crypto";
+import { createHmac } from 'crypto';
 
 const getClientIp = (request: Request) => {
   const forwarded =
-    request.headers.get("x-vercel-forwarded-for") ??
-    request.headers.get("x-forwarded-for") ??
-    request.headers.get("x-real-ip");
+    request.headers.get('x-vercel-forwarded-for') ??
+    request.headers.get('x-forwarded-for') ??
+    request.headers.get('x-real-ip');
 
-  return forwarded?.split(",")[0]?.trim() || null;
+  return forwarded?.split(',')[0]?.trim() || null;
 };
 
 export const getClientFingerprint = (request: Request) => {
@@ -17,5 +17,5 @@ export const getClientFingerprint = (request: Request) => {
     return null;
   }
 
-  return createHmac("sha256", secret).update(ip).digest("hex");
+  return createHmac('sha256', secret).update(ip).digest('hex');
 };

@@ -1,22 +1,16 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
-import {
-  useId,
-  useRef,
-  useState,
-  type ChangeEvent,
-  type DragEvent,
-} from "react";
-import { Upload } from "lucide-react";
-import styles from "./FileUpload.module.css";
-import type { FileUploadAreaProps } from "./types";
+import { useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { Upload } from 'lucide-react';
+import styles from './FileUpload.module.css';
+import type { FileUploadAreaProps } from './types';
 
 const FileUploadArea = ({
   label,
   onFilesChange,
-  accept = "image/*",
+  accept = 'image/*',
   multiple = true,
   maxFiles,
 }: FileUploadAreaProps) => {
@@ -36,7 +30,7 @@ const FileUploadArea = ({
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     updateFiles(event.target.files);
-    event.target.value = "";
+    event.target.value = '';
   };
 
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
@@ -47,16 +41,11 @@ const FileUploadArea = ({
 
   return (
     <div className={styles.area}>
-      <Typography
-        variant="p"
-        color="foreground"
-        id={`${inputId}-label`}
-        margin={0}
-      >
+      <Typography variant="p" color="foreground" id={`${inputId}-label`} margin={0}>
         {label}
       </Typography>
       <div
-        className={`${styles.dropzone}${isDragging ? ` ${styles.dropzoneDragging}` : ""}`}
+        className={`${styles.dropzone}${isDragging ? ` ${styles.dropzoneDragging}` : ''}`}
         onDragEnter={(event) => {
           event.preventDefault();
           setIsDragging(true);
@@ -80,14 +69,10 @@ const FileUploadArea = ({
           aria-labelledby={`${inputId}-label`}
           onClick={() => inputRef.current?.click()}
         >
-          <Typography
-            variant="span"
-            aria-hidden="true"
-            className={styles.uploadIcon}
-          >
+          <Typography variant="span" aria-hidden="true" className={styles.uploadIcon}>
             <Upload size={24} strokeWidth={2} />
           </Typography>
-          Drop files here or{" "}
+          Drop files here or{' '}
           <Typography variant="span" color="primary-light">
             browse
           </Typography>

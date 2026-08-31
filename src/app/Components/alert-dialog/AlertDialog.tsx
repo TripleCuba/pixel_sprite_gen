@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
-import { useId } from "react";
-import { Modal } from "../modal";
-import styles from "./AlertDialog.module.css";
+import { useId } from 'react';
+import { Modal } from '../modal';
+import styles from './AlertDialog.module.css';
 
 type AlertDialogProps = {
   cancelLabel?: string;
@@ -17,7 +17,7 @@ type AlertDialogProps = {
 };
 
 const AlertDialog = ({
-  cancelLabel = "Cancel",
+  cancelLabel = 'Cancel',
   confirmLabel,
   description,
   isConfirming = false,
@@ -44,21 +44,11 @@ const AlertDialog = ({
         {description}
       </Typography>
       <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.cancel}
-          disabled={isConfirming}
-          onClick={onClose}
-        >
+        <button type="button" className={styles.cancel} disabled={isConfirming} onClick={onClose}>
           {cancelLabel}
         </button>
-        <button
-          type="button"
-          className={styles.confirm}
-          disabled={isConfirming}
-          onClick={onConfirm}
-        >
-          {isConfirming ? "Deleting..." : confirmLabel}
+        <button type="button" className={styles.confirm} disabled={isConfirming} onClick={onConfirm}>
+          {isConfirming ? 'Deleting...' : confirmLabel}
         </button>
       </div>
     </Modal>

@@ -1,1 +1,1 @@
-export { default as AssetNameDialog } from "./AssetNameDialog";
+export { default as AssetNameDialog } from './AssetNameDialog';

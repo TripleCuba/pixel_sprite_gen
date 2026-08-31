@@ -1,0 +1,276 @@
+{
+  "metadata": {
+    "title": "SpriteForge — Pixel Sprite Generator",
+    "description": "Forge pixel-perfect, game-ready sprite assets from your ideas."
+  },
+  "common": {
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "close_dialog": "Close dialog",
+    "close_preview": "Close preview",
+    "collapse": "Collapse",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "download": "Download",
+    "downloading": "Downloading...",
+    "expand": "Expand",
+    "loading": "Loading...",
+    "save_name": "Save name",
+    "saving": "Saving...",
+    "select_all": "Select all",
+    "coming_soon": "Coming soon"
+  },
+  "top_bar": {
+    "home_label": "SpriteForge home",
+    "brand_sprite": "Sprite",
+    "brand_forge": "Forge",
+    "google_user": "Google user",
+    "plans": "Plans",
+    "sign_out": "Sign out",
+    "sign_in_with_google": "Sign in with Google",
+    "sign_in_setup_required": "Sign-in setup required",
+    "credits_loading": "Credits...",
+    "unlimited_credits": "Unlimited credits",
+    "credits": "{{count}} credits"
+  },
+  "login": {
+    "kicker": "A creative home for pixel artists",
+    "heading": "Forge assets with intent.",
+    "description": "Shape game-ready pixel art with focused controls, useful references, and clean transparent exports.",
+    "feature_png_exports": "Pixel-snapped transparent PNG exports",
+    "feature_references": "References for a consistent visual style",
+    "feature_asset_types": "Built for characters, items, terrain, and more",
+    "access_denied": "This Google account is not approved. Sign out above, then use an allowlisted account.",
+    "sign_in": "Enter the forge with Google",
+    "sign_in_setup": "Google sign-in needs the OAuth and ALLOWED_EMAILS values in .env.local before it can be enabled.",
+    "invite_only": "Your workspace is invite-only.",
+    "workflow": {
+      "title": "Forge workflow",
+      "range": "01—03",
+      "describe": {
+        "title": "Describe",
+        "description": "Start with a clear creative direction."
+      },
+      "direct": {
+        "title": "Direct",
+        "description": "Choose the view and reference style."
+      },
+      "export": {
+        "title": "Export",
+        "description": "Get a transparent, game-ready PNG."
+      },
+      "footer": "From prompt to pixel"
+    }
+  },
+  "generator": {
+    "title": "Image Generator",
+    "sprite_type": "Sprite Type",
+    "camera_view": "Camera view",
+    "generation_quality": "Generation Quality",
+    "asset_title_optional": "Asset title (optional)",
+    "asset_title_placeholder": "e.g. Forest ranger",
+    "describe_sprite": "Describe your sprite",
+    "reference_files": "Reference files",
+    "drop_files": "Drop files here or browse",
+    "selected_reference_files": "Selected reference files",
+    "generate": "Generate Sprite",
+    "generating": "Generating...",
+    "generating_sprite": "Generating sprite",
+    "preparing_request": "Preparing your request...",
+    "checking_availability": "Checking your prompt and generation availability.",
+    "progress_complete": "{{progress}}% complete",
+    "generated_sprite": "Generated sprite",
+    "generated_sprite_preview": "Generated sprite preview",
+    "open_generated_sprite_preview": "Open generated sprite preview",
+    "generated_pixel_sprite": "Generated pixel sprite",
+    "default_download_filename": "sprite.png"
+  },
+  "sprite_types": {
+    "character": "Character",
+    "building": "Building",
+    "item": "Item",
+    "terrain": "Terrain",
+    "other": "Other"
+  },
+  "sprite_views": {
+    "three_quarter": {
+      "label": "Three-quarter",
+      "description": "Depth with a readable gameplay silhouette."
+    },
+    "side": {
+      "label": "Side",
+      "description": "Profile view for side-scrolling action."
+    },
+    "front": {
+      "label": "Front",
+      "description": "Straight-on, balanced presentation."
+    },
+    "top_down": {
+      "label": "Top-down",
+      "description": "Overhead view for maps and tactics."
+    },
+    "isometric": {
+      "label": "Isometric",
+      "description": "Angled overhead view for buildings and props."
+    }
+  },
+  "sprite_prompts": {
+    "character": "Armored ranger with an emerald cloak and steel bow",
+    "building": "Ancient stone watchtower with blue crystal windows",
+    "item": "Glowing health potion in a faceted glass vial",
+    "terrain": "Snow-capped mountain ridge with a pine forest",
+    "other": "Mystical portal with swirling violet energy"
+  },
+  "generation_quality": {
+    "available_credits": "{{count}} credits available",
+    "unlimited_credits": "Unlimited credits",
+    "credits": "{{count}} credits",
+    "low": {
+      "label": "Low",
+      "description": "Fast full-detail draft with a 48-colour palette."
+    },
+    "medium": {
+      "label": "Medium",
+      "description": "Polished full-detail sprite with a 64-colour palette."
+    },
+    "high": {
+      "label": "High",
+      "description": "Maximum model detail with a rich 96-colour palette."
+    }
+  },
+  "file_upload": {
+    "close_preview": "Close preview",
+    "preview_file": "Preview {{fileName}}",
+    "remove_file": "Remove {{fileName}}",
+    "bytes": "{{size}} B",
+    "kilobytes": "{{size}} KB",
+    "megabytes": "{{size}} MB"
+  },
+  "saved_assets": {
+    "library_label": "Asset library",
+    "heading": "All created assets",
+    "description": "Browse every sprite you have generated.",
+    "back_to_generator": "Back to generator",
+    "select_all_loaded": "Select all loaded",
+    "selected": "{{count}} selected",
+    "loading_assets": "Loading assets...",
+    "empty": "Your generated assets will appear here.",
+    "select_all_type": "Select all {{spriteType}} assets",
+    "expand_type": "Expand {{spriteType}} assets",
+    "collapse_type": "Collapse {{spriteType}} assets",
+    "select_sprite": "Select {{spriteName}} sprite",
+    "sprite_type": "Sprite type: {{spriteType}}",
+    "rename_sprite": "Rename {{spriteName}} sprite",
+    "load_more": "Load more assets",
+    "delete_selected_one": "Delete {{count}} selected asset?",
+    "delete_selected_other": "Delete {{count}} selected assets?",
+    "delete_selected_confirm_one": "Delete {{count}} asset",
+    "delete_selected_confirm_other": "Delete {{count}} assets",
+    "bulk_delete_description": "This permanently removes the selected images from your library and releases their storage space. This cannot be undone.",
+    "download_archive_filename": "sprites.zip"
+  },
+  "sprite_history": {
+    "label": "Created sprites",
+    "expand_sidebar_label": "Expand created sprites sidebar",
+    "expand_sidebar_title": "Expand created sprites",
+    "collapse_sidebar_label": "Collapse created sprites sidebar",
+    "collapse_sidebar_title": "Collapse created sprites",
+    "heading": "Created",
+    "select_all": "Select all created sprites",
+    "showing": "Showing {{shown}} of {{total}}",
+    "download_selected": "Download {{count}}",
+    "delete_selected": "Delete {{count}}",
+    "loading": "Loading sprites...",
+    "empty": "Your saved sprites will appear here.",
+    "open_sprite": "Open {{spriteName}} sprite",
+    "select_sprite": "Select {{spriteName}} sprite",
+    "sprite_alt": "{{spriteName}} sprite",
+    "sprite_type": "Sprite type: {{spriteType}}",
+    "download_sprite": "Download {{spriteName}} sprite",
+    "download_sprite_title": "Download {{spriteName}}",
+    "rename_sprite": "Rename {{spriteName}} sprite",
+    "rename_sprite_title": "Rename {{spriteName}}",
+    "delete_sprite": "Delete {{spriteType}} sprite",
+    "view_all": "View all",
+    "delete_saved_title": "Delete saved sprite?",
+    "delete_saved_description": "This permanently removes the image from your library and releases its storage space. This cannot be undone.",
+    "delete_saved_confirm": "Delete sprite",
+    "delete_saved_multiple_title_one": "Delete {{count}} saved sprite?",
+    "delete_saved_multiple_title_other": "Delete {{count}} saved sprites?",
+    "delete_saved_multiple_confirm_one": "Delete {{count}} sprite",
+    "delete_saved_multiple_confirm_other": "Delete {{count}} sprites"
+  },
+  "asset_name_dialog": {
+    "backdrop_label": "Close rename asset dialog",
+    "eyebrow": "Saved asset",
+    "title": "Name this asset",
+    "field_label": "Asset title",
+    "empty_title_help": "Leave it empty to use “{{spriteType}}” instead.",
+    "character_count": "{{count}}/120"
+  },
+  "credit_history": {
+    "eyebrow": "ACCOUNT ACTIVITY",
+    "heading": "Generation credit history",
+    "latest_events": "Latest 20 events",
+    "loading": "Loading activity...",
+    "empty": "Your completed and refunded generations will appear here.",
+    "quality_sprite": "{{quality}} quality sprite",
+    "credits": "{{count}} credits",
+    "completed": "Completed",
+    "refunded": "Refunded",
+    "processing": "Processing"
+  },
+  "billing": {
+    "eyebrow": "SPRITESMITH PLANS",
+    "heading": "More sprites, on your terms.",
+    "description": "Use credits for every generation. Subscriptions replenish your balance monthly, while credit packs are there whenever a project needs more.",
+    "payment_notice": "Payments are completed securely in Stripe Checkout. Credits are added after payment is confirmed.",
+    "credit_cost_eyebrow": "CREDIT COST",
+    "credit_cost_heading": "Choose the detail you need.",
+    "draft": "Draft",
+    "standard": "Standard",
+    "high": "High",
+    "credit_one": "{{count}} credit",
+    "credit_other": "{{count}} credits",
+    "flexible_use": "FLEXIBLE USE",
+    "credit_packs": "Credit packs",
+    "credit_packs_description": "Purchased credits do not expire.",
+    "popular": "POPULAR",
+    "pack_100_note": "For occasional projects",
+    "pack_400_note": "Best value for regular creation",
+    "pack_1000_note": "For larger asset batches",
+    "buy_credits": "Buy credits",
+    "monthly_plans": "MONTHLY PLANS",
+    "monthly_plans_heading": "Keep your creative flow moving.",
+    "monthly_plans_description": "Unused monthly credits roll over for one month.",
+    "recommended": "RECOMMENDED",
+    "hobby": "Hobby",
+    "creator": "Creator",
+    "studio": "Studio",
+    "per_month": "/month",
+    "credits_each_month": "{{count}} credits each month",
+    "storage_250mb": "250 MB storage",
+    "storage_1gb": "1 GB storage",
+    "storage_5gb": "5 GB storage",
+    "top_ups_available": "Credit-pack top-ups available",
+    "choose_plan": "Choose {{planName}}",
+    "opening_checkout": "Opening Checkout..."
+  },
+  "errors": {
+    "generate_sprite": "Could not generate a sprite.",
+    "generation_empty_response": "The generation service returned an empty response.",
+    "generation_missing_image": "The generation service finished without an image.",
+    "load_saved_sprites": "Could not load saved sprites.",
+    "delete_saved_sprite": "Could not delete the saved sprite.",
+    "delete_selected_sprites": "Could not delete the selected sprites.",
+    "delete_selected_sprite_failure_one": "{{count}} selected sprite could not be deleted.",
+    "delete_selected_sprite_failure_other": "{{count}} selected sprites could not be deleted.",
+    "download_selected_sprites": "Could not download the selected sprites.",
+    "rename_saved_sprite": "Could not rename the saved sprite.",
+    "delete_selected_asset_failure_one": "{{count}} selected asset could not be deleted.",
+    "delete_selected_asset_failure_other": "{{count}} selected assets could not be deleted.",
+    "load_credit_activity": "Could not load your credit activity.",
+    "load_credit_balance": "Could not load your credit balance.",
+    "start_checkout": "Could not start Stripe Checkout."
+  }
+}

@@ -34,7 +34,7 @@
   left: 50%;
   width: 1px;
   background: var(--border);
-  content: "";
+  content: '';
 }
 
 .controls {

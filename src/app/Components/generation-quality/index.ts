@@ -1,1 +1,1 @@
-export { default as GenerationQuality } from "./GenerationQuality";
+export { default as GenerationQuality } from './GenerationQuality';

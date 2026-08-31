@@ -6,5 +6,5 @@ export type TextFieldProps = {
   multiline?: boolean;
   maxLength?: number;
   rows?: number;
-  type?: "email" | "password" | "search" | "text" | "url";
+  type?: 'email' | 'password' | 'search' | 'text' | 'url';
 };

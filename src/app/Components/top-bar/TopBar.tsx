@@ -1,10 +1,10 @@
-import Typography from "../shared/Typography";
-import { signInWithGoogle, signOutUser } from "@/app/actions/auth";
-import logo from "@/assets/images/spriteforge-logo-topbar.png";
-import Image from "next/image";
-import Link from "next/link";
-import { CreditBalance } from "../credit-balance";
-import styles from "./TopBar.module.css";
+import Typography from '../shared/Typography';
+import { signInWithGoogle, signOutUser } from '@/app/actions/auth';
+import logo from '@/assets/images/spriteforge-logo-topbar.png';
+import Image from 'next/image';
+import Link from 'next/link';
+import { CreditBalance } from '../credit-balance';
+import styles from './TopBar.module.css';
 
 type TopBarProps = {
   isAuthConfigured: boolean;
@@ -18,11 +18,7 @@ const TopBar = ({ isAuthConfigured, user }: TopBarProps) => (
   <header className={styles.bar}>
     <div className={styles.content}>
       <Link className={styles.brand} href="/" aria-label="SpriteForge home">
-        <Typography
-          variant="span"
-          aria-hidden="true"
-          className={styles.brandMarkFrame}
-        >
+        <Typography variant="span" aria-hidden="true" className={styles.brandMarkFrame}>
           <Image alt="" className={styles.brandMark} priority src={logo} />
         </Typography>
         <Typography variant="span" className={styles.brandText}>
@@ -38,7 +34,7 @@ const TopBar = ({ isAuthConfigured, user }: TopBarProps) => (
         {user ? (
           <>
             <Typography variant="span" className={styles.userName}>
-              {user.name ?? user.email ?? "Google user"}
+              {user.name ?? user.email ?? 'Google user'}
             </Typography>
             <CreditBalance />
             <Link className={styles.plansLink} href="/billing">

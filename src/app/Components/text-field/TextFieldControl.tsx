@@ -1,8 +1,8 @@
-import type { ChangeEvent } from "react";
-import styles from "./TextField.module.css";
-import type { TextFieldProps } from "./types";
+import type { ChangeEvent } from 'react';
+import styles from './TextField.module.css';
+import type { TextFieldProps } from './types';
 
-type TextFieldControlProps = Omit<TextFieldProps, "label" | "onChange"> & {
+type TextFieldControlProps = Omit<TextFieldProps, 'label' | 'onChange'> & {
   inputId: string;
   onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
@@ -15,7 +15,7 @@ const TextFieldControl = ({
   multiline = false,
   maxLength,
   rows = 4,
-  type = "text",
+  type = 'text',
 }: TextFieldControlProps) => {
   if (multiline) {
     return (

@@ -165,7 +165,10 @@
     linear-gradient(rgb(77 96 126 / 16%) 1px, transparent 1px),
     linear-gradient(90deg, rgb(77 96 126 / 16%) 1px, transparent 1px),
     radial-gradient(circle at 50% 47%, rgb(124 58 237 / 24%), transparent 47%);
-  background-size: 24px 24px, 24px 24px, auto;
+  background-size:
+    24px 24px,
+    24px 24px,
+    auto;
 }
 
 .workflowPanel {
@@ -239,7 +242,7 @@
   width: 8px;
   height: 8px;
   border: 3px solid var(--accent);
-  content: "";
+  content: '';
 }
 
 .promptGlyph::after {
@@ -249,7 +252,7 @@
   width: 8px;
   height: 3px;
   background: var(--accent);
-  content: "";
+  content: '';
 }
 
 .viewGlyph::before {
@@ -259,8 +262,11 @@
   width: 6px;
   height: 6px;
   background: #e64ada;
-  box-shadow: 8px 0 0 #e64ada, 0 8px 0 #e64ada, 8px 8px 0 var(--accent);
-  content: "";
+  box-shadow:
+    8px 0 0 #e64ada,
+    0 8px 0 #e64ada,
+    8px 8px 0 var(--accent);
+  content: '';
 }
 
 .exportGlyph::before {
@@ -270,8 +276,10 @@
   width: 6px;
   height: 11px;
   background: #ffcb5d;
-  box-shadow: -4px 5px 0 #ffcb5d, 4px 5px 0 #ffcb5d;
-  content: "";
+  box-shadow:
+    -4px 5px 0 #ffcb5d,
+    4px 5px 0 #ffcb5d;
+  content: '';
 }
 
 .exportGlyph::after {
@@ -281,7 +289,7 @@
   left: 4px;
   height: 3px;
   background: #ffcb5d;
-  content: "";
+  content: '';
 }
 
 .workflowSteps h2 {
@@ -320,5 +328,4 @@
   .workflowPanel {
     width: min(82%, 340px);
   }
-
 }

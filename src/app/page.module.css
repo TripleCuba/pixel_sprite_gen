@@ -4,8 +4,16 @@
   min-height: 100vh;
   position: relative;
   background:
-    radial-gradient(circle at 15% 20%, rgb(124 58 237 / 17%), transparent 28rem),
-    radial-gradient(circle at 85% 72%, rgb(56 217 245 / 12%), transparent 25rem),
+    radial-gradient(
+      circle at 15% 20%,
+      rgb(124 58 237 / 17%),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 85% 72%,
+      rgb(56 217 245 / 12%),
+      transparent 25rem
+    ),
     var(--background);
 }
 

@@ -1,30 +1,26 @@
-import { createElement } from "react";
-import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
-import { typographyColorTokens, typographySizeTokens } from "./tokens";
-import type {
-  TypographyColorToken,
-  TypographySizeToken,
-  TypographyVariantToken,
-} from "./tokens";
+import { createElement } from 'react';
+import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
+import { typographyColorTokens, typographySizeTokens } from './tokens';
+import type { TypographyColorToken, TypographySizeToken, TypographyVariantToken } from './tokens';
 
 export type TypographyColor = TypographyColorToken;
 export type TypographySize = TypographySizeToken;
 export type TypographyVariant = TypographyVariantToken;
 
-type TypographyProps = Omit<HTMLAttributes<HTMLElement>, "color"> & {
-  align?: CSSProperties["textAlign"];
+type TypographyProps = Omit<HTMLAttributes<HTMLElement>, 'color'> & {
+  align?: CSSProperties['textAlign'];
   children?: ReactNode;
   color?: TypographyColor;
-  display?: CSSProperties["display"];
+  display?: CSSProperties['display'];
   htmlFor?: string;
-  letterSpacing?: CSSProperties["letterSpacing"];
-  lineHeight?: CSSProperties["lineHeight"];
-  margin?: CSSProperties["margin"];
-  padding?: CSSProperties["padding"];
+  letterSpacing?: CSSProperties['letterSpacing'];
+  lineHeight?: CSSProperties['lineHeight'];
+  margin?: CSSProperties['margin'];
+  padding?: CSSProperties['padding'];
   size?: TypographySize;
-  transform?: CSSProperties["textTransform"];
+  transform?: CSSProperties['textTransform'];
   variant: TypographyVariant;
-  weight?: CSSProperties["fontWeight"];
+  weight?: CSSProperties['fontWeight'];
 };
 
 const Typography = ({

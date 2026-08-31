@@ -1,55 +1,48 @@
-import { ZipArchive } from "archiver";
-import { Readable, PassThrough } from "stream";
-import { auth } from "@/auth";
-import { isEmailAllowed } from "@/lib/allowed-emails";
-import { isAuthConfigured } from "@/lib/auth-config";
-import {
-  downloadStoredSprite,
-  isSpriteStorageConfigured,
-  SpriteStorageError,
-} from "@/lib/sprite-storage";
+import { ZipArchive } from 'archiver';
+import { Readable, PassThrough } from 'stream';
+import { auth } from '@/auth';
+import { isEmailAllowed } from '@/lib/allowed-emails';
+import { isAuthConfigured } from '@/lib/auth-config';
+import { downloadStoredSprite, isSpriteStorageConfigured, SpriteStorageError } from '@/lib/sprite-storage';
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 
-const errorResponse = (message: string, status: number) =>
-  Response.json({ error: message }, { status });
+const errorResponse = (message: string, status: number) => Response.json({ error: message }, { status });
 
 const isUuid = (value: string) =>
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-    value,
-  );
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 
 const getArchiveFilename = (title: string) => {
   const name = title
-    .normalize("NFKD")
-    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, "")
+    .normalize('NFKD')
+    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, '')
     .trim()
-    .replace(/\.png$/i, "")
-    .replace(/\s+/g, " ")
+    .replace(/\.png$/i, '')
+    .replace(/\s+/g, ' ')
     .slice(0, 100);
 
-  return `${name || "sprite"}.png`;
+  return `${name || 'sprite'}.png`;
 };
 
 export async function POST(request: Request) {
   if (!isAuthConfigured()) {
-    return errorResponse("Authentication is not configured.", 503);
+    return errorResponse('Authentication is not configured.', 503);
   }
 
   const session = await auth();
 
   if (!session?.user?.email) {
-    return errorResponse("Sign in with Google to download saved sprites.", 401);
+    return errorResponse('Sign in with Google to download saved sprites.', 401);
   }
 
   const email = session.user.email;
 
   if (!isEmailAllowed(email)) {
-    return errorResponse("This account is not approved to download saved sprites.", 403);
+    return errorResponse('This account is not approved to download saved sprites.', 403);
   }
 
   if (!isSpriteStorageConfigured()) {
-    return errorResponse("Generated image storage is not configured.", 503);
+    return errorResponse('Generated image storage is not configured.', 503);
   }
 
   let spriteIds: unknown;
@@ -57,7 +50,7 @@ export async function POST(request: Request) {
   try {
     ({ spriteIds } = (await request.json()) as { spriteIds?: unknown });
   } catch {
-    return errorResponse("Sprite ids are required.", 400);
+    return errorResponse('Sprite ids are required.', 400);
   }
 
   if (
@@ -65,23 +58,21 @@ export async function POST(request: Request) {
     spriteIds.length === 0 ||
     spriteIds.length > 50 ||
     new Set(spriteIds).size !== spriteIds.length ||
-    spriteIds.some((id) => typeof id !== "string" || !isUuid(id))
+    spriteIds.some((id) => typeof id !== 'string' || !isUuid(id))
   ) {
-    return errorResponse("Provide between 1 and 50 unique valid sprite ids.", 400);
+    return errorResponse('Provide between 1 and 50 unique valid sprite ids.', 400);
   }
 
   try {
-    const sprites = await Promise.all(
-      spriteIds.map((spriteId) => downloadStoredSprite(email, spriteId)),
-    );
+    const sprites = await Promise.all(spriteIds.map((spriteId) => downloadStoredSprite(email, spriteId)));
 
     if (sprites.some((sprite) => sprite === null)) {
-      return errorResponse("One or more saved sprites could not be found.", 404);
+      return errorResponse('One or more saved sprites could not be found.', 404);
     }
 
     const output = new PassThrough();
     const archive = new ZipArchive({ zlib: { level: 9 } });
-    archive.on("error", (error) => output.destroy(error));
+    archive.on('error', (error) => output.destroy(error));
     archive.pipe(output);
 
     const filenameCounts = new Map<string, number>();
@@ -90,10 +81,7 @@ export async function POST(request: Request) {
       const filename = getArchiveFilename(sprite!.title ?? sprite!.spriteType);
       const filenameCount = (filenameCounts.get(filename) ?? 0) + 1;
       filenameCounts.set(filename, filenameCount);
-      const uniqueFilename =
-        filenameCount === 1
-          ? filename
-          : `${filename.slice(0, -4)}-${filenameCount}.png`;
+      const uniqueFilename = filenameCount === 1 ? filename : `${filename.slice(0, -4)}-${filenameCount}.png`;
 
       archive.append(sprite!.image, { name: uniqueFilename });
     });
@@ -101,9 +89,9 @@ export async function POST(request: Request) {
 
     return new Response(Readable.toWeb(output) as ReadableStream<Uint8Array>, {
       headers: {
-        "Cache-Control": "private, no-store",
-        "Content-Disposition": 'attachment; filename="sprites.zip"',
-        "Content-Type": "application/zip",
+        'Cache-Control': 'private, no-store',
+        'Content-Disposition': 'attachment; filename="sprites.zip"',
+        'Content-Type': 'application/zip',
       },
     });
   } catch (error) {
@@ -111,6 +99,6 @@ export async function POST(request: Request) {
       return errorResponse(error.message, 502);
     }
 
-    return errorResponse("Could not prepare the selected sprites for download.", 500);
+    return errorResponse('Could not prepare the selected sprites for download.', 500);
   }
 }

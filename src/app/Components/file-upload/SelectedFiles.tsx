@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import SelectedFileCard from "./SelectedFileCard";
-import styles from "./FileUpload.module.css";
-import type { SelectedFilesProps } from "./types";
+import SelectedFileCard from './SelectedFileCard';
+import styles from './FileUpload.module.css';
+import type { SelectedFilesProps } from './types';
 
 const SelectedFiles = ({ files, onRemove }: SelectedFilesProps) => {
   if (files.length === 0) {
@@ -10,7 +10,10 @@ const SelectedFiles = ({ files, onRemove }: SelectedFilesProps) => {
   }
 
   return (
-    <section className={styles.selectedFiles} aria-label="Selected reference files">
+    <section
+      className={styles.selectedFiles}
+      aria-label="Selected reference files"
+    >
       {files.map((file) => (
         <SelectedFileCard
           key={`${file.name}-${file.lastModified}`}

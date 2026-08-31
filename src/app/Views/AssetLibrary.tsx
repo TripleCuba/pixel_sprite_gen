@@ -1,24 +1,18 @@
-"use client";
+'use client';
 
-import Typography from "../Components/shared/Typography";
+import Typography from '../Components/shared/Typography';
 
 /* eslint-disable @next/next/no-img-element */
 
-import {
-  ChevronDown,
-  ChevronRight,
-  Download,
-  Pencil,
-  Trash2,
-} from "lucide-react";
-import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import type { StoredSprite } from "@/lib/sprite-storage";
-import { groupStoredSpritesByType } from "@/lib/sprite-groups";
-import { AlertDialog } from "../Components/alert-dialog";
-import { AssetNameDialog } from "../Components/asset-name-dialog";
-import { LoadingIndicator } from "../Components/loading-indicator";
-import styles from "./AssetLibrary.module.css";
+import { ChevronDown, ChevronRight, Download, Pencil, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { StoredSprite } from '@/lib/sprite-storage';
+import { groupStoredSpritesByType } from '@/lib/sprite-groups';
+import { AlertDialog } from '../Components/alert-dialog';
+import { AssetNameDialog } from '../Components/asset-name-dialog';
+import { LoadingIndicator } from '../Components/loading-indicator';
+import styles from './AssetLibrary.module.css';
 
 const PAGE_SIZE = 48;
 
@@ -30,20 +24,17 @@ type SpritePageResponse = {
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat(undefined, {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
   }).format(new Date(value));
 
 const fetchSpritePage = async (offset: number, signal?: AbortSignal) => {
-  const response = await fetch(
-    `/api/sprites?offset=${offset}&limit=${PAGE_SIZE}`,
-    { signal },
-  );
+  const response = await fetch(`/api/sprites?offset=${offset}&limit=${PAGE_SIZE}`, { signal });
   const payload = (await response.json()) as SpritePageResponse;
 
   if (!response.ok) {
-    throw new Error(payload.error ?? "Could not load saved sprites.");
+    throw new Error(payload.error ?? 'Could not load saved sprites.');
   }
 
   return {
@@ -82,9 +73,7 @@ const GroupSelectionControl = ({
         ref={checkboxRef}
         type="checkbox"
         aria-label={`Select all ${spriteType} assets`}
-        aria-checked={
-          isPartiallySelected ? "mixed" : selectedCount === totalCount
-        }
+        aria-checked={isPartiallySelected ? 'mixed' : selectedCount === totalCount}
         checked={selectedCount === totalCount}
         disabled={disabled}
         onChange={(event) => onChange(event.target.checked)}
@@ -104,19 +93,10 @@ const AssetLibrary = () => {
   const [isBulkDownloading, setIsBulkDownloading] = useState(false);
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
-  const [spriteToRename, setSpriteToRename] = useState<StoredSprite | null>(
-    null,
-  );
-  const [selectedSpriteIds, setSelectedSpriteIds] = useState<Set<string>>(
-    new Set(),
-  );
-  const [collapsedSpriteTypes, setCollapsedSpriteTypes] = useState<Set<string>>(
-    new Set(),
-  );
-  const spriteGroups = useMemo(
-    () => groupStoredSpritesByType(sprites),
-    [sprites],
-  );
+  const [spriteToRename, setSpriteToRename] = useState<StoredSprite | null>(null);
+  const [selectedSpriteIds, setSelectedSpriteIds] = useState<Set<string>>(new Set());
+  const [collapsedSpriteTypes, setCollapsedSpriteTypes] = useState<Set<string>>(new Set());
+  const spriteGroups = useMemo(() => groupStoredSpritesByType(sprites), [sprites]);
 
   const loadMoreSprites = async () => {
     setError(null);
@@ -127,11 +107,7 @@ const AssetLibrary = () => {
       setSprites((currentSprites) => [...currentSprites, ...page.sprites]);
       setHasMore(page.hasMore);
     } catch (loadError) {
-      setError(
-        loadError instanceof Error
-          ? loadError.message
-          : "Could not load saved sprites.",
-      );
+      setError(loadError instanceof Error ? loadError.message : 'Could not load saved sprites.');
     } finally {
       setIsLoadingMore(false);
     }
@@ -142,9 +118,9 @@ const AssetLibrary = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/sprites", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/sprites', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ spriteId: sprite.id, title }),
       });
       const payload = (await response.json().catch(() => null)) as {
@@ -153,23 +129,17 @@ const AssetLibrary = () => {
       } | null;
 
       if (!response.ok || !payload?.sprite) {
-        throw new Error(payload?.error ?? "Could not rename the saved sprite.");
+        throw new Error(payload?.error ?? 'Could not rename the saved sprite.');
       }
 
       setSprites((currentSprites) =>
         currentSprites.map((currentSprite) =>
-          currentSprite.id === sprite.id
-            ? { ...currentSprite, title: payload.sprite!.title }
-            : currentSprite,
+          currentSprite.id === sprite.id ? { ...currentSprite, title: payload.sprite!.title } : currentSprite,
         ),
       );
       setSpriteToRename(null);
     } catch (renameError) {
-      setError(
-        renameError instanceof Error
-          ? renameError.message
-          : "Could not rename the saved sprite.",
-      );
+      setError(renameError instanceof Error ? renameError.message : 'Could not rename the saved sprite.');
     } finally {
       setRenamingId(null);
     }
@@ -190,17 +160,10 @@ const AssetLibrary = () => {
   };
 
   const toggleSelectAll = () => {
-    setSelectedSpriteIds(
-      selectedSpriteIds.size === sprites.length
-        ? new Set()
-        : new Set(sprites.map(({ id }) => id)),
-    );
+    setSelectedSpriteIds(selectedSpriteIds.size === sprites.length ? new Set() : new Set(sprites.map(({ id }) => id)));
   };
 
-  const toggleGroupSelection = (
-    groupSprites: StoredSprite[],
-    isSelected: boolean,
-  ) => {
+  const toggleGroupSelection = (groupSprites: StoredSprite[], isSelected: boolean) => {
     setSelectedSpriteIds((currentSelection) => {
       const nextSelection = new Set(currentSelection);
 
@@ -231,9 +194,7 @@ const AssetLibrary = () => {
   };
 
   const handleBulkDownload = async () => {
-    const selectedSprites = sprites.filter(({ id }) =>
-      selectedSpriteIds.has(id),
-    );
+    const selectedSprites = sprites.filter(({ id }) => selectedSpriteIds.has(id));
 
     if (selectedSprites.length === 0 || isBulkDownloading) {
       return;
@@ -243,9 +204,9 @@ const AssetLibrary = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/sprites/download", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/sprites/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           spriteIds: selectedSprites.map(({ id }) => id),
         }),
@@ -255,35 +216,27 @@ const AssetLibrary = () => {
         const payload = (await response.json().catch(() => null)) as {
           error?: string;
         } | null;
-        throw new Error(
-          payload?.error ?? "Could not download the selected sprites.",
-        );
+        throw new Error(payload?.error ?? 'Could not download the selected sprites.');
       }
 
       const objectUrl = URL.createObjectURL(await response.blob());
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = objectUrl;
-      link.download = "sprites.zip";
+      link.download = 'sprites.zip';
       link.hidden = true;
       document.body.append(link);
       link.click();
       link.remove();
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
     } catch (downloadError) {
-      setError(
-        downloadError instanceof Error
-          ? downloadError.message
-          : "Could not download the selected sprites.",
-      );
+      setError(downloadError instanceof Error ? downloadError.message : 'Could not download the selected sprites.');
     } finally {
       setIsBulkDownloading(false);
     }
   };
 
   const handleBulkDelete = async () => {
-    const selectedSprites = sprites.filter(({ id }) =>
-      selectedSpriteIds.has(id),
-    );
+    const selectedSprites = sprites.filter(({ id }) => selectedSpriteIds.has(id));
 
     if (selectedSprites.length === 0 || isBulkDeleting) {
       return;
@@ -293,9 +246,9 @@ const AssetLibrary = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/sprites", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/sprites', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           spriteIds: selectedSprites.map(({ id }) => id),
         }),
@@ -307,29 +260,21 @@ const AssetLibrary = () => {
       } | null;
 
       if (!response.ok || !payload?.deletedSpriteIds) {
-        throw new Error(
-          payload?.error ?? "Could not delete the selected sprites.",
-        );
+        throw new Error(payload?.error ?? 'Could not delete the selected sprites.');
       }
 
       const deletedSpriteIds = new Set(payload.deletedSpriteIds);
-      setSprites((currentSprites) =>
-        currentSprites.filter(({ id }) => !deletedSpriteIds.has(id)),
-      );
+      setSprites((currentSprites) => currentSprites.filter(({ id }) => !deletedSpriteIds.has(id)));
       setSelectedSpriteIds(new Set(payload.failedSpriteIds ?? []));
       setIsBulkDeleteDialogOpen(false);
 
       if (payload.failedSpriteIds?.length) {
         setError(
-          `${payload.failedSpriteIds.length} selected asset${payload.failedSpriteIds.length === 1 ? " could" : "s could"} not be deleted.`,
+          `${payload.failedSpriteIds.length} selected asset${payload.failedSpriteIds.length === 1 ? ' could' : 's could'} not be deleted.`,
         );
       }
     } catch (deleteError) {
-      setError(
-        deleteError instanceof Error
-          ? deleteError.message
-          : "Could not delete the selected sprites.",
-      );
+      setError(deleteError instanceof Error ? deleteError.message : 'Could not delete the selected sprites.');
     } finally {
       setIsBulkDeleting(false);
     }
@@ -349,11 +294,7 @@ const AssetLibrary = () => {
         }
       } catch (loadError) {
         if (!controller.signal.aborted) {
-          setError(
-            loadError instanceof Error
-              ? loadError.message
-              : "Could not load saved sprites.",
-          );
+          setError(loadError instanceof Error ? loadError.message : 'Could not load saved sprites.');
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -371,25 +312,13 @@ const AssetLibrary = () => {
     <section className={styles.library} aria-labelledby="assets-heading">
       <header className={styles.header}>
         <div>
-          <Typography
-            variant="p"
-            color="accent"
-            lineHeight={1.5}
-            margin="0 0 6px"
-            size="small"
-          >
+          <Typography variant="p" color="accent" lineHeight={1.5} margin="0 0 6px" size="small">
             Asset library
           </Typography>
           <Typography variant="h1" id="assets-heading">
             All created assets
           </Typography>
-          <Typography
-            variant="p"
-            color="primary-light"
-            lineHeight={1.5}
-            margin="9px 0 0"
-            size="small"
-          >
+          <Typography variant="p" color="primary-light" lineHeight={1.5} margin="9px 0 0" size="small">
             Browse every sprite you have generated.
           </Typography>
         </div>
@@ -412,9 +341,7 @@ const AssetLibrary = () => {
           </Typography>
           {selectedSpriteIds.size ? (
             <div className={styles.bulkActions}>
-              <Typography variant="span">
-                {selectedSpriteIds.size} selected
-              </Typography>
+              <Typography variant="span">{selectedSpriteIds.size} selected</Typography>
               <button
                 type="button"
                 className={styles.bulkDownload}
@@ -422,7 +349,7 @@ const AssetLibrary = () => {
                 onClick={() => void handleBulkDownload()}
               >
                 <Download aria-hidden="true" size={15} />
-                {isBulkDownloading ? "Downloading..." : "Download"}
+                {isBulkDownloading ? 'Downloading...' : 'Download'}
               </button>
               <button
                 type="button"
@@ -445,140 +372,100 @@ const AssetLibrary = () => {
         </Typography>
       ) : null}
       {!isLoading && !error && sprites.length === 0 ? (
-        <Typography
-          variant="p"
-          color="primary-light"
-          lineHeight={1.5}
-          margin={0}
-          size="small"
-        >
+        <Typography variant="p" color="primary-light" lineHeight={1.5} margin={0} size="small">
           Your generated assets will appear here.
         </Typography>
       ) : null}
       <div className={styles.groups}>
-        {spriteGroups.map(
-          ({ spriteType, sprites: groupedSprites }, groupIndex) => (
-            <section key={spriteType} className={styles.group}>
-              <div className={styles.groupHeader}>
-                <Typography variant="h2" id={`asset-group-${groupIndex}`}>
-                  {spriteType}
+        {spriteGroups.map(({ spriteType, sprites: groupedSprites }, groupIndex) => (
+          <section key={spriteType} className={styles.group}>
+            <div className={styles.groupHeader}>
+              <Typography variant="h2" id={`asset-group-${groupIndex}`}>
+                {spriteType}
+              </Typography>
+              <div className={styles.groupControls}>
+                <GroupSelectionControl
+                  disabled={isBulkDeleting || isBulkDownloading}
+                  selectedCount={groupedSprites.filter(({ id }) => selectedSpriteIds.has(id)).length}
+                  spriteType={spriteType}
+                  totalCount={groupedSprites.length}
+                  onChange={(isSelected) => toggleGroupSelection(groupedSprites, isSelected)}
+                />
+                <Typography variant="span" className={styles.groupCount}>
+                  {groupedSprites.length}
                 </Typography>
-                <div className={styles.groupControls}>
-                  <GroupSelectionControl
-                    disabled={isBulkDeleting || isBulkDownloading}
-                    selectedCount={
-                      groupedSprites.filter(({ id }) =>
-                        selectedSpriteIds.has(id),
-                      ).length
-                    }
-                    spriteType={spriteType}
-                    totalCount={groupedSprites.length}
-                    onChange={(isSelected) =>
-                      toggleGroupSelection(groupedSprites, isSelected)
-                    }
-                  />
-                  <Typography variant="span" className={styles.groupCount}>
-                    {groupedSprites.length}
-                  </Typography>
-                  <button
-                    type="button"
-                    className={styles.groupToggle}
-                    aria-controls={`asset-group-content-${groupIndex}`}
-                    aria-expanded={!collapsedSpriteTypes.has(spriteType)}
-                    aria-label={`${collapsedSpriteTypes.has(spriteType) ? "Expand" : "Collapse"} ${spriteType} assets`}
-                    onClick={() => toggleGroupCollapse(spriteType)}
-                  >
-                    {collapsedSpriteTypes.has(spriteType) ? (
-                      <ChevronRight aria-hidden="true" size={16} />
-                    ) : (
-                      <ChevronDown aria-hidden="true" size={16} />
-                    )}
-                    {collapsedSpriteTypes.has(spriteType)
-                      ? "Expand"
-                      : "Collapse"}
-                  </button>
-                </div>
-              </div>
-              {!collapsedSpriteTypes.has(spriteType) ? (
-                <div
-                  id={`asset-group-content-${groupIndex}`}
-                  className={styles.grid}
-                  aria-labelledby={`asset-group-${groupIndex}`}
+                <button
+                  type="button"
+                  className={styles.groupToggle}
+                  aria-controls={`asset-group-content-${groupIndex}`}
+                  aria-expanded={!collapsedSpriteTypes.has(spriteType)}
+                  aria-label={`${collapsedSpriteTypes.has(spriteType) ? 'Expand' : 'Collapse'} ${spriteType} assets`}
+                  onClick={() => toggleGroupCollapse(spriteType)}
                 >
-                  {groupedSprites.map((sprite) => (
-                    <article key={sprite.id} className={styles.asset}>
-                      <Typography
-                        variant="label"
-                        className={styles.selectionControl}
-                      >
-                        <input
-                          type="checkbox"
-                          aria-label={`Select ${sprite.title ?? sprite.spriteType} sprite`}
-                          checked={selectedSpriteIds.has(sprite.id)}
-                          disabled={isBulkDeleting || isBulkDownloading}
-                          onChange={(event) =>
-                            toggleSpriteSelection(
-                              sprite.id,
-                              event.target.checked,
-                            )
-                          }
-                        />
-                      </Typography>
-                      <img
-                        src={sprite.imageUrl}
-                        alt={`${sprite.title ?? sprite.spriteType} sprite`}
+                  {collapsedSpriteTypes.has(spriteType) ? (
+                    <ChevronRight aria-hidden="true" size={16} />
+                  ) : (
+                    <ChevronDown aria-hidden="true" size={16} />
+                  )}
+                  {collapsedSpriteTypes.has(spriteType) ? 'Expand' : 'Collapse'}
+                </button>
+              </div>
+            </div>
+            {!collapsedSpriteTypes.has(spriteType) ? (
+              <div
+                id={`asset-group-content-${groupIndex}`}
+                className={styles.grid}
+                aria-labelledby={`asset-group-${groupIndex}`}
+              >
+                {groupedSprites.map((sprite) => (
+                  <article key={sprite.id} className={styles.asset}>
+                    <Typography variant="label" className={styles.selectionControl}>
+                      <input
+                        type="checkbox"
+                        aria-label={`Select ${sprite.title ?? sprite.spriteType} sprite`}
+                        checked={selectedSpriteIds.has(sprite.id)}
+                        disabled={isBulkDeleting || isBulkDownloading}
+                        onChange={(event) => toggleSpriteSelection(sprite.id, event.target.checked)}
                       />
-                      <div className={styles.assetDetails}>
-                        <Typography variant="h3">
-                          {sprite.title ?? sprite.spriteType}
-                        </Typography>
-                        <Typography
-                          variant="p"
-                          color="accent"
-                          margin="-4px 0 0"
-                          size="xs"
-                          transform="uppercase"
-                        >
-                          Sprite type: {sprite.spriteType}
-                        </Typography>
-                        <div className={styles.assetMeta}>
-                          <Typography variant="p">
-                            {formatDate(sprite.createdAt)}
-                          </Typography>
-                          <div className={styles.assetActions}>
-                            <button
-                              type="button"
-                              className={styles.rename}
-                              aria-label={`Rename ${sprite.title ?? sprite.spriteType} sprite`}
-                              title={`Rename ${sprite.title ?? sprite.spriteType}`}
-                              disabled={renamingId === sprite.id}
-                              onClick={() => setSpriteToRename(sprite)}
-                            >
-                              <Pencil aria-hidden="true" size={14} />
-                            </button>
-                            <a
-                              className={styles.download}
-                              href={`/api/sprites/${sprite.id}/download`}
-                              download={`${sprite.title ?? sprite.spriteType}.png`}
-                            >
-                              <Download aria-hidden="true" size={16} />
-                              <Typography
-                                variant="span"
-                                className={styles.downloadLabel}
-                              >
-                                Download
-                              </Typography>
-                            </a>
-                          </div>
+                    </Typography>
+                    <img src={sprite.imageUrl} alt={`${sprite.title ?? sprite.spriteType} sprite`} />
+                    <div className={styles.assetDetails}>
+                      <Typography variant="h3">{sprite.title ?? sprite.spriteType}</Typography>
+                      <Typography variant="p" color="accent" margin="-4px 0 0" size="xs" transform="uppercase">
+                        Sprite type: {sprite.spriteType}
+                      </Typography>
+                      <div className={styles.assetMeta}>
+                        <Typography variant="p">{formatDate(sprite.createdAt)}</Typography>
+                        <div className={styles.assetActions}>
+                          <button
+                            type="button"
+                            className={styles.rename}
+                            aria-label={`Rename ${sprite.title ?? sprite.spriteType} sprite`}
+                            disabled={renamingId === sprite.id}
+                            title={`Rename ${sprite.title ?? sprite.spriteType}`}
+                            onClick={() => setSpriteToRename(sprite)}
+                          >
+                            <Pencil aria-hidden="true" size={14} />
+                          </button>
+                          <a
+                            className={styles.download}
+                            href={`/api/sprites/${sprite.id}/download`}
+                            download={`${sprite.title ?? sprite.spriteType}.png`}
+                          >
+                            <Download aria-hidden="true" size={16} />
+                            <Typography variant="span" className={styles.downloadLabel}>
+                              Download
+                            </Typography>
+                          </a>
                         </div>
                       </div>
-                    </article>
-                  ))}
-                </div>
-              ) : null}
-            </section>
-          ),
-        )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : null}
+          </section>
+        ))}
       </div>
       {hasMore ? (
         <button
@@ -587,12 +474,12 @@ const AssetLibrary = () => {
           disabled={isLoadingMore}
           onClick={() => void loadMoreSprites()}
         >
-          {isLoadingMore ? "Loading..." : "Load more assets"}
+          {isLoadingMore ? 'Loading...' : 'Load more assets'}
         </button>
       ) : null}
       {spriteToRename ? (
         <AssetNameDialog
-          initialTitle={spriteToRename.title ?? ""}
+          initialTitle={spriteToRename.title ?? ''}
           isSaving={renamingId === spriteToRename.id}
           spriteType={spriteToRename.spriteType}
           onClose={() => setSpriteToRename(null)}
@@ -601,9 +488,9 @@ const AssetLibrary = () => {
       ) : null}
       {isBulkDeleteDialogOpen ? (
         <AlertDialog
-          title={`Delete ${selectedSpriteIds.size} selected asset${selectedSpriteIds.size === 1 ? "" : "s"}?`}
+          title={`Delete ${selectedSpriteIds.size} selected asset${selectedSpriteIds.size === 1 ? '' : 's'}?`}
           description="This permanently removes the selected images from your library and releases their storage space. This cannot be undone."
-          confirmLabel={`Delete ${selectedSpriteIds.size} asset${selectedSpriteIds.size === 1 ? "" : "s"}`}
+          confirmLabel={`Delete ${selectedSpriteIds.size} asset${selectedSpriteIds.size === 1 ? '' : 's'}`}
           isConfirming={isBulkDeleting}
           onClose={() => setIsBulkDeleteDialogOpen(false)}
           onConfirm={() => void handleBulkDelete()}

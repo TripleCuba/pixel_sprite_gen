@@ -1,36 +1,30 @@
-"use client";
+'use client';
 
-import Typography from "../Components/shared/Typography";
-import { useEffect, useState } from "react";
-import type { StaticImageData } from "next/image";
-import characterIcon from "@/assets/icons/sprite-types/character.svg";
-import buildingIcon from "@/assets/icons/sprite-types/building.svg";
-import itemIcon from "@/assets/icons/sprite-types/item.svg";
-import otherIcon from "@/assets/icons/sprite-types/other.svg";
-import terrainIcon from "@/assets/icons/sprite-types/terrain.svg";
-import {
-  SpriteType,
-  SpriteTypeDefaultView,
-  SpriteTypePlaceholders,
-  SpriteTypeViews,
-  SpriteView,
-} from "../constants";
-import { Dropdown } from "../Components/dropdown";
-import { FileUploadArea, SelectedFiles } from "../Components/file-upload";
-import { GenerateButton } from "../Components/generate-button";
-import { GenerationQuality } from "../Components/generation-quality";
-import { GeneratedSpritePreview } from "../Components/generated-sprite";
-import { LoadingIndicator } from "../Components/loading-indicator";
-import { SpriteHistorySidebar } from "../Components/sprite-history";
-import { SpriteViewSelector } from "../Components/sprite-view";
-import { CREDIT_CHANGE_EVENT } from "../Components/credit-balance/CreditBalance";
-import type { StoredSprite } from "@/lib/sprite-storage";
+import Typography from '../Components/shared/Typography';
+import { useEffect, useState } from 'react';
+import type { StaticImageData } from 'next/image';
+import characterIcon from '@/assets/icons/sprite-types/character.svg';
+import buildingIcon from '@/assets/icons/sprite-types/building.svg';
+import itemIcon from '@/assets/icons/sprite-types/item.svg';
+import otherIcon from '@/assets/icons/sprite-types/other.svg';
+import terrainIcon from '@/assets/icons/sprite-types/terrain.svg';
+import { SpriteType, SpriteTypeDefaultView, SpriteTypePlaceholders, SpriteTypeViews, SpriteView } from '../constants';
+import { Dropdown } from '../Components/dropdown';
+import { FileUploadArea, SelectedFiles } from '../Components/file-upload';
+import { GenerateButton } from '../Components/generate-button';
+import { GenerationQuality } from '../Components/generation-quality';
+import { GeneratedSpritePreview } from '../Components/generated-sprite';
+import { LoadingIndicator } from '../Components/loading-indicator';
+import { SpriteHistorySidebar } from '../Components/sprite-history';
+import { SpriteViewSelector } from '../Components/sprite-view';
+import { CREDIT_CHANGE_EVENT } from '../Components/credit-balance/CreditBalance';
+import type { StoredSprite } from '@/lib/sprite-storage';
 import {
   SpriteGenerationQuality,
   type SpriteGenerationQuality as SpriteGenerationQualityValue,
-} from "@/lib/sprite-quality";
-import { TextField } from "../Components/text-field";
-import styles from "./ImageGenerator.module.css";
+} from '@/lib/sprite-quality';
+import { TextField } from '../Components/text-field';
+import styles from './ImageGenerator.module.css';
 
 const spriteTypeIcons: Record<SpriteType, StaticImageData> = {
   [SpriteType.character]: characterIcon,
@@ -54,45 +48,34 @@ type GenerationProgress = {
 };
 
 type GenerationEvent =
-  | { type: "progress"; progress: GenerationProgress }
-  | { type: "complete"; image: string; spriteId: string }
-  | { type: "error"; message: string };
+  | { type: 'progress'; progress: GenerationProgress }
+  | { type: 'complete'; image: string; spriteId: string }
+  | { type: 'error'; message: string };
 
 const imageFromBase64 = (image: string) => {
   const binary = atob(image);
   const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
-  return new Blob([bytes], { type: "image/png" });
+  return new Blob([bytes], { type: 'image/png' });
 };
 
 const ImageGenerator = ({ user }: ImageGeneratorProps) => {
-  const [spriteType, setSpriteType] = useState<SpriteType>(
-    SpriteType.character,
-  );
-  const [spriteView, setSpriteView] = useState<SpriteView>(
-    SpriteTypeDefaultView[SpriteType.character],
-  );
-  const [quality, setQuality] = useState<SpriteGenerationQualityValue>(
-    SpriteGenerationQuality.low,
-  );
-  const [assetTitle, setAssetTitle] = useState("");
-  const [prompt, setPrompt] = useState("");
+  const [spriteType, setSpriteType] = useState<SpriteType>(SpriteType.character);
+  const [spriteView, setSpriteView] = useState<SpriteView>(SpriteTypeDefaultView[SpriteType.character]);
+  const [quality, setQuality] = useState<SpriteGenerationQualityValue>(SpriteGenerationQuality.low);
+  const [assetTitle, setAssetTitle] = useState('');
+  const [prompt, setPrompt] = useState('');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generationProgress, setGenerationProgress] =
-    useState<GenerationProgress | null>(null);
+  const [generationProgress, setGenerationProgress] = useState<GenerationProgress | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
-  const [generatedSpriteUrl, setGeneratedSpriteUrl] = useState<string | null>(
-    null,
-  );
-  const [generatedSpriteDownloadUrl, setGeneratedSpriteDownloadUrl] = useState<
-    string | null
-  >(null);
+  const [generatedSpriteUrl, setGeneratedSpriteUrl] = useState<string | null>(null);
+  const [generatedSpriteDownloadUrl, setGeneratedSpriteDownloadUrl] = useState<string | null>(null);
   const [historyVersion, setHistoryVersion] = useState(0);
 
   useEffect(
     () => () => {
-      if (generatedSpriteUrl?.startsWith("blob:")) {
+      if (generatedSpriteUrl?.startsWith('blob:')) {
         URL.revokeObjectURL(generatedSpriteUrl);
       }
     },
@@ -116,22 +99,22 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
     setIsGenerating(true);
     setGenerationError(null);
     setGenerationProgress({
-      label: "Preparing your request...",
-      description: "Checking your prompt and generation availability.",
+      label: 'Preparing your request...',
+      description: 'Checking your prompt and generation availability.',
       progress: 5,
     });
 
     const formData = new FormData();
-    formData.set("spriteType", spriteType);
-    formData.set("view", spriteView);
-    formData.set("quality", quality);
-    formData.set("title", assetTitle);
-    formData.set("prompt", prompt);
-    referenceFiles.forEach((file) => formData.append("references", file));
+    formData.set('spriteType', spriteType);
+    formData.set('view', spriteView);
+    formData.set('quality', quality);
+    formData.set('title', assetTitle);
+    formData.set('prompt', prompt);
+    referenceFiles.forEach((file) => formData.append('references', file));
 
     try {
-      const response = await fetch("/api/sprites/generate", {
-        method: "POST",
+      const response = await fetch('/api/sprites/generate', {
+        method: 'POST',
         body: formData,
       });
 
@@ -139,19 +122,17 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
         const payload = (await response.json().catch(() => null)) as {
           error?: string;
         } | null;
-        throw new Error(payload?.error ?? "Could not generate a sprite.");
+        throw new Error(payload?.error ?? 'Could not generate a sprite.');
       }
 
       if (!response.body) {
-        throw new Error("The generation service returned an empty response.");
+        throw new Error('The generation service returned an empty response.');
       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let pending = "";
-      let completedGeneration:
-        | Extract<GenerationEvent, { type: "complete" }>
-        | undefined;
+      let pending = '';
+      let completedGeneration: Extract<GenerationEvent, { type: 'complete' }> | undefined;
 
       const handleEvent = (line: string) => {
         if (!line) {
@@ -159,12 +140,12 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
         }
 
         const event = JSON.parse(line) as GenerationEvent;
-        if (event.type === "progress") {
+        if (event.type === 'progress') {
           setGenerationProgress(event.progress);
           return;
         }
 
-        if (event.type === "error") {
+        if (event.type === 'error') {
           throw new Error(event.message);
         }
 
@@ -175,8 +156,8 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
         const { done, value } = await reader.read();
         pending += decoder.decode(value ?? new Uint8Array(), { stream: !done });
 
-        const lines = pending.split("\n");
-        pending = lines.pop() ?? "";
+        const lines = pending.split('\n');
+        pending = lines.pop() ?? '';
         lines.forEach(handleEvent);
 
         if (done) {
@@ -187,21 +168,16 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
       handleEvent(pending);
 
       if (!completedGeneration) {
-        throw new Error("The generation service finished without an image.");
+        throw new Error('The generation service finished without an image.');
       }
 
-      const { image, spriteId } = completedGeneration as Extract<
-        GenerationEvent,
-        { type: "complete" }
-      >;
+      const { image, spriteId } = completedGeneration as Extract<GenerationEvent, { type: 'complete' }>;
       const sprite = imageFromBase64(image);
       setGeneratedSpriteUrl(URL.createObjectURL(sprite));
       setGeneratedSpriteDownloadUrl(`/api/sprites/${spriteId}/download`);
       setHistoryVersion((version) => version + 1);
     } catch (error) {
-      setGenerationError(
-        error instanceof Error ? error.message : "Could not generate a sprite.",
-      );
+      setGenerationError(error instanceof Error ? error.message : 'Could not generate a sprite.');
     } finally {
       setIsGenerating(false);
       setGenerationProgress(null);
@@ -210,11 +186,7 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
   };
 
   return (
-    <div
-      className={`${styles.workspace} ${
-        isSidebarCollapsed ? styles.workspaceWithCollapsedSidebar : ""
-      }`}
-    >
+    <div className={`${styles.workspace} ${isSidebarCollapsed ? styles.workspaceWithCollapsedSidebar : ''}`}>
       <SpriteHistorySidebar
         isCollapsed={isSidebarCollapsed}
         refreshKey={historyVersion}
@@ -230,11 +202,7 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
           }
         }}
       />
-      <div
-        className={`${styles.generator} ${
-          generatedSpriteUrl ? styles.generatorWithPreview : ""
-        }`}
-      >
+      <div className={`${styles.generator} ${generatedSpriteUrl ? styles.generatorWithPreview : ''}`}>
         <section className={styles.controls}>
           <div className={styles.header}>
             <Typography variant="h2">Image Generator</Typography>
@@ -278,23 +246,12 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
             accept="image/png,image/jpeg,image/webp"
             maxFiles={4}
           />
-          <SelectedFiles
-            files={referenceFiles}
-            onRemove={removeReferenceFile}
-          />
-          <GenerateButton
-            disabled={!user || prompt.trim().length === 0 || isGenerating}
-            onClick={handleGenerate}
-          >
-            {isGenerating ? "Generating..." : "Generate Sprite"}
+          <SelectedFiles files={referenceFiles} onRemove={removeReferenceFile} />
+          <GenerateButton disabled={!user || prompt.trim().length === 0 || isGenerating} onClick={handleGenerate}>
+            {isGenerating ? 'Generating...' : 'Generate Sprite'}
           </GenerateButton>
           {generationError ? (
-            <Typography
-              variant="p"
-              color="danger"
-              margin="12px 0 0"
-              role="alert"
-            >
+            <Typography variant="p" color="danger" margin="12px 0 0" role="alert">
               {generationError}
             </Typography>
           ) : null}
@@ -312,12 +269,9 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
           </aside>
         ) : null}
         {isGenerating ? (
-          <div
-            className={styles.generatingOverlay}
-            aria-label="Generating sprite"
-          >
+          <div className={styles.generatingOverlay} aria-label="Generating sprite">
             <LoadingIndicator
-              label={generationProgress?.label ?? "Preparing your request..."}
+              label={generationProgress?.label ?? 'Preparing your request...'}
               description={generationProgress?.description}
               progress={generationProgress?.progress}
             />

@@ -1,6 +1,6 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { Sparkles } from "lucide-react";
-import styles from "./GenerateButton.module.css";
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { Sparkles } from 'lucide-react';
+import styles from './GenerateButton.module.css';
 
 type GenerateButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;

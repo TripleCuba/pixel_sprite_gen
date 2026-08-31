@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
 /* eslint-disable @next/next/no-img-element */
 
-import { Download, Trash2 } from "lucide-react";
-import { useState } from "react";
-import styles from "./GeneratedSpritePreview.module.css";
-import SpritePreviewDialog from "./SpritePreviewDialog";
+import { Download, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import styles from './GeneratedSpritePreview.module.css';
+import SpritePreviewDialog from './SpritePreviewDialog';
 
 type GeneratedSpritePreviewProps = {
   downloadUrl?: string;
@@ -15,11 +15,7 @@ type GeneratedSpritePreviewProps = {
   onClear: () => void;
 };
 
-const GeneratedSpritePreview = ({
-  downloadUrl,
-  imageUrl,
-  onClear,
-}: GeneratedSpritePreviewProps) => {
+const GeneratedSpritePreview = ({ downloadUrl, imageUrl, onClear }: GeneratedSpritePreviewProps) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   return (
@@ -33,18 +29,10 @@ const GeneratedSpritePreview = ({
         aria-label="Open generated sprite preview"
         onClick={() => setIsPreviewOpen(true)}
       >
-        <img
-          src={imageUrl}
-          alt="Generated pixel sprite"
-          className={styles.image}
-        />
+        <img src={imageUrl} alt="Generated pixel sprite" className={styles.image} />
       </button>
       <div className={styles.actions}>
-        <a
-          className={styles.action}
-          href={downloadUrl ?? imageUrl}
-          download="sprite.png"
-        >
+        <a className={styles.action} href={downloadUrl ?? imageUrl} download="sprite.png">
           <Download aria-hidden="true" size={16} />
           Download
         </a>
@@ -53,12 +41,7 @@ const GeneratedSpritePreview = ({
           Clear
         </button>
       </div>
-      {isPreviewOpen ? (
-        <SpritePreviewDialog
-          imageUrl={imageUrl}
-          onClose={() => setIsPreviewOpen(false)}
-        />
-      ) : null}
+      {isPreviewOpen ? <SpritePreviewDialog imageUrl={imageUrl} onClose={() => setIsPreviewOpen(false)} /> : null}
     </section>
   );
 };

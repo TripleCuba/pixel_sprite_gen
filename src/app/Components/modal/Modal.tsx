@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
-import styles from "./Modal.module.css";
+import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import styles from './Modal.module.css';
 
 type ModalProps = {
   ariaDescribedBy?: string;
@@ -13,7 +13,7 @@ type ModalProps = {
   closeDisabled?: boolean;
   contentClassName?: string;
   onClose: () => void;
-  role?: "dialog" | "alertdialog";
+  role?: 'dialog' | 'alertdialog';
 };
 
 const getFocusableElements = (container: HTMLElement) =>
@@ -27,29 +27,27 @@ const Modal = ({
   ariaDescribedBy,
   ariaLabel,
   ariaLabelledBy,
-  backdropLabel = "Close dialog",
+  backdropLabel = 'Close dialog',
   children,
   closeDisabled = false,
   contentClassName,
   onClose,
-  role = "dialog",
+  role = 'dialog',
 }: ModalProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    const focusable = contentRef.current
-      ? getFocusableElements(contentRef.current)
-      : [];
+    const focusable = contentRef.current ? getFocusableElements(contentRef.current) : [];
     focusable[0]?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !closeDisabled) {
+      if (event.key === 'Escape' && !closeDisabled) {
         onClose();
         return;
       }
 
-      if (event.key !== "Tab" || !contentRef.current) {
+      if (event.key !== 'Tab' || !contentRef.current) {
         return;
       }
 
@@ -71,15 +69,15 @@ const Modal = ({
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
       previouslyFocused?.focus();
     };
   }, [closeDisabled, onClose]);
 
-  if (typeof document === "undefined") {
+  if (typeof document === 'undefined') {
     return null;
   }
 
@@ -94,7 +92,7 @@ const Modal = ({
       />
       <div
         ref={contentRef}
-        className={`${styles.content}${contentClassName ? ` ${contentClassName}` : ""}`}
+        className={`${styles.content}${contentClassName ? ` ${contentClassName}` : ''}`}
         role={role}
         aria-modal="true"
         aria-label={ariaLabel}

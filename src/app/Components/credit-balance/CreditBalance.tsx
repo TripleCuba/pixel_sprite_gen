@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
-import { useEffect, useState } from "react";
-import styles from "./CreditBalance.module.css";
+import { useEffect, useState } from 'react';
+import styles from './CreditBalance.module.css';
 
-const CREDIT_CHANGE_EVENT = "sprite-credits-changed";
+const CREDIT_CHANGE_EVENT = 'sprite-credits-changed';
 
 const CreditBalance = () => {
   const [balance, setBalance] = useState<number | null>(null);
@@ -13,16 +13,14 @@ const CreditBalance = () => {
   useEffect(() => {
     const loadBalance = async () => {
       try {
-        const response = await fetch("/api/credits");
+        const response = await fetch('/api/credits');
         const payload = (await response.json()) as {
           balance?: number;
           isUnlimited?: boolean;
         };
 
-        if (response.ok && typeof payload.balance === "number") {
-          setBalance(
-            payload.isUnlimited ? Number.POSITIVE_INFINITY : payload.balance,
-          );
+        if (response.ok && typeof payload.balance === 'number') {
+          setBalance(payload.isUnlimited ? Number.POSITIVE_INFINITY : payload.balance);
         }
       } catch {
         // The generator endpoint remains the authority for credit enforcement.
@@ -38,9 +36,9 @@ const CreditBalance = () => {
   return (
     <Typography variant="span" className={styles.balance} aria-live="polite">
       {balance === null
-        ? "Credits..."
+        ? 'Credits...'
         : balance === Number.POSITIVE_INFINITY
-          ? "Unlimited credits"
+          ? 'Unlimited credits'
           : `${balance} credits`}
     </Typography>
   );

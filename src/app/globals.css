@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   font-size: 17px;
@@ -19,7 +19,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-pixel-ui), monospace;
-  --font-mono: "Courier New", monospace;
+  --font-mono: 'Courier New', monospace;
 }
 
 body {

@@ -1,6 +1,6 @@
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import { isEmailAllowed } from "@/lib/allowed-emails";
+import NextAuth from 'next-auth';
+import Google from 'next-auth/providers/google';
+import { isEmailAllowed } from '@/lib/allowed-emails';
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [Google],
@@ -10,6 +10,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
   },
   pages: {
-    error: "/",
+    error: '/',
   },
 });

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
-import Image from "next/image";
-import { SpriteType, SpriteView } from "@/app/constants";
-import styles from "./SpriteViewSelector.module.css";
+import Image from 'next/image';
+import { SpriteType, SpriteView } from '@/app/constants';
+import styles from './SpriteViewSelector.module.css';
 
 type SpriteViewSelectorProps = {
   availableViews: readonly SpriteView[];
@@ -14,27 +14,22 @@ type SpriteViewSelectorProps = {
 };
 
 const typeSlugs: Record<SpriteType, string> = {
-  [SpriteType.character]: "character",
-  [SpriteType.building]: "building",
-  [SpriteType.item]: "item",
-  [SpriteType.terrain]: "terrain",
-  [SpriteType.other]: "other",
+  [SpriteType.character]: 'character',
+  [SpriteType.building]: 'building',
+  [SpriteType.item]: 'item',
+  [SpriteType.terrain]: 'terrain',
+  [SpriteType.other]: 'other',
 };
 
 const viewSlugs: Record<SpriteView, string> = {
-  [SpriteView.threeQuarter]: "three-quarter",
-  [SpriteView.side]: "side",
-  [SpriteView.front]: "front",
-  [SpriteView.topDown]: "top-down",
-  [SpriteView.isometric]: "isometric",
+  [SpriteView.threeQuarter]: 'three-quarter',
+  [SpriteView.side]: 'side',
+  [SpriteView.front]: 'front',
+  [SpriteView.topDown]: 'top-down',
+  [SpriteView.isometric]: 'isometric',
 };
 
-const SpriteViewSelector = ({
-  availableViews,
-  onChange,
-  spriteType,
-  value,
-}: SpriteViewSelectorProps) => (
+const SpriteViewSelector = ({ availableViews, onChange, spriteType, value }: SpriteViewSelectorProps) => (
   <fieldset className={styles.selector}>
     <Typography variant="legend">Camera view</Typography>
     <div className={styles.options}>
@@ -42,9 +37,7 @@ const SpriteViewSelector = ({
         <button
           key={view}
           type="button"
-          className={`${styles.option} ${
-            value === view ? styles.optionSelected : ""
-          }`}
+          className={`${styles.option} ${value === view ? styles.optionSelected : ''}`}
           aria-pressed={value === view}
           onClick={() => onChange(view)}
         >

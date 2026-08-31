@@ -1,4 +1,4 @@
-import { getSupabaseAdmin, SpriteStorageError } from "./sprite-storage";
+import { getSupabaseAdmin, SpriteStorageError } from './sprite-storage';
 
 export class StripeBillingError extends SpriteStorageError {}
 
@@ -7,14 +7,14 @@ const normaliseEmail = (email: string) => email.trim().toLowerCase();
 export async function getStripeCustomerId(email: string) {
   const supabase = getSupabaseAdmin();
   const { data: user, error: userError } = await supabase
-    .from("app_users")
-    .select("id")
-    .eq("email", normaliseEmail(email))
+    .from('app_users')
+    .select('id')
+    .eq('email', normaliseEmail(email))
     .maybeSingle();
 
   if (userError) {
-    console.error("Supabase Stripe customer user lookup failed:", userError);
-    throw new StripeBillingError("Could not prepare Stripe Checkout.");
+    console.error('Supabase Stripe customer user lookup failed:', userError);
+    throw new StripeBillingError('Could not prepare Stripe Checkout.');
   }
 
   if (!user) {
@@ -22,14 +22,14 @@ export async function getStripeCustomerId(email: string) {
   }
 
   const { data, error } = await supabase
-    .from("stripe_customers")
-    .select("stripe_customer_id")
-    .eq("user_id", user.id)
+    .from('stripe_customers')
+    .select('stripe_customer_id')
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (error) {
-    console.error("Supabase Stripe customer lookup failed:", error);
-    throw new StripeBillingError("Could not prepare Stripe Checkout.");
+    console.error('Supabase Stripe customer lookup failed:', error);
+    throw new StripeBillingError('Could not prepare Stripe Checkout.');
   }
 
   return data?.stripe_customer_id ?? null;
@@ -39,8 +39,8 @@ type StripeCreditGrant = {
   creditAmount: number;
   customerId: string | null;
   eventId: string;
-  kind: "payment" | "subscription";
-  plan: "creator" | "hobby" | "studio" | null;
+  kind: 'payment' | 'subscription';
+  plan: 'creator' | 'hobby' | 'studio' | null;
   storageLimitBytes: number | null;
   subscriptionId: string | null;
   userEmail: string;
@@ -48,7 +48,7 @@ type StripeCreditGrant = {
 
 export async function grantStripeCredits(grant: StripeCreditGrant) {
   const supabase = getSupabaseAdmin();
-  const { error } = await supabase.rpc("grant_stripe_credits", {
+  const { error } = await supabase.rpc('grant_stripe_credits', {
     p_credit_amount: grant.creditAmount,
     p_customer_id: grant.customerId,
     p_event_id: grant.eventId,
@@ -60,15 +60,15 @@ export async function grantStripeCredits(grant: StripeCreditGrant) {
   });
 
   if (error) {
-    console.error("Supabase Stripe credit grant failed:", error);
-    throw new StripeBillingError("Could not grant purchased credits.");
+    console.error('Supabase Stripe credit grant failed:', error);
+    throw new StripeBillingError('Could not grant purchased credits.');
   }
 }
 
 type StripeSubscriptionUpdate = {
   customerId: string | null;
   hasAccess: boolean;
-  plan: "creator" | "hobby" | "studio";
+  plan: 'creator' | 'hobby' | 'studio';
   status: string;
   storageLimitBytes: number | null;
   subscriptionId: string;
@@ -77,7 +77,7 @@ type StripeSubscriptionUpdate = {
 
 export async function syncStripeSubscription(update: StripeSubscriptionUpdate) {
   const supabase = getSupabaseAdmin();
-  const { error } = await supabase.rpc("sync_stripe_subscription", {
+  const { error } = await supabase.rpc('sync_stripe_subscription', {
     p_customer_id: update.customerId,
     p_has_access: update.hasAccess,
     p_plan: update.plan,
@@ -88,7 +88,7 @@ export async function syncStripeSubscription(update: StripeSubscriptionUpdate) {
   });
 
   if (error) {
-    console.error("Supabase Stripe subscription sync failed:", error);
-    throw new StripeBillingError("Could not update the subscription.");
+    console.error('Supabase Stripe subscription sync failed:', error);
+    throw new StripeBillingError('Could not update the subscription.');
   }
 }

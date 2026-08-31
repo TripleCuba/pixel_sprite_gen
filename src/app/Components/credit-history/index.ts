@@ -1,1 +1,1 @@
-export { default as CreditHistory } from "./CreditHistory";
+export { default as CreditHistory } from './CreditHistory';

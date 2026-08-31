@@ -1,1 +1,1 @@
-export { default as SpriteViewSelector } from "./SpriteViewSelector";
+export { default as SpriteViewSelector } from './SpriteViewSelector';

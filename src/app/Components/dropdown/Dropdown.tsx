@@ -1,24 +1,16 @@
-"use client";
+'use client';
 
-import Typography from "../shared/Typography";
+import Typography from '../shared/Typography';
 
-import Image from "next/image";
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
-import DropdownOption from "./DropdownOption";
-import styles from "./Dropdown.module.css";
-import type { DropdownProps } from "./types";
+import Image from 'next/image';
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
+import DropdownOption from './DropdownOption';
+import styles from './Dropdown.module.css';
+import type { DropdownProps } from './types';
 
-const Dropdown = <T extends string>({
-  label,
-  value,
-  onChange,
-  options,
-  icons,
-}: DropdownProps<T>) => {
+const Dropdown = <T extends string>({ label, value, onChange, options, icons }: DropdownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(
-    Math.max(options.indexOf(value), 0),
-  );
+  const [activeIndex, setActiveIndex] = useState(Math.max(options.indexOf(value), 0));
   const dropdownRef = useRef<HTMLDivElement>(null);
   const labelId = useId();
   const menuId = useId();
@@ -31,17 +23,17 @@ const Dropdown = <T extends string>({
     };
 
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
@@ -52,20 +44,16 @@ const Dropdown = <T extends string>({
   };
 
   const handleTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
-      const currentIndex = isOpen
-        ? activeIndex
-        : Math.max(options.indexOf(value), 0);
+      const currentIndex = isOpen ? activeIndex : Math.max(options.indexOf(value), 0);
       setIsOpen(true);
       setActiveIndex(
-        event.key === "ArrowDown"
-          ? Math.min(currentIndex + 1, options.length - 1)
-          : Math.max(currentIndex - 1, 0),
+        event.key === 'ArrowDown' ? Math.min(currentIndex + 1, options.length - 1) : Math.max(currentIndex - 1, 0),
       );
     }
 
-    if (event.key === "Enter" || event.key === " ") {
+    if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       setIsOpen((open) => !open);
     }
@@ -82,36 +70,20 @@ const Dropdown = <T extends string>({
         aria-controls={menuId}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        onKeyDown={handleTriggerKeyDown}
         onClick={() => {
           setActiveIndex(Math.max(options.indexOf(value), 0));
           setIsOpen((open) => !open);
         }}
-        onKeyDown={handleTriggerKeyDown}
       >
         <Typography variant="span" className={styles.value}>
-          {icons?.[value] && (
-            <Image
-              className={styles.icon}
-              src={icons[value]}
-              alt=""
-              aria-hidden="true"
-              unoptimized
-            />
-          )}
+          {icons?.[value] && <Image className={styles.icon} src={icons[value]} alt="" aria-hidden="true" unoptimized />}
           <Typography variant="span">{value}</Typography>
         </Typography>
-        <Typography
-          variant="span"
-          className={`${styles.chevron}${isOpen ? ` ${styles.chevronOpen}` : ""}`}
-        />
+        <Typography variant="span" className={`${styles.chevron}${isOpen ? ` ${styles.chevronOpen}` : ''}`} />
       </button>
       {isOpen && (
-        <div
-          id={menuId}
-          className={styles.menu}
-          role="listbox"
-          aria-labelledby={labelId}
-        >
+        <div id={menuId} className={styles.menu} role="listbox" aria-labelledby={labelId}>
           {options.map((option, index) => (
             <DropdownOption
               key={option}
