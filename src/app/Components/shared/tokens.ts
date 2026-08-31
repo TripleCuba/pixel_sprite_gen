@@ -40,8 +40,15 @@ export const buttonVariantTokens = ['primary', 'secondary', 'danger', 'unstyled'
 
 export const buttonSizeTokens = ['small', 'medium', 'large'] as const;
 
+export const iconSizeTokens = {
+  small: 14,
+  medium: 18,
+  large: 24,
+} as const;
+
 export type TypographyColorToken = keyof typeof typographyColorTokens;
 export type TypographySizeToken = keyof typeof typographySizeTokens;
 export type TypographyVariantToken = (typeof typographyVariantTokens)[number];
 export type ButtonSizeToken = (typeof buttonSizeTokens)[number];
 export type ButtonVariantToken = (typeof buttonVariantTokens)[number];
+export type IconSizeToken = keyof typeof iconSizeTokens;

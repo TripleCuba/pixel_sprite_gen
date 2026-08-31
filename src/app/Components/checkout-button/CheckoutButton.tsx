@@ -1,5 +1,6 @@
 'use client';
 
+import Button from '../shared/Button';
 import Typography from '../shared/Typography';
 
 import { useState } from 'react';
@@ -49,9 +50,11 @@ const CheckoutButton = ({ available, children, productId }: CheckoutButtonProps)
 
   return (
     <div className={styles.root}>
-      <button disabled={!available || isLoading} onClick={startCheckout} type="button">
-        {isLoading ? 'Opening Checkout...' : available ? children : 'Coming soon'}
-      </button>
+      <Button
+        disabled={!available || isLoading}
+        label={isLoading ? 'Opening Checkout...' : available ? children : 'Coming soon'}
+        onPress={startCheckout}
+      />
       {error ? (
         <Typography variant="p" color="danger" lineHeight={1.4} margin="8px 0 0" role="alert" size="xs">
           {error}

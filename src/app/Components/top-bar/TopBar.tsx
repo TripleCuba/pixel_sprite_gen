@@ -1,3 +1,4 @@
+import Button from '../shared/Button';
 import Typography from '../shared/Typography';
 import { signInWithGoogle, signOutUser } from '@/app/actions/auth';
 import logo from '@/assets/images/spriteforge-logo-topbar.png';
@@ -41,16 +42,12 @@ const TopBar = ({ isAuthConfigured, user }: TopBarProps) => (
               Plans
             </Link>
             <form action={signOutUser}>
-              <button className={styles.secondaryButton} type="submit">
-                Sign out
-              </button>
+              <Button className={styles.secondaryButton} label="Sign out" type="submit" variant="secondary" />
             </form>
           </>
         ) : isAuthConfigured ? (
           <form action={signInWithGoogle}>
-            <button className={styles.signInButton} type="submit">
-              Sign in with Google
-            </button>
+            <Button className={styles.signInButton} label="Sign in with Google" type="submit" />
           </form>
         ) : (
           <Typography variant="span" className={styles.setupState}>

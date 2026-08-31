@@ -1,5 +1,6 @@
 'use client';
 
+import Button from '../shared/Button';
 import Typography from '../shared/Typography';
 
 import { useId, useState } from 'react';
@@ -63,12 +64,18 @@ const AssetNameDialog = ({ initialTitle, isSaving, onClose, onSave, spriteType }
           </Typography>
         </div>
         <div className={styles.actions}>
-          <button type="button" className={styles.cancel} disabled={isSaving} onClick={onClose}>
-            Cancel
-          </button>
-          <button type="submit" className={styles.save} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save name'}
-          </button>
+          <Button
+            variant="secondary"
+            label="Cancel"
+            onPress={onClose}
+            disabled={isSaving}
+          />
+          <Button
+            variant="primary"
+            label={isSaving ? 'Saving...' : 'Save name'}
+            type="submit"
+            disabled={isSaving}
+          />
         </div>
       </form>
     </Modal>

@@ -7,6 +7,9 @@ import Typography from '../shared/Typography';
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Download, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import Button from '../shared/Button';
+import IconButton from '../shared/IconButton';
+import { iconSizeTokens } from '../shared/tokens';
 import type { StoredSprite } from '@/lib/sprite-storage';
 import { groupStoredSpritesByType } from '@/lib/sprite-groups';
 import { AlertDialog } from '../alert-dialog';
@@ -277,15 +280,13 @@ const SpriteHistorySidebar = ({
   if (isCollapsed) {
     return (
       <aside className={`${styles.sidebar} ${styles.sidebarCollapsed}`} aria-label="Created sprites">
-        <button
-          type="button"
-          className={styles.collapseButton}
+        <IconButton
           aria-label="Expand created sprites sidebar"
-          onClick={() => onCollapsedChange(false)}
+          icon={<ChevronRight size={iconSizeTokens.medium} />}
+          onPress={() => onCollapsedChange(false)}
           title="Expand created sprites"
-        >
-          <ChevronRight aria-hidden="true" size={18} />
-        </button>
+          variant="unstyled"
+        />
       </aside>
     );
   }
@@ -294,15 +295,13 @@ const SpriteHistorySidebar = ({
     <aside className={styles.sidebar} aria-label="Created sprites">
       <div className={styles.header}>
         <Typography variant="h2">Created</Typography>
-        <button
-          type="button"
-          className={styles.collapseButton}
+        <IconButton
           aria-label="Collapse created sprites sidebar"
-          onClick={() => onCollapsedChange(true)}
+          icon={<ChevronLeft size={iconSizeTokens.small} />}
+          onPress={() => onCollapsedChange(true)}
           title="Collapse created sprites"
-        >
-          <ChevronLeft aria-hidden="true" size={16} />
-        </button>
+          variant="unstyled"
+        />
       </div>
       <div className={styles.subheader}>
         <div className={styles.headerActions}>
@@ -325,24 +324,21 @@ const SpriteHistorySidebar = ({
         </div>
         {selectedCount ? (
           <div className={styles.bulkActions}>
-            <button
-              type="button"
-              className={styles.bulkDownloadButton}
+            <Button
               disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading}
-              onClick={() => void handleBulkDownload()}
-            >
-              <Download aria-hidden="true" size={14} />
-              {isBulkDownloading ? 'Downloading...' : `Download ${selectedCount}`}
-            </button>
-            <button
-              type="button"
-              className={styles.bulkDeleteButton}
+              icon={<Download size={iconSizeTokens.small} />}
+              label={isBulkDownloading ? 'Downloading...' : `Download ${selectedCount}`}
+              onPress={() => void handleBulkDownload()}
+              size="small"
+            />
+            <Button
               disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading}
-              onClick={() => setIsBulkDeleteDialogOpen(true)}
-            >
-              <Trash2 aria-hidden="true" size={14} />
-              Delete {selectedCount}
-            </button>
+              icon={<Trash2 size={iconSizeTokens.small} />}
+              label={`Delete ${selectedCount}`}
+              onPress={() => setIsBulkDeleteDialogOpen(true)}
+              size="small"
+              variant="danger"
+            />
           </div>
         ) : null}
       </div>
@@ -370,11 +366,13 @@ const SpriteHistorySidebar = ({
               <div className={styles.list}>
                 {groupedSprites.map((sprite) => (
                   <div key={sprite.id} className={styles.sprite}>
-                    <button
-                      type="button"
+                    <div
                       className={styles.spriteOpen}
+                      role="button"
+                      tabIndex={0}
                       aria-label={`Open ${sprite.title ?? sprite.spriteType} sprite`}
                       onClick={() => onSelect(sprite)}
+                      onKeyDown={(e) => e.key === 'Enter' && onSelect(sprite)}
                     />
                     <div className={styles.selectionControl}>
                       <input
@@ -386,49 +384,57 @@ const SpriteHistorySidebar = ({
                       />
                     </div>
                     <div className={styles.spriteContent}>
-                      <button type="button" className={styles.spritePreview} onClick={() => onSelect(sprite)}>
+                      <div
+                        className={styles.spritePreview}
+                        onClick={() => onSelect(sprite)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && onSelect(sprite)}
+                      >
                         <img src={sprite.imageUrl} alt={`${sprite.title ?? sprite.spriteType} sprite`} />
-                      </button>
+                      </div>
                       <div className={styles.spriteDetails}>
-                        <button type="button" className={styles.spriteSelect} onClick={() => onSelect(sprite)}>
+                        <div
+                          className={styles.spriteSelect}
+                          onClick={() => onSelect(sprite)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => e.key === 'Enter' && onSelect(sprite)}
+                        >
                           <Typography variant="strong">{sprite.title ?? sprite.spriteType}</Typography>
-                        </button>
+                        </div>
                         <Typography variant="p" className={styles.spriteType}>
                           Sprite type: {sprite.spriteType}
                         </Typography>
                         <div className={styles.spriteMeta}>
                           <Typography variant="small">{formatDate(sprite.createdAt)}</Typography>
                           <div className={styles.spriteActions}>
-                            <a
-                              className={styles.downloadButton}
-                              href={`/api/sprites/${sprite.id}/download`}
+                            <Button
                               aria-label={`Download ${sprite.title ?? sprite.spriteType} sprite`}
-                              title={`Download ${sprite.title ?? sprite.spriteType}`}
+                              href={`/api/sprites/${sprite.id}/download`}
                               download={`${sprite.title ?? sprite.spriteType}.png`}
-                            >
-                              <Download aria-hidden="true" size={14} />
-                            </a>
-                            <button
-                              type="button"
-                              className={styles.renameButton}
+                              icon={<Download size={iconSizeTokens.small} />}
+                              label=""
+                              title={`Download ${sprite.title ?? sprite.spriteType}`}
+                              variant="unstyled"
+                            />
+                            <IconButton
                               aria-label={`Rename ${sprite.title ?? sprite.spriteType} sprite`}
                               disabled={
                                 Boolean(deletingId) || isBulkDeleting || isBulkDownloading || renamingId === sprite.id
                               }
-                              onClick={() => setSpriteToRename(sprite)}
+                              icon={<Pencil size={iconSizeTokens.small} />}
+                              onPress={() => setSpriteToRename(sprite)}
                               title={`Rename ${sprite.title ?? sprite.spriteType}`}
-                            >
-                              <Pencil aria-hidden="true" size={13} />
-                            </button>
-                            <button
-                              type="button"
-                              className={styles.deleteButton}
+                              variant="unstyled"
+                            />
+                            <IconButton
                               aria-label={`Delete ${sprite.spriteType} sprite`}
                               disabled={Boolean(deletingId) || isBulkDeleting || isBulkDownloading}
-                              onClick={() => setSpriteToDelete(sprite)}
-                            >
-                              <Trash2 aria-hidden="true" size={14} />
-                            </button>
+                              icon={<Trash2 size={iconSizeTokens.small} />}
+                              onPress={() => setSpriteToDelete(sprite)}
+                              variant="unstyled"
+                            />
                           </div>
                         </div>
                       </div>

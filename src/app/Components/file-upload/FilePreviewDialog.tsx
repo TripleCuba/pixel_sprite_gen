@@ -2,18 +2,23 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { X } from 'lucide-react';
+import { iconSizeTokens } from '../shared/tokens';
+import IconButton from '../shared/IconButton';
 import styles from './FileUpload.module.css';
 import type { FilePreviewDialogProps } from './types';
 
 const FilePreviewDialog = ({ fileName, previewUrl, onClose }: FilePreviewDialogProps) => {
   return (
     <div className={styles.previewDialog} role="dialog" aria-modal="true">
-      <button type="button" className={styles.previewBackdrop} aria-label="Close preview" onClick={onClose} />
       <div className={styles.previewContent}>
         <img src={previewUrl} alt={fileName} />
-        <button type="button" className={styles.previewClose} aria-label="Close preview" onClick={onClose}>
-          <X aria-hidden="true" size={20} />
-        </button>
+        <IconButton
+          aria-label="Close preview"
+          icon={<X aria-hidden="true" size={iconSizeTokens.large} />}
+          onPress={onClose}
+          size="large"
+          variant="unstyled"
+        />
       </div>
     </div>
   );

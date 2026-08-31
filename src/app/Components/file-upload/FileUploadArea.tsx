@@ -4,6 +4,7 @@ import Typography from '../shared/Typography';
 
 import { useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import { Upload } from 'lucide-react';
+import { iconSizeTokens } from '../shared/tokens';
 import styles from './FileUpload.module.css';
 import type { FileUploadAreaProps } from './types';
 
@@ -70,7 +71,7 @@ const FileUploadArea = ({
           onClick={() => inputRef.current?.click()}
         >
           <Typography variant="span" aria-hidden="true" className={styles.uploadIcon}>
-            <Upload size={24} strokeWidth={2} />
+            <Upload size={iconSizeTokens.large} strokeWidth={2} />
           </Typography>
           Drop files here or{' '}
           <Typography variant="span" color="primary-light">

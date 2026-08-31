@@ -1,5 +1,6 @@
 'use client';
 
+import Button from '../shared/Button';
 import Typography from '../shared/Typography';
 
 import { useId } from 'react';
@@ -44,12 +45,13 @@ const AlertDialog = ({
         {description}
       </Typography>
       <div className={styles.actions}>
-        <button type="button" className={styles.cancel} disabled={isConfirming} onClick={onClose}>
-          {cancelLabel}
-        </button>
-        <button type="button" className={styles.confirm} disabled={isConfirming} onClick={onConfirm}>
-          {isConfirming ? 'Deleting...' : confirmLabel}
-        </button>
+        <Button variant="secondary" label={cancelLabel} onPress={onClose} disabled={isConfirming} />
+        <Button
+          variant="danger"
+          label={isConfirming ? 'Deleting...' : confirmLabel}
+          onPress={onConfirm}
+          disabled={isConfirming}
+        />
       </div>
     </Modal>
   );

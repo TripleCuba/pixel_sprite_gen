@@ -1,3 +1,4 @@
+import Button from '../shared/Button';
 import Typography from '../shared/Typography';
 import { signInWithGoogle } from '@/app/actions/auth';
 import styles from './LoginScreen.module.css';
@@ -52,12 +53,16 @@ const LoginScreen = ({ isAccessDenied, isAuthConfigured }: LoginScreenProps) => 
           </Typography>
         ) : isAuthConfigured ? (
           <form action={signInWithGoogle}>
-            <button type="submit" className={styles.googleButton}>
-              <Typography variant="span" aria-hidden="true" className={styles.googleMark}>
-                G
-              </Typography>
-              Enter the forge with Google
-            </button>
+            <Button
+              type="submit"
+              icon={
+                <Typography variant="span" className={styles.googleMark}>
+                  G
+                </Typography>
+              }
+              label="Enter the forge with Google"
+              className={styles.googleButtonWrapper}
+            />
           </form>
         ) : (
           <Typography variant="p" className={styles.setupNotice} role="status">

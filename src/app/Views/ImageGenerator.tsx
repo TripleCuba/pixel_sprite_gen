@@ -11,7 +11,9 @@ import terrainIcon from '@/assets/icons/sprite-types/terrain.svg';
 import { SpriteType, SpriteTypeDefaultView, SpriteTypePlaceholders, SpriteTypeViews, SpriteView } from '../constants';
 import { Dropdown } from '../Components/dropdown';
 import { FileUploadArea, SelectedFiles } from '../Components/file-upload';
-import { GenerateButton } from '../Components/generate-button';
+import Button from '../Components/shared/Button';
+import { iconSizeTokens } from '../Components/shared/tokens';
+import { Sparkles } from 'lucide-react';
 import { GenerationQuality } from '../Components/generation-quality';
 import { GeneratedSpritePreview } from '../Components/generated-sprite';
 import { LoadingIndicator } from '../Components/loading-indicator';
@@ -247,9 +249,12 @@ const ImageGenerator = ({ user }: ImageGeneratorProps) => {
             maxFiles={4}
           />
           <SelectedFiles files={referenceFiles} onRemove={removeReferenceFile} />
-          <GenerateButton disabled={!user || prompt.trim().length === 0 || isGenerating} onClick={handleGenerate}>
-            {isGenerating ? 'Generating...' : 'Generate Sprite'}
-          </GenerateButton>
+          <Button
+            disabled={!user || prompt.trim().length === 0 || isGenerating}
+            icon={<Sparkles size={iconSizeTokens.large} />}
+            label={isGenerating ? 'Generating...' : 'Generate Sprite'}
+            onPress={handleGenerate}
+          />
           {generationError ? (
             <Typography variant="p" color="danger" margin="12px 0 0" role="alert">
               {generationError}

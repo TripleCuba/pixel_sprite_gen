@@ -1,11 +1,13 @@
 'use client';
 
+import Button from '../shared/Button';
 import Typography from '../shared/Typography';
 
 /* eslint-disable @next/next/no-img-element */
 
 import { Download, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { iconSizeTokens } from '../shared/tokens';
 import styles from './GeneratedSpritePreview.module.css';
 import SpritePreviewDialog from './SpritePreviewDialog';
 
@@ -32,14 +34,14 @@ const GeneratedSpritePreview = ({ downloadUrl, imageUrl, onClear }: GeneratedSpr
         <img src={imageUrl} alt="Generated pixel sprite" className={styles.image} />
       </button>
       <div className={styles.actions}>
-        <a className={styles.action} href={downloadUrl ?? imageUrl} download="sprite.png">
-          <Download aria-hidden="true" size={16} />
-          Download
-        </a>
-        <button type="button" className={styles.clear} onClick={onClear}>
-          <Trash2 aria-hidden="true" size={16} />
-          Clear
-        </button>
+        <Button
+          href={downloadUrl ?? imageUrl}
+          download="sprite.png"
+          icon={<Download size={iconSizeTokens.small} />}
+          label="Download"
+          variant="secondary"
+        />
+        <Button icon={<Trash2 size={iconSizeTokens.small} />} label="Clear" onPress={onClear} variant="danger" />
       </div>
       {isPreviewOpen ? <SpritePreviewDialog imageUrl={imageUrl} onClose={() => setIsPreviewOpen(false)} /> : null}
     </section>

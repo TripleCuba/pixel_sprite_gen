@@ -1,5 +1,7 @@
 'use client';
 
+import Button from '../Components/shared/Button';
+import IconButton from '../Components/shared/IconButton';
 import Typography from '../Components/shared/Typography';
 
 /* eslint-disable @next/next/no-img-element */
@@ -7,6 +9,7 @@ import Typography from '../Components/shared/Typography';
 import { ChevronDown, ChevronRight, Download, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { iconSizeTokens } from '../Components/shared/tokens';
 import type { StoredSprite } from '@/lib/sprite-storage';
 import { groupStoredSpritesByType } from '@/lib/sprite-groups';
 import { AlertDialog } from '../Components/alert-dialog';
@@ -342,24 +345,21 @@ const AssetLibrary = () => {
           {selectedSpriteIds.size ? (
             <div className={styles.bulkActions}>
               <Typography variant="span">{selectedSpriteIds.size} selected</Typography>
-              <button
-                type="button"
-                className={styles.bulkDownload}
+              <Button
                 disabled={isBulkDeleting || isBulkDownloading}
-                onClick={() => void handleBulkDownload()}
-              >
-                <Download aria-hidden="true" size={15} />
-                {isBulkDownloading ? 'Downloading...' : 'Download'}
-              </button>
-              <button
-                type="button"
-                className={styles.bulkDelete}
+                icon={<Download size={iconSizeTokens.small} />}
+                label={isBulkDownloading ? 'Downloading...' : 'Download'}
+                onPress={() => void handleBulkDownload()}
+                size="small"
+              />
+              <Button
                 disabled={isBulkDeleting || isBulkDownloading}
-                onClick={() => setIsBulkDeleteDialogOpen(true)}
-              >
-                <Trash2 aria-hidden="true" size={15} />
-                Delete
-              </button>
+                icon={<Trash2 size={iconSizeTokens.small} />}
+                label="Delete"
+                onPress={() => setIsBulkDeleteDialogOpen(true)}
+                size="small"
+                variant="danger"
+              />
             </div>
           ) : null}
         </div>
@@ -394,21 +394,15 @@ const AssetLibrary = () => {
                 <Typography variant="span" className={styles.groupCount}>
                   {groupedSprites.length}
                 </Typography>
-                <button
-                  type="button"
-                  className={styles.groupToggle}
+                <IconButton
                   aria-controls={`asset-group-content-${groupIndex}`}
                   aria-expanded={!collapsedSpriteTypes.has(spriteType)}
                   aria-label={`${collapsedSpriteTypes.has(spriteType) ? 'Expand' : 'Collapse'} ${spriteType} assets`}
-                  onClick={() => toggleGroupCollapse(spriteType)}
-                >
-                  {collapsedSpriteTypes.has(spriteType) ? (
-                    <ChevronRight aria-hidden="true" size={16} />
-                  ) : (
-                    <ChevronDown aria-hidden="true" size={16} />
-                  )}
-                  {collapsedSpriteTypes.has(spriteType) ? 'Expand' : 'Collapse'}
-                </button>
+                  icon={collapsedSpriteTypes.has(spriteType) ? <ChevronRight size={iconSizeTokens.small} /> : <ChevronDown size={iconSizeTokens.small} />}
+                  label={collapsedSpriteTypes.has(spriteType) ? 'Expand' : 'Collapse'}
+                  onPress={() => toggleGroupCollapse(spriteType)}
+                  variant="unstyled"
+                />
               </div>
             </div>
             {!collapsedSpriteTypes.has(spriteType) ? (
@@ -437,26 +431,23 @@ const AssetLibrary = () => {
                       <div className={styles.assetMeta}>
                         <Typography variant="p">{formatDate(sprite.createdAt)}</Typography>
                         <div className={styles.assetActions}>
-                          <button
-                            type="button"
-                            className={styles.rename}
+                          <IconButton
                             aria-label={`Rename ${sprite.title ?? sprite.spriteType} sprite`}
                             disabled={renamingId === sprite.id}
+                            icon={<Pencil size={iconSizeTokens.small} />}
+                            onPress={() => setSpriteToRename(sprite)}
                             title={`Rename ${sprite.title ?? sprite.spriteType}`}
-                            onClick={() => setSpriteToRename(sprite)}
-                          >
-                            <Pencil aria-hidden="true" size={14} />
-                          </button>
-                          <a
-                            className={styles.download}
+                            variant="unstyled"
+                          />
+                          <Button
+                            aria-label={`Download ${sprite.title ?? sprite.spriteType} sprite`}
                             href={`/api/sprites/${sprite.id}/download`}
                             download={`${sprite.title ?? sprite.spriteType}.png`}
-                          >
-                            <Download aria-hidden="true" size={16} />
-                            <Typography variant="span" className={styles.downloadLabel}>
-                              Download
-                            </Typography>
-                          </a>
+                            icon={<Download size={iconSizeTokens.small} />}
+                            label=""
+                            title={`Download ${sprite.title ?? sprite.spriteType}`}
+                            variant="unstyled"
+                          />
                         </div>
                       </div>
                     </div>
@@ -468,14 +459,11 @@ const AssetLibrary = () => {
         ))}
       </div>
       {hasMore ? (
-        <button
-          type="button"
-          className={styles.loadMore}
+        <Button
           disabled={isLoadingMore}
-          onClick={() => void loadMoreSprites()}
-        >
-          {isLoadingMore ? 'Loading...' : 'Load more assets'}
-        </button>
+          label={isLoadingMore ? 'Loading...' : 'Load more assets'}
+          onPress={() => void loadMoreSprites()}
+        />
       ) : null}
       {spriteToRename ? (
         <AssetNameDialog
