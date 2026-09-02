@@ -12,8 +12,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { iconSizeTokens } from '../Components/shared/tokens';
 import type { StoredSprite } from '@/lib/sprite-storage';
 import { groupStoredSpritesByType } from '@/lib/sprite-groups';
-import { AlertDialog } from '../Components/alert-dialog';
-import { AssetNameDialog } from '../Components/asset-name-dialog';
+import { AlertDialog, SpriteNameDialog } from '../Components/dialogs';
 import { LoadingIndicator } from '../Components/loading-indicator';
 import styles from './AssetLibrary.module.css';
 
@@ -466,7 +465,7 @@ const AssetLibrary = () => {
         />
       ) : null}
       {spriteToRename ? (
-        <AssetNameDialog
+        <SpriteNameDialog
           initialTitle={spriteToRename.title ?? ''}
           isSaving={renamingId === spriteToRename.id}
           spriteType={spriteToRename.spriteType}

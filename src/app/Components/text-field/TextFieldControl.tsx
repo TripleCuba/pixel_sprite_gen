@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import Input from '../shared/Input';
 import styles from './TextField.module.css';
 import type { TextFieldProps } from './types';
 
@@ -21,7 +22,7 @@ const TextFieldControl = ({
     return (
       <textarea
         id={inputId}
-        className={styles.input}
+        className={styles.textarea}
         rows={rows}
         value={value}
         placeholder={placeholder}
@@ -32,9 +33,8 @@ const TextFieldControl = ({
   }
 
   return (
-    <input
+    <Input
       id={inputId}
-      className={styles.input}
       type={type}
       value={value}
       placeholder={placeholder}

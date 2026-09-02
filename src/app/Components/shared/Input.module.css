@@ -1,0 +1,50 @@
+.wrapper {
+  width: 100%;
+}
+
+.root {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  background: var(--input);
+  color: var(--foreground);
+  font: inherit;
+}
+
+.root::placeholder {
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.root:focus-visible {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.root:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.helpRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.helpText {
+  color: var(--primary-light);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.counter {
+  color: var(--accent);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  white-space: nowrap;
+}

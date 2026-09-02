@@ -201,10 +201,10 @@
     "delete_saved_multiple_confirm_other": "Delete {{count}} sprites"
   },
   "asset_name_dialog": {
-    "backdrop_label": "Close rename asset dialog",
-    "eyebrow": "Saved asset",
-    "title": "Name this asset",
-    "field_label": "Asset title",
+    "backdrop_label": "Close rename sprite dialog",
+    "eyebrow": "Saved sprite",
+    "title": "Name this sprite",
+    "field_label": "Sprite name",
     "empty_title_help": "Leave it empty to use “{{spriteType}}” instead.",
     "character_count": "{{count}}/120"
   },

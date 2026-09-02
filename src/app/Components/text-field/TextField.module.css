@@ -5,7 +5,7 @@
   margin: 12px 0;
 }
 
-.input {
+.textarea {
   width: 100%;
   min-height: 42px;
   padding: 8px 12px;
@@ -17,11 +17,11 @@
   color: var(--foreground);
 }
 
-.input::placeholder {
+.textarea::placeholder {
   color: color-mix(in srgb, var(--foreground) 55%, transparent);
 }
 
-.input:focus-visible {
+.textarea:focus-visible {
   border-color: var(--primary-light);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent);
 }

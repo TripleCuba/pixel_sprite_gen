@@ -12,8 +12,7 @@ import IconButton from '../shared/IconButton';
 import { iconSizeTokens } from '../shared/tokens';
 import type { StoredSprite } from '@/lib/sprite-storage';
 import { groupStoredSpritesByType } from '@/lib/sprite-groups';
-import { AlertDialog } from '../alert-dialog';
-import { AssetNameDialog } from '../asset-name-dialog';
+import { AlertDialog, SpriteNameDialog } from '../dialogs';
 import { LoadingIndicator } from '../loading-indicator';
 import styles from './SpriteHistorySidebar.module.css';
 
@@ -472,7 +471,7 @@ const SpriteHistorySidebar = ({
         />
       ) : null}
       {spriteToRename ? (
-        <AssetNameDialog
+        <SpriteNameDialog
           initialTitle={spriteToRename.title ?? ''}
           isSaving={renamingId === spriteToRename.id}
           spriteType={spriteToRename.spriteType}
