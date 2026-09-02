@@ -1,20 +1,18 @@
 'use client';
 
-import Button from '../shared/Button';
-import Typography from '../shared/Typography';
-
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { BillingProductId } from '@/lib/billing-products';
-import styles from './CheckoutButton.module.css';
+import Button from '../shared/Button';
+import Typography from '../shared/Typography';
 
-type CheckoutButtonProps = {
+type CheckoutActionProps = {
   available: boolean;
-  children: ReactNode;
+  label: ReactNode;
   productId: BillingProductId;
 };
 
-const CheckoutButton = ({ available, children, productId }: CheckoutButtonProps) => {
+const CheckoutAction = ({ available, label, productId }: CheckoutActionProps) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,10 +47,10 @@ const CheckoutButton = ({ available, children, productId }: CheckoutButtonProps)
   };
 
   return (
-    <div className={styles.root}>
+    <div style={{ marginTop: 'auto' }}>
       <Button
         disabled={!available || isLoading}
-        label={isLoading ? 'Opening Checkout...' : available ? children : 'Coming soon'}
+        label={isLoading ? 'Opening Checkout...' : available ? label : 'Coming soon'}
         onPress={startCheckout}
       />
       {error ? (
@@ -64,4 +62,4 @@ const CheckoutButton = ({ available, children, productId }: CheckoutButtonProps)
   );
 };
 
-export default CheckoutButton;
+export default CheckoutAction;

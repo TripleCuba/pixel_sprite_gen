@@ -1,7 +1,7 @@
 import Typography from '../Components/shared/Typography';
 import { TopBar } from '../Components/top-bar';
 import { CreditHistory } from '../Components/credit-history';
-import { CheckoutButton } from '../Components/checkout-button';
+import { CheckoutAction } from '../Components/checkout-action';
 import { BillingProductId, isStripeProductConfigured } from '@/lib/billing-products';
 import styles from './page.module.css';
 import { auth } from '@/auth';
@@ -137,9 +137,11 @@ export default async function BillingPage() {
                   {pack.price}
                 </Typography>
                 <Typography variant="p">{pack.note}</Typography>
-                <CheckoutButton available={isStripeProductConfigured(pack.id)} productId={pack.id}>
-                  Buy credits
-                </CheckoutButton>
+                <CheckoutAction
+                  available={isStripeProductConfigured(pack.id)}
+                  label="Buy credits"
+                  productId={pack.id}
+                />
               </article>
             ))}
           </div>
@@ -175,9 +177,11 @@ export default async function BillingPage() {
                   <li>{plan.storage}</li>
                   <li>Credit-pack top-ups available</li>
                 </ul>
-                <CheckoutButton available={isStripeProductConfigured(plan.id)} productId={plan.id}>
-                  Choose {plan.name}
-                </CheckoutButton>
+                <CheckoutAction
+                  available={isStripeProductConfigured(plan.id)}
+                  label={`Choose ${plan.name}`}
+                  productId={plan.id}
+                />
               </article>
             ))}
           </div>
