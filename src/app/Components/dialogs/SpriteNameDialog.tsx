@@ -1,8 +1,8 @@
 'use client';
 
-import Dialog from '../../shared/Dialog';
-import Input from '../../shared/Input';
-import Typography from '../../shared/Typography';
+import Dialog from '../shared/Dialog';
+import Input from '../shared/Input';
+import Typography from '../shared/Typography';
 
 import { useId, useState } from 'react';
 

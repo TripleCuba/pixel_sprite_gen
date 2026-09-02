@@ -1,10 +1,10 @@
 'use client';
 
-import Dialog from '../../shared/Dialog';
+import Dialog from '../shared/Dialog';
 
 import { useId } from 'react';
 
-type AlertDialogProps = {
+type DeleteConfirmationDialogProps = {
   cancelLabel?: string;
   confirmLabel: string;
   description: string;
@@ -14,7 +14,7 @@ type AlertDialogProps = {
   title: string;
 };
 
-const AlertDialog = ({
+const DeleteConfirmationDialog = ({
   cancelLabel = 'Cancel',
   confirmLabel,
   description,
@@ -22,7 +22,7 @@ const AlertDialog = ({
   onClose,
   onConfirm,
   title,
-}: AlertDialogProps) => {
+}: DeleteConfirmationDialogProps) => {
   const descriptionId = useId();
   const titleId = useId();
 
@@ -52,4 +52,4 @@ const AlertDialog = ({
   );
 };
 
-export default AlertDialog;
+export default DeleteConfirmationDialog;

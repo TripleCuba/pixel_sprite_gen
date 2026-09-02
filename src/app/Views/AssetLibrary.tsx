@@ -12,7 +12,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { iconSizeTokens } from '../Components/shared/tokens';
 import type { StoredSprite } from '@/lib/sprite-storage';
 import { groupStoredSpritesByType } from '@/lib/sprite-groups';
-import { AlertDialog, SpriteNameDialog } from '../Components/dialogs';
+import { DeleteConfirmationDialog, SpriteNameDialog } from '../Components/dialogs';
 import { LoadingIndicator } from '../Components/loading-indicator';
 import styles from './AssetLibrary.module.css';
 
@@ -474,7 +474,7 @@ const AssetLibrary = () => {
         />
       ) : null}
       {isBulkDeleteDialogOpen ? (
-        <AlertDialog
+        <DeleteConfirmationDialog
           title={`Delete ${selectedSpriteIds.size} selected asset${selectedSpriteIds.size === 1 ? '' : 's'}?`}
           description="This permanently removes the selected images from your library and releases their storage space. This cannot be undone."
           confirmLabel={`Delete ${selectedSpriteIds.size} asset${selectedSpriteIds.size === 1 ? '' : 's'}`}

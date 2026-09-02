@@ -12,7 +12,7 @@ import IconButton from '../shared/IconButton';
 import { iconSizeTokens } from '../shared/tokens';
 import type { StoredSprite } from '@/lib/sprite-storage';
 import { groupStoredSpritesByType } from '@/lib/sprite-groups';
-import { AlertDialog, SpriteNameDialog } from '../dialogs';
+import { DeleteConfirmationDialog, SpriteNameDialog } from '../dialogs';
 import { LoadingIndicator } from '../loading-indicator';
 import styles from './SpriteHistorySidebar.module.css';
 
@@ -451,7 +451,7 @@ const SpriteHistorySidebar = ({
         </Link>
       </div>
       {spriteToDelete ? (
-        <AlertDialog
+        <DeleteConfirmationDialog
           title="Delete saved sprite?"
           description="This permanently removes the image from your library and releases its storage space. This cannot be undone."
           confirmLabel="Delete sprite"
@@ -461,7 +461,7 @@ const SpriteHistorySidebar = ({
         />
       ) : null}
       {isBulkDeleteDialogOpen ? (
-        <AlertDialog
+        <DeleteConfirmationDialog
           title={`Delete ${selectedCount} saved sprite${selectedCount === 1 ? '' : 's'}?`}
           description="This permanently removes the selected images from your library and releases their storage space. This cannot be undone."
           confirmLabel={`Delete ${selectedCount} sprite${selectedCount === 1 ? '' : 's'}`}

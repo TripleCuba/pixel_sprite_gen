@@ -1,2 +1,2 @@
-export { AlertDialog } from './alert-dialog';
-export { SpriteNameDialog } from './sprite-name-dialog';
+export { default as DeleteConfirmationDialog } from './DeleteConfirmationDialog';
+export { default as SpriteNameDialog } from './SpriteNameDialog';
